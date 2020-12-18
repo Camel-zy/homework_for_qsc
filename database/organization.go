@@ -26,12 +26,12 @@ func createOrganization(requestOrganization *Organization) error {
 	return nil
 }
 
-func queryOrganization(ID uint) *Organization {
+func queryOrganization(ID uint) (*Organization, error) {
 	var result Organization
 	if err := DB.First(&result, "ID = ?", ID).Error; errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil
+		return nil, err
 	} else {
-		return &result
+		return &result, nil
 	}
 }
 
