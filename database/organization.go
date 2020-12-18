@@ -1,46 +1,29 @@
 package database
 
 import (
-	"errors"
-	"gorm.io/gorm"
-	"time"
+	"git.zjuqsc.com/rop/rop-back-neo/database/model"
+	"git.zjuqsc.com/rop/rop-back-neo/database/proto"
 )
 
-type Organization struct {
-	ID          uint      `gorm:"not null;autoIncrement;primaryKey"`
-	Name        string    `gorm:"size:40;not null"`
-	Description string    `gorm:"size:200"`
-	UpdateTime  time.Time `gorm:"not null"`
+func CreateOrganization(requestOrganization *model.Organization) error {
+	return proto.Create(requestOrganization)
 }
 
-func CreateOrganization(requestOrganization *Organization) error {
-	/*
-		if err := DB.First(&Organization{}, "name = ?", requestOrganization.Name).Error; errors.Is(err, gorm.ErrRecordNotFound) {
-			DB.Create(requestOrganization)
-			return nil
-		} else {
-			return errors.New("user exists")
-		}
-	*/
-	DB.Create(requestOrganization)
-	return nil
-}
-
-func QueryOrganization(ID uint) (*Organization, error) {
-	var result Organization
-	if err := DB.First(&result, "ID = ?", ID).Error; errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, err
+func QueryOrganization(ID uint) (*model.Organization, error) {
+	var dbOrganization model.Organization
+	if result := DB.First(&dbOrganization, "id = ?", ID); result.Error != nil {
+		return nil, result.Error
 	} else {
-		return &result, nil
+		return &dbOrganization, nil
 	}
 }
 
-func UpdateOrganization(requestOrganization *Organization) error {
-	var result Organization
-	if err := DB.First(&result, "name = ?", requestOrganization.Name).Error; errors.Is(err, gorm.ErrRecordNotFound) {
-		return errors.New("user not found")
+func UpdateOrganization(requestOrganization *model.Organization) error {
+	var dbOrganization model.Organization
+	if result := DB.First(&dbOrganization, "name = ?", requestOrganization.Name); result.Error != nil {
+		return result.Error
 	} else {
-		if result := DB.Model(&result).Updates(requestOrganization); result.Error != nil {
+		if result := DB.Model(&dbOrganization).Updates(requestOrganization); result.Error != nil {
 			return result.Error
 		} else {
 			return nil

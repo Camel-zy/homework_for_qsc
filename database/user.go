@@ -1,67 +1,51 @@
 package database
 
 import (
-	"errors"
-	"gorm.io/gorm"
+	"git.zjuqsc.com/rop/rop-back-neo/database/model"
+	"git.zjuqsc.com/rop/rop-back-neo/database/proto"
 )
 
-type User struct {
-	ID          int    `gorm:"not null;autoIncrement"`
-	Name        string `gorm:"size:40;not null"`
-	Nickname    string `gorm:"size:40"`
-	ZJUid       string `gorm:"size:10;unique;not null"`
-	Mobile      string `gorm:"size:15"`
-	Email       string `gorm:"size:40"`
-	IP          string `gorm:"size:30"`
-	IsSuperuser int    `gorm:"default:0"`
-	UserAgent   string `gorm:"size:50"`
-	UpdatedTime string `gorm:"size:30;not null"`
+func CreateUser(requestUser *model.User) error {
+	return proto.Create(requestUser)
 }
 
-func CreateUser(requestUser *User) error {
-
-	DB.Create(requestUser)
-	return nil
-}
-
-func QueryUserById(ID uint) (*User, error) {
-	var result User
-	if err := DB.First(&result, "ID = ?", ID).Error; errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, err
+func QueryUserById(ID uint) (*model.User, error) {
+	var dbUser model.User
+	if result := DB.First(&dbUser, "id = ?", ID); result.Error != nil {
+		return nil, result.Error
 	} else {
-		return &result, nil
+		return &dbUser, nil
 	}
 }
 
-func UpdateUserById(requestUser *User) error {
-	var result User
-	if err := DB.First(&result, "name = ?", requestUser.Name).Error; errors.Is(err, gorm.ErrRecordNotFound) {
-		return errors.New("user not found")
+func UpdateUserById(requestUser *model.User) error {
+	var dbUser model.User
+	if result := DB.First(&dbUser, "name = ?", requestUser.Name); result.Error != nil {
+		return result.Error
 	} else {
-		if result := DB.Model(&result).Updates(requestUser); result.Error != nil {
+		if result := DB.Model(&dbUser).Updates(requestUser); result.Error != nil {
 			return result.Error
 		} else {
 			return nil
 		}
 	}
-
 }
 
-func QueryUserByZJUid(ZJUid uint) (*User, error) {
-	var result User
-	if err := DB.First(&result, "ZJUid = ?", ZJUid).Error; errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, err
+func QueryUserByZJUid(ZJUid uint) (*model.User, error) {
+	var dbUser model.User
+	if result := DB.First(&dbUser, "zju_id = ?", ZJUid); result.Error != nil {
+		return nil, result.Error
 	} else {
-		return &result, nil
+		return &dbUser, nil
 	}
 }
 
-func UpdateUserByZJUid(requestUser *User) error {
-	var result User
-	if err := DB.First(&result, "ZJUid = ?", requestUser.ZJUid).Error; errors.Is(err, gorm.ErrRecordNotFound) {
-		return errors.New("user not found")
+func UpdateUserByZJUid(requestUser *model.User) error {
+	var dbUser model.User
+	if result := DB.First(&dbUser, "zju_id = ?", requestUser.ZJUid); result.Error != nil {
+		return result.Error
 	} else {
-		if result := DB.Model(&result).Updates(requestUser); result.Error != nil {
+		if result := DB.Model(&dbUser).Updates(requestUser); result.Error != nil {
 			return result.Error
 		} else {
 			return nil
