@@ -13,7 +13,7 @@ type Organization struct {
 	UpdateTime  time.Time `gorm:"not null"`
 }
 
-func createOrganization(requestOrganization *Organization) error {
+func CreateOrganization(requestOrganization *Organization) error {
 	/*
 		if err := DB.First(&Organization{}, "name = ?", requestOrganization.Name).Error; errors.Is(err, gorm.ErrRecordNotFound) {
 			DB.Create(requestOrganization)
@@ -26,7 +26,7 @@ func createOrganization(requestOrganization *Organization) error {
 	return nil
 }
 
-func queryOrganization(ID uint) (*Organization, error) {
+func QueryOrganization(ID uint) (*Organization, error) {
 	var result Organization
 	if err := DB.First(&result, "ID = ?", ID).Error; errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, err
@@ -35,7 +35,7 @@ func queryOrganization(ID uint) (*Organization, error) {
 	}
 }
 
-func updateOrganization(requestOrganization *Organization) error {
+func UpdateOrganization(requestOrganization *Organization) error {
 	var result Organization
 	if err := DB.First(&result, "name = ?", requestOrganization.Name).Error; errors.Is(err, gorm.ErrRecordNotFound) {
 		return errors.New("user not found")

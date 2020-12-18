@@ -7,19 +7,19 @@ import (
 )
 
 type Department struct {
-	ID          	uint      `gorm:"not_null;auto_increment;primary_key"`
-	Name        	string    `gorm:"size:40;not_null"`
-	OrganizationID 	uint      `gorm:"not_null;ForeignKey:OrganizationID"`
-	Description 	string    `gorm:"size:200"`
-	UpdateTime  	time.Time `gorm:"not_null"`
+	ID             uint      `gorm:"not_null;auto_increment;primary_key"`
+	Name           string    `gorm:"size:40;not_null"`
+	OrganizationID uint      `gorm:"not_null;ForeignKey:OrganizationID"`
+	Description    string    `gorm:"size:200"`
+	UpdateTime     time.Time `gorm:"not_null"`
 }
 
-func createDepartment(requestDepartment *Department) error {
+func CreateDepartment(requestDepartment *Department) error {
 	DB.Create(requestDepartment)
 	return nil
 }
 
-func queryDepartment(ID uint) (*Department, error) {
+func QueryDepartment(ID uint) (*Department, error) {
 	var result Department
 	if err := DB.First(&result, "ID = ?", ID).Error; errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, err
@@ -28,7 +28,7 @@ func queryDepartment(ID uint) (*Department, error) {
 	}
 }
 
-func updateDepartment(requestDepartment *Department) error {
+func UpdateDepartment(requestDepartment *Department) error {
 	var result Department
 	if err := DB.First(&result, "name = ?", requestDepartment.Name).Error; errors.Is(err, gorm.ErrRecordNotFound) {
 		return errors.New("user not found")

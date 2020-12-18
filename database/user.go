@@ -18,13 +18,13 @@ type User struct {
 	UpdatedTime string `gorm:"size:30;not null"`
 }
 
-func createUser(requestUser *User) error {
+func CreateUser(requestUser *User) error {
 
 	DB.Create(requestUser)
 	return nil
 }
 
-func queryUserById(ID uint) (*User, error) {
+func QueryUserById(ID uint) (*User, error) {
 	var result User
 	if err := DB.First(&result, "ID = ?", ID).Error; errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, err
@@ -33,7 +33,7 @@ func queryUserById(ID uint) (*User, error) {
 	}
 }
 
-func updateUserById(requestUser *User) error {
+func UpdateUserById(requestUser *User) error {
 	var result User
 	if err := DB.First(&result, "name = ?", requestUser.Name).Error; errors.Is(err, gorm.ErrRecordNotFound) {
 		return errors.New("user not found")
@@ -47,7 +47,7 @@ func updateUserById(requestUser *User) error {
 
 }
 
-func queryUserByZJUid(ZJUid uint) (*User, error) {
+func QueryUserByZJUid(ZJUid uint) (*User, error) {
 	var result User
 	if err := DB.First(&result, "ZJUid = ?", ZJUid).Error; errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, err
