@@ -7,11 +7,11 @@ import (
 )
 
 type Department struct {
-	ID             uint      `gorm:"not_null;auto_increment;primary_key"`
-	Name           string    `gorm:"size:40;not_null"`
-	OrganizationID uint      `gorm:"not_null;ForeignKey:OrganizationID"`
+	ID             uint      `gorm:"not null;autoIncrement;primaryKey"`
+	Name           string    `gorm:"size:40;not null"`
+	OrganizationID uint      `gorm:"not null;ForeignKey:OrganizationID"`
 	Description    string    `gorm:"size:200"`
-	UpdateTime     time.Time `gorm:"not_null"`
+	UpdateTime     time.Time `gorm:"not null"`
 }
 
 func CreateDepartment(requestDepartment *Department) error {
