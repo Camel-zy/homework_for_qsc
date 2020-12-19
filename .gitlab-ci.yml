@@ -1,0 +1,62 @@
+image: harbor.zjuqsc.com/accelerated/docker:stable
+
+services:
+  - name: harbor.zjuqsc.com/accelerated/docker:dind
+    alias: docker
+
+stages:
+  - scan
+  - build
+  - deploy
+
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+  IMAGE_TAG: harbor.zjuqsc.com/rop/rop2020
+  SERVICE_NAME: rop2020-back
+
+# if docker command present, run docker login
+before_script:
+  - which docker && docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD harbor.zjuqsc.com
+
+sonarqube-check:
+  stage: scan
+  only:
+    - "merge_requests" # keyword, for pipelines created when a merge request is created or updated
+    - master
+  image:
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint: [""]
+  variables:
+    SONAR_PROJECTKEY: rop-back-neo
+    SONAR_HOST_URL: "https://sonarqube.zjuqsc.com"
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
+    GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+    # SONAR_TOKEN is set as protected masked CI variable
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .sonar/cache
+  script:
+    - sonar-scanner -Dsonar.qualitygate.wait=true -Dsonar.projectKey=${SONAR_PROJECTKEY} -Dsonar.gitlab.project_id=$CI_PROJECT_ID -Dsonar.gitlab.commit_sha=$CI_COMMIT_SHA -Dsonar.gitlab.ref_name=$CI_COMMIT_REF_NAME
+
+build:
+  only:
+    - master
+    - release
+  stage: build
+  tags:
+    - docker
+  script:
+    - docker pull $IMAGE_TAG:latest || true
+    - docker build --cache-from $IMAGE_TAG:latest -t $IMAGE_TAG:$CI_COMMIT_SHA -t $IMAGE_TAG:latest .
+    - docker push $IMAGE_TAG:$CI_COMMIT_SHA
+    - docker push $IMAGE_TAG:latest
+
+deploy:
+  only:
+    - release
+  stage: deploy
+  tags:
+    - deploy
+  script:
+    - docker stack deploy --with-registry-auth --compose-file=docker-compose.yml ${SERVICE_NAME}
