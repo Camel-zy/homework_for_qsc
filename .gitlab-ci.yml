@@ -24,11 +24,9 @@ sonarqube-check:
     - "merge_requests" # keyword, for pipelines created when a merge request is created or updated
     - master
   image:
-    name: harbor.zjuqsc.com/accelerated/sonar_scanner_cli:latest
+    name: harbor.zjuqsc.com/accelerated/sonar_scanner_cli:go1.15
     entrypoint: [""]
   variables:
-    SONAR_PROJECTKEY: rop-back-neo
-    SONAR_HOST_URL: "https://sonarqube.zjuqsc.com"
     SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
     GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
     # SONAR_TOKEN is set as protected masked CI variable
@@ -37,7 +35,8 @@ sonarqube-check:
     paths:
       - .sonar/cache
   script:
-    - sonar-scanner -Dsonar.qualitygate.wait=true -Dsonar.projectKey=${SONAR_PROJECTKEY} -Dsonar.gitlab.project_id=$CI_PROJECT_ID -Dsonar.gitlab.commit_sha=$CI_COMMIT_SHA -Dsonar.gitlab.ref_name=$CI_COMMIT_REF_NAME
+    - go test -coverprofile=test-coverage.out -json > test-report.out
+    - sonar-scanner -Dsonar.qualitygate.wait=true -Dsonar.gitlab.project_id=$CI_PROJECT_ID -Dsonar.gitlab.commit_sha=$CI_COMMIT_SHA -Dsonar.gitlab.ref_name=$CI_COMMIT_REF_NAME
 
 build:
   only:
