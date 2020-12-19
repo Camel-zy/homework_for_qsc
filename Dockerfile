@@ -2,7 +2,7 @@ FROM golang:1.15
 
 ENV GOPROXY=https://goproxy.io,direct \
     GO111MODULE=on \
-    WORKDIR=/tmp/workdir
+    WORKDIR=/tmp/workdir/
 
 RUN mkdir -p $WORKDIR
 
