@@ -4,24 +4,28 @@ import (
 	"flag"
 	"fmt"
 
-	"gorm.io/gorm"
-	"gorm.io/driver/postgres"
-
 	"git.zjuqsc.com/rop/rop-back-neo/database"
 )
 
-func cmdlineDbArgParse() string {
+type CmdlineArgs struct {
+	dbconfig string
+	dbinit bool
+}
+
+func cmdlineArgParse() *CmdlineArgs {
 	var user string
 	var passwd string
 	var host string
 	var port string
 	var dbname string
+	var init bool
 
 	flag.StringVar(&user, "db_user", "", "username for database")
 	flag.StringVar(&passwd, "db_passwd", "", "passwd for database")
 	flag.StringVar(&host, "db_host", "", "host(ip) for database")
 	flag.StringVar(&port, "db_port", "", "port for database")
 	flag.StringVar(&dbname, "db_name", "", "db name for database")
+	flag.BoolVar(&init, "db_init", false, "init db tables")
 
 	flag.Parse()
 
@@ -31,19 +35,16 @@ func cmdlineDbArgParse() string {
 		host,
 		port,
 		dbname)
-	return dbconfig
-}
-
-func makeDB(dbconfig string) *gorm.DB {
-	db, err := gorm.Open(postgres.Open(dbconfig), &gorm.Config{})
-	if err != nil {
-		return nil
-	}
-	return db
+	return &CmdlineArgs{dbconfig, init}
 }
 
 func main() {
-	dbconfig := cmdlineDbArgParse()
+	args := cmdlineArgParse()
+	dbconfig := args.dbconfig
+	dbinit := args.dbinit
 	fmt.Printf("db config: [%s]\n", dbconfig)
-	database.DB = makeDB(dbconfig)
+	database.MakeDB(dbconfig)
+	if dbinit {
+		fmt.Print("init db tables\n")
+	}
 }
