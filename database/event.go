@@ -9,9 +9,9 @@ func CreateEvent(requestEvent *model.Event) error {
 	return proto.Create(requestEvent)
 }
 
-func QueryEvent(ID uint) (*model.Event, error) {
+func QueryEvent(id uint) (*model.Event, error) {
 	var dbEvent model.Event
-	if result := DB.First(&dbEvent, "id = ?", ID); result.Error != nil {
+	if result := DB.First(&dbEvent, "id = ?", id); result.Error != nil {
 		return nil, result.Error
 	} else {
 		return &dbEvent, nil

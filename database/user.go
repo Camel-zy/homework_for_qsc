@@ -9,9 +9,9 @@ func CreateUser(requestUser *model.User) error {
 	return proto.Create(requestUser)
 }
 
-func QueryUserById(ID uint) (*model.User, error) {
+func QueryUserById(id uint) (*model.User, error) {
 	var dbUser model.User
-	if result := DB.First(&dbUser, "id = ?", ID); result.Error != nil {
+	if result := DB.First(&dbUser, "id = ?", id); result.Error != nil {
 		return nil, result.Error
 	} else {
 		return &dbUser, nil
@@ -31,9 +31,9 @@ func UpdateUserById(requestUser *model.User) error {
 	}
 }
 
-func QueryUserByZJUid(ZJUid uint) (*model.User, error) {
+func QueryUserByZJUid(zjuId uint) (*model.User, error) {
 	var dbUser model.User
-	if result := DB.First(&dbUser, "zju_id = ?", ZJUid); result.Error != nil {
+	if result := DB.First(&dbUser, "zju_id = ?", zjuId); result.Error != nil {
 		return nil, result.Error
 	} else {
 		return &dbUser, nil
