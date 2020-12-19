@@ -46,5 +46,6 @@ func main() {
 	database.MakeDB(dbconfig)
 	if dbinit {
 		fmt.Print("init db tables\n")
+		database.Init()
 	}
 }
