@@ -10,16 +10,20 @@ import (
 var DB *gorm.DB
 
 func MakeDB(dbconfig string) {
-	DB, err := gorm.Open(postgres.Open(dbconfig), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(dbconfig), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
-	if DB == nil {
-		panic("db is nil")
+	if db == nil {
+		panic("DB is nil")
 	}
+	DB = db
 }
 
 func Init() {
+	if DB == nil {
+		panic("DB is nil")
+	}
 	err := DB.AutoMigrate(
 		&model.User{},
 		&model.Organization{},
