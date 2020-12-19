@@ -8,8 +8,8 @@ import (
 )
 
 type CmdlineArgs struct {
-	dbconfig string
-	dbinit bool
+	dbConfig string
+	dbInit   bool
 }
 
 func cmdlineArgParse() *CmdlineArgs {
@@ -17,34 +17,34 @@ func cmdlineArgParse() *CmdlineArgs {
 	var passwd string
 	var host string
 	var port string
-	var dbname string
+	var dbName string
 	var init bool
 
 	flag.StringVar(&user, "db_user", "", "username for database")
 	flag.StringVar(&passwd, "db_passwd", "", "passwd for database")
 	flag.StringVar(&host, "db_host", "", "host(ip) for database")
 	flag.StringVar(&port, "db_port", "", "port for database")
-	flag.StringVar(&dbname, "db_name", "", "db name for database")
+	flag.StringVar(&dbName, "db_name", "", "db name for database")
 	flag.BoolVar(&init, "db_init", false, "init db tables")
 
 	flag.Parse()
 
-	dbconfig := fmt.Sprintf("user=%s password=%s host=%s port=%s dbname=%s sslmode=disable TimeZone=Asia/Shanghai",
+	dbConfig := fmt.Sprintf("user=%s password=%s host=%s port=%s dbname=%s sslmode=disable TimeZone=Asia/Shanghai",
 		user,
 		passwd,
 		host,
 		port,
-		dbname)
-	return &CmdlineArgs{dbconfig, init}
+		dbName)
+	return &CmdlineArgs{dbConfig, init}
 }
 
 func main() {
 	args := cmdlineArgParse()
-	dbconfig := args.dbconfig
-	dbinit := args.dbinit
-	fmt.Printf("db config: [%s]\n", dbconfig)
-	database.MakeDB(dbconfig)
-	if dbinit {
+	dbConfig := args.dbConfig
+	dbInit := args.dbInit
+	fmt.Printf("db config: [%s]\n", dbConfig)
+	database.MakeDB(dbConfig)
+	if dbInit {
 		fmt.Print("init db tables\n")
 		database.Init()
 	}

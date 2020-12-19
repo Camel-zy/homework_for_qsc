@@ -1,16 +1,16 @@
 package database
 
 import (
-	"gorm.io/gorm"
 	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 
 	"git.zjuqsc.com/rop/rop-back-neo/database/model"
 )
 
 var DB *gorm.DB
 
-func MakeDB(dbconfig string) {
-	db, err := gorm.Open(postgres.Open(dbconfig), &gorm.Config{})
+func MakeDB(dbConfig string) {
+	db, err := gorm.Open(postgres.Open(dbConfig), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
@@ -31,7 +31,7 @@ func Init() {
 		&model.JoinedDepartment{},
 		&model.Event{},
 		&model.Interview{},
-		&model.JoinedInterview{}).Error
+		&model.JoinedInterview{})
 	if err != nil {
 		panic(err)
 	}

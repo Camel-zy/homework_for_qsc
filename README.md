@@ -11,9 +11,9 @@
 [![Technical Debt](https://sonarqube.zjuqsc.com/api/project_badges/measure?project=rop-back-neo&metric=sqale_index)](https://sonarqube.zjuqsc.com/dashboard?id=rop-back-neo)
 [![Vulnerabilities](https://sonarqube.zjuqsc.com/api/project_badges/measure?project=rop-back-neo&metric=vulnerabilities)](https://sonarqube.zjuqsc.com/dashboard?id=rop-back-neo)
 
-| Web Framework | ORM |
-| :---------: | :---: |
-| ? | GORM |
+| Web Framework | ORM | Database |
+| :---------: | :---: | :------: |
+| ? | GORM 2.0 | PostgreSQL |
 
 
 ## Directories
