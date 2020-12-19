@@ -9,9 +9,9 @@ func CreateDepartment(requestDepartment *model.Department) error {
 	return proto.Create(requestDepartment)
 }
 
-func QueryDepartment(ID uint) (*model.Department, error) {
+func QueryDepartment(id uint) (*model.Department, error) {
 	var dbDepartment model.Department
-	if result := DB.First(&dbDepartment, "id = ?", ID); result.Error != nil {
+	if result := DB.First(&dbDepartment, "id = ?", id); result.Error != nil {
 		return nil, result.Error
 	} else {
 		return &dbDepartment, nil

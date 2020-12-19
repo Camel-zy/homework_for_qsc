@@ -9,9 +9,9 @@ func CreateOrganization(requestOrganization *model.Organization) error {
 	return proto.Create(requestOrganization)
 }
 
-func QueryOrganization(ID uint) (*model.Organization, error) {
+func QueryOrganization(id uint) (*model.Organization, error) {
 	var dbOrganization model.Organization
-	if result := DB.First(&dbOrganization, "id = ?", ID); result.Error != nil {
+	if result := DB.First(&dbOrganization, "id = ?", id); result.Error != nil {
 		return nil, result.Error
 	} else {
 		return &dbOrganization, nil
