@@ -6,7 +6,7 @@ import (
 )
 
 func CreateInterview(requestInterview *model.Interview) error {
-	return proto.Create(requestInterview)
+	return proto.Create(DB, requestInterview)
 }
 
 func QueryInterview(ID uint) (*model.Interview, error) {

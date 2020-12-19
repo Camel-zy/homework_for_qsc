@@ -1,9 +1,11 @@
 package proto
 
-import "git.zjuqsc.com/rop/rop-back-neo/database"
+import (
+	"gorm.io/gorm"
+)
 
-func Create(value interface{}) error {
-	if result := database.DB.Create(value); result.Error != nil {
+func Create(db *gorm.DB, value interface{}) error {
+	if result := db.Create(value); result.Error != nil {
 		return result.Error
 	} else {
 		return nil

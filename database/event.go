@@ -6,7 +6,7 @@ import (
 )
 
 func CreateEvent(requestEvent *model.Event) error {
-	return proto.Create(requestEvent)
+	return proto.Create(DB, requestEvent)
 }
 
 func QueryEvent(id uint) (*model.Event, error) {

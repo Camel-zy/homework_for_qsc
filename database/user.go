@@ -6,7 +6,7 @@ import (
 )
 
 func CreateUser(requestUser *model.User) error {
-	return proto.Create(requestUser)
+	return proto.Create(DB, requestUser)
 }
 
 func QueryUserById(id uint) (*model.User, error) {

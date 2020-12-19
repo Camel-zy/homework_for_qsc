@@ -6,7 +6,7 @@ import (
 )
 
 func CreateDepartment(requestDepartment *model.Department) error {
-	return proto.Create(requestDepartment)
+	return proto.Create(DB, requestDepartment)
 }
 
 func QueryDepartment(id uint) (*model.Department, error) {

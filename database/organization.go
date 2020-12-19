@@ -6,7 +6,7 @@ import (
 )
 
 func CreateOrganization(requestOrganization *model.Organization) error {
-	return proto.Create(requestOrganization)
+	return proto.Create(DB, requestOrganization)
 }
 
 func QueryOrganization(id uint) (*model.Organization, error) {
