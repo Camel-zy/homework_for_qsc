@@ -8,7 +8,7 @@ RUN mkdir -p $WORKDIR
 
 COPY go.mod go.sum $WORKDIR
 
-RUN go mod download
+RUN go mod download all
 
 COPY . $WORKDIR
 
