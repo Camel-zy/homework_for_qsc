@@ -24,7 +24,7 @@ sonarqube-check:
     - "merge_requests" # keyword, for pipelines created when a merge request is created or updated
     - master
   image:
-    name: sonarsource/sonar-scanner-cli:latest
+    name: harbor.zjuqsc.com/accelerated/sonar_scanner_cli:latest
     entrypoint: [""]
   variables:
     SONAR_PROJECTKEY: rop-back-neo
