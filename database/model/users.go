@@ -25,7 +25,8 @@ type Organization struct {
 type Department struct {
 	ID             uint      `gorm:"not null;autoIncrement;primaryKey"`
 	Name           string    `gorm:"size:40;not null"`
-	OrganizationID uint      `gorm:"not null;foreignKey"`
+	OrganizationID uint      `gorm:"not null"`
+	Organization   Organization
 	Description    string    `gorm:"size:200"`
 	UpdateTime     time.Time `gorm:"not null"`
 }
