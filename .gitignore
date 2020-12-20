@@ -1,5 +1,9 @@
 init-git.sh
-.gitignore
+dev.sh
+
+conf/login.json
+
+# Jetbrains IDE cofig files #
 .idea
 
 # Binaries for programs and plugins

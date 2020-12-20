@@ -2,11 +2,11 @@ package database
 
 import (
 	"git.zjuqsc.com/rop/rop-back-neo/database/model"
-	"git.zjuqsc.com/rop/rop-back-neo/database/proto"
+	"git.zjuqsc.com/rop/rop-back-neo/database/utils"
 )
 
 func CreateUser(requestUser *model.User) error {
-	return proto.Create(DB, requestUser)
+	return utils.Create(DB, requestUser)
 }
 
 func QueryUserById(id uint) (*model.User, error) {

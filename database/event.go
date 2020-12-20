@@ -2,11 +2,11 @@ package database
 
 import (
 	"git.zjuqsc.com/rop/rop-back-neo/database/model"
-	"git.zjuqsc.com/rop/rop-back-neo/database/proto"
+	"git.zjuqsc.com/rop/rop-back-neo/database/utils"
 )
 
 func CreateEvent(requestEvent *model.Event) error {
-	return proto.Create(DB, requestEvent)
+	return utils.Create(DB, requestEvent)
 }
 
 func QueryEvent(id uint) (*model.Event, error) {

@@ -15,6 +15,22 @@
 | :---------: | :---: | :------: |
 | ? | GORM 2.0 | PostgreSQL |
 
+## Before you start
+
+Please create `conf/login.json` from the root of your project directory.  
+The configurations related to *database connection* are stored in this file, with the format shown below:  
+```json
+{
+  "user":   "rop",
+  "passwd": "rop_pass",
+  "host":   "localhost",
+  "port":   "5432",
+  "dbName": "rop"
+}
+```
+
+The value of these variables depends on the configuration of your PostgreSQL database. **Please don't just simply copy and paste it without thinking about any possible modification.**  
+This is only a short-term solution. Configuration solutions like `Viper` are considered to be used in the future.  
 
 ## Directories
 `database` stores CRUD functions and models of the tables.

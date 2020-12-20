@@ -2,11 +2,11 @@ package database
 
 import (
 	"git.zjuqsc.com/rop/rop-back-neo/database/model"
-	"git.zjuqsc.com/rop/rop-back-neo/database/proto"
+	"git.zjuqsc.com/rop/rop-back-neo/database/utils"
 )
 
 func CreateInterview(requestInterview *model.Interview) error {
-	return proto.Create(DB, requestInterview)
+	return utils.Create(DB, requestInterview)
 }
 
 func QueryInterview(ID uint) (*model.Interview, error) {

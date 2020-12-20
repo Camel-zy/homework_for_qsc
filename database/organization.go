@@ -2,11 +2,11 @@ package database
 
 import (
 	"git.zjuqsc.com/rop/rop-back-neo/database/model"
-	"git.zjuqsc.com/rop/rop-back-neo/database/proto"
+	"git.zjuqsc.com/rop/rop-back-neo/database/utils"
 )
 
 func CreateOrganization(requestOrganization *model.Organization) error {
-	return proto.Create(DB, requestOrganization)
+	return utils.Create(DB, requestOrganization)
 }
 
 func QueryOrganization(id uint) (*model.Organization, error) {

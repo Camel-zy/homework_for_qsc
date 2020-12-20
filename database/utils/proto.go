@@ -1,4 +1,4 @@
-package proto
+package utils
 
 import (
 	"gorm.io/gorm"

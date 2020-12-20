@@ -2,11 +2,11 @@ package database
 
 import (
 	"git.zjuqsc.com/rop/rop-back-neo/database/model"
-	"git.zjuqsc.com/rop/rop-back-neo/database/proto"
+	"git.zjuqsc.com/rop/rop-back-neo/database/utils"
 )
 
 func CreateDepartment(requestDepartment *model.Department) error {
-	return proto.Create(DB, requestDepartment)
+	return utils.Create(DB, requestDepartment)
 }
 
 func QueryDepartment(id uint) (*model.Department, error) {
