@@ -2,31 +2,20 @@ package database
 
 import (
 	"git.zjuqsc.com/rop/rop-back-neo/database/model"
-	"git.zjuqsc.com/rop/rop-back-neo/database/utils"
 )
 
 func CreateInterview(requestInterview *model.Interview) error {
-	return utils.Create(DB, requestInterview)
+	result := DB.Create(requestInterview)
+	return result.Error
 }
 
-func QueryInterview(ID uint) (*model.Interview, error) {
+func QueryInterviewById(id uint) (*model.Interview, error) {
 	var dbInterview model.Interview
-	if result := DB.First(&dbInterview, "id = ?", ID); result.Error != nil {
-		return nil, result.Error
-	} else {
-		return &dbInterview, nil
-	}
+	result := DB.First(&dbInterview, "id = ?", id)
+	return &dbInterview, result.Error
 }
 
-func UpdateInterview(requestInterview *model.Interview) error {
-	var dbInterview model.Interview
-	if result := DB.First(&dbInterview, "name = ?", requestInterview.Name); result.Error != nil {
-		return result.Error
-	} else {
-		if result := DB.Model(&dbInterview).Updates(requestInterview); result.Error != nil {
-			return result.Error
-		} else {
-			return nil
-		}
-	}
+func UpdateInterviewById(requestInterview *model.Interview) error {
+	result := DB.Model(&model.Interview{ID: requestInterview.ID}).Updates(requestInterview)
+	return result.Error
 }

@@ -2,31 +2,20 @@ package database
 
 import (
 	"git.zjuqsc.com/rop/rop-back-neo/database/model"
-	"git.zjuqsc.com/rop/rop-back-neo/database/utils"
 )
 
 func CreateEvent(requestEvent *model.Event) error {
-	return utils.Create(DB, requestEvent)
+	result := DB.Create(requestEvent)
+	return result.Error
 }
 
-func QueryEvent(id uint) (*model.Event, error) {
+func QueryEventById(id uint) (*model.Event, error) {
 	var dbEvent model.Event
-	if result := DB.First(&dbEvent, "id = ?", id); result.Error != nil {
-		return nil, result.Error
-	} else {
-		return &dbEvent, nil
-	}
+	result := DB.First(&dbEvent, "id = ?", id)
+	return &dbEvent, result.Error
 }
 
-func UpdateEvent(requestEvent *model.Event) error {
-	var dbEvent model.Event
-	if result := DB.First(&dbEvent, "name = ?", requestEvent.Name); result.Error != nil {
-		return result.Error
-	} else {
-		if result := DB.Model(&dbEvent).Updates(requestEvent); result.Error != nil {
-			return result.Error
-		} else {
-			return nil
-		}
-	}
+func UpdateEventById(requestEvent *model.Event) error {
+	result := DB.Model(&model.Event{ID: requestEvent.ID}).Updates(requestEvent)
+	return result.Error
 }

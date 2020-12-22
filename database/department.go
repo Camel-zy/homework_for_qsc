@@ -2,31 +2,20 @@ package database
 
 import (
 	"git.zjuqsc.com/rop/rop-back-neo/database/model"
-	"git.zjuqsc.com/rop/rop-back-neo/database/utils"
 )
 
 func CreateDepartment(requestDepartment *model.Department) error {
-	return utils.Create(DB, requestDepartment)
+	result := DB.Create(requestDepartment)
+	return result.Error
 }
 
-func QueryDepartment(id uint) (*model.Department, error) {
+func QueryDepartmentById(id uint) (*model.Department, error) {
 	var dbDepartment model.Department
-	if result := DB.First(&dbDepartment, "id = ?", id); result.Error != nil {
-		return nil, result.Error
-	} else {
-		return &dbDepartment, nil
-	}
+	result := DB.First(&dbDepartment, "id = ?", id)
+	return &dbDepartment, result.Error
 }
 
-func UpdateDepartment(requestDepartment *model.Department) error {
-	var dbDepartment model.Department
-	if result := DB.First(&dbDepartment, "name = ?", requestDepartment.Name); result.Error != nil {
-		return result.Error
-	} else {
-		if result := DB.Model(&dbDepartment).Updates(requestDepartment); result.Error != nil {
-			return result.Error
-		} else {
-			return nil
-		}
-	}
+func UpdateDepartmentById(requestDepartment *model.Department) error {
+	result := DB.Model(&model.Department{ID: requestDepartment.ID}).Updates(requestDepartment)
+	return result.Error
 }

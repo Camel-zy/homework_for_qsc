@@ -2,31 +2,20 @@ package database
 
 import (
 	"git.zjuqsc.com/rop/rop-back-neo/database/model"
-	"git.zjuqsc.com/rop/rop-back-neo/database/utils"
 )
 
 func CreateOrganization(requestOrganization *model.Organization) error {
-	return utils.Create(DB, requestOrganization)
+	result := DB.Create(requestOrganization)
+	return result.Error
 }
 
-func QueryOrganization(id uint) (*model.Organization, error) {
+func QueryOrganizationById(id uint) (*model.Organization, error) {
 	var dbOrganization model.Organization
-	if result := DB.First(&dbOrganization, "id = ?", id); result.Error != nil {
-		return nil, result.Error
-	} else {
-		return &dbOrganization, nil
-	}
+	result := DB.First(&dbOrganization, "id = ?", id)
+	return &dbOrganization, result.Error
 }
 
-func UpdateOrganization(requestOrganization *model.Organization) error {
-	var dbOrganization model.Organization
-	if result := DB.First(&dbOrganization, "name = ?", requestOrganization.Name); result.Error != nil {
-		return result.Error
-	} else {
-		if result := DB.Model(&dbOrganization).Updates(requestOrganization); result.Error != nil {
-			return result.Error
-		} else {
-			return nil
-		}
-	}
+func UpdateOrganizationById(requestOrganization *model.Organization) error {
+	result := DB.Model(&model.Organization{ID: requestOrganization.ID}).Updates(requestOrganization)
+	return result.Error
 }

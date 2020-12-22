@@ -2,53 +2,31 @@ package database
 
 import (
 	"git.zjuqsc.com/rop/rop-back-neo/database/model"
-	"git.zjuqsc.com/rop/rop-back-neo/database/utils"
 )
 
 func CreateUser(requestUser *model.User) error {
-	return utils.Create(DB, requestUser)
+	result := DB.Create(requestUser)
+	return result.Error
 }
 
 func QueryUserById(id uint) (*model.User, error) {
 	var dbUser model.User
-	if result := DB.First(&dbUser, "id = ?", id); result.Error != nil {
-		return nil, result.Error
-	} else {
-		return &dbUser, nil
-	}
+	result := DB.First(&dbUser, "id = ?", id)
+	return &dbUser, result.Error
 }
 
 func UpdateUserById(requestUser *model.User) error {
-	var dbUser model.User
-	if result := DB.First(&dbUser, "name = ?", requestUser.Name); result.Error != nil {
-		return result.Error
-	} else {
-		if result := DB.Model(&dbUser).Updates(requestUser); result.Error != nil {
-			return result.Error
-		} else {
-			return nil
-		}
-	}
+	result := DB.Model(&model.User{ID: requestUser.ID}).Updates(requestUser)
+	return result.Error
 }
 
 func QueryUserByZJUid(zjuId uint) (*model.User, error) {
 	var dbUser model.User
-	if result := DB.First(&dbUser, "zju_id = ?", zjuId); result.Error != nil {
-		return nil, result.Error
-	} else {
-		return &dbUser, nil
-	}
+	result := DB.First(&dbUser, "zju_id = ?", zjuId)
+	return &dbUser, result.Error
 }
 
 func UpdateUserByZJUid(requestUser *model.User) error {
-	var dbUser model.User
-	if result := DB.First(&dbUser, "zju_id = ?", requestUser.ZJUid); result.Error != nil {
-		return result.Error
-	} else {
-		if result := DB.Model(&dbUser).Updates(requestUser); result.Error != nil {
-			return result.Error
-		} else {
-			return nil
-		}
-	}
+	result := DB.Model(&model.User{ZJUid: requestUser.ZJUid}).Updates(requestUser)
+	return result.Error
 }

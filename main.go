@@ -8,4 +8,8 @@ import (
 func main() {
 	database.Connect(utils.ParseLoginInfo(utils.GetLoginInfo("conf/login.json")))
 	database.Init()
+	err := database.UpdateJoinedInterview(1, 1)
+	if err != nil {
+		panic(err)
+	}
 }
