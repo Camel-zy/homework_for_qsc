@@ -11,12 +11,13 @@
 [![Technical Debt](https://sonarqube.zjuqsc.com/api/project_badges/measure?project=rop-back-neo&metric=sqale_index)](https://sonarqube.zjuqsc.com/dashboard?id=rop-back-neo)
 [![Vulnerabilities](https://sonarqube.zjuqsc.com/api/project_badges/measure?project=rop-back-neo&metric=vulnerabilities)](https://sonarqube.zjuqsc.com/dashboard?id=rop-back-neo)
 
-| Web Framework | ORM | Database |
-| :---------: | :---: | :------: |
-| ? | GORM 2.0 | PostgreSQL |
+
+## Used packages
+| Web Framework | ORM | Database | Config |
+| :---------: | :---: | :------: | :-----: |
+| echo | GORM 2.0 | PostgreSQL | ? |
 
 ## Before you start
-
 Please create `conf/login.json` from the root of your project directory.  
 The configurations related to *database connection* are stored in this file, with the format shown below:  
 ```json
@@ -33,4 +34,5 @@ The value of these variables depends on the configuration of your PostgreSQL dat
 This is only a short-term solution. Configuration solutions like `Viper` are considered to be used in the future.  
 
 ## Directories
-`database` stores CRUD functions and models of the tables.
+`database` stores CRUD functions and models of the tables.  
+`web` stores functions that handle requests and perform responses.  

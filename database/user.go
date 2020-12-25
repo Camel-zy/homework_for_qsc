@@ -9,7 +9,7 @@ func CreateUser(requestUser *model.User) error {
 	return result.Error
 }
 
-func QueryUserById(id uint) (*model.User, error) {
+func QueryUserById(id string) (*model.User, error) {
 	var dbUser model.User
 	result := DB.First(&dbUser, "id = ?", id)
 	return &dbUser, result.Error

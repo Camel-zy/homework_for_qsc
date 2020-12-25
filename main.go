@@ -3,13 +3,12 @@ package main
 import (
 	"git.zjuqsc.com/rop/rop-back-neo/database"
 	"git.zjuqsc.com/rop/rop-back-neo/database/utils"
+	"git.zjuqsc.com/rop/rop-back-neo/web"
 )
 
 func main() {
 	database.Connect(utils.ParseLoginInfo(utils.GetLoginInfo("conf/login.json")))
 	database.Init()
-	err := database.UpdateJoinedInterview(1, 1)
-	if err != nil {
-		panic(err)
-	}
+	web.InitWebFramework()
+	web.StartServer()
 }
