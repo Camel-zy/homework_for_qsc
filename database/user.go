@@ -30,3 +30,10 @@ func UpdateUserByZJUid(requestUser *model.User) error {
 	result := DB.Model(&model.User{ZJUid: requestUser.ZJUid}).Updates(requestUser)
 	return result.Error
 }
+
+// SELECT * FROM users;
+func QueryAllUser() (*[]model.User, error) {
+    var dbUser []model.User
+	result := DB.Find(&dbUser)
+	return &dbUser, result.Error
+}

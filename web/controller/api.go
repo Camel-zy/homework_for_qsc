@@ -22,3 +22,8 @@ func GetUser(c echo.Context) error {
 		return c.JSON(http.StatusOK, &user)
 	}
 }
+
+func GetAllUser (c echo.Context) error {
+	users, _ := database.QueryAllUser()
+	return c.JSON(http.StatusOK, &users)
+}

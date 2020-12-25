@@ -9,5 +9,6 @@ import (
 func addRoutes(e *echo.Echo) {
 	e.Use(middleware.Auth)
 	api := e.Group("/api")
-	api.GET("/user/", controller.GetUser)
+	api.POST("/user/", controller.GetUser)
+	api.GET("/user/all", controller.GetAllUser)
 }
