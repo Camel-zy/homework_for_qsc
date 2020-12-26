@@ -1,17 +1,21 @@
 package utils
 
-import "strconv"
+import (
+	"errors"
+	"strconv"
+)
 
 type Error struct {
 	Code         int     `json:"code"`
 	Description  string  `json:"description"`
 }
 
-func IsUnsignedInteger(input string) bool {
+func IsUnsignedInteger(input string) (uint, error) {
 	if convertedInt, err := strconv.Atoi(input); err != nil {
-		return false
+		return 0, errors.New("not an integer")
 	} else if convertedInt < 0 {
-		return false
+		return 1, errors.New("not an unsigned integer")
+	} else {
+		return uint(convertedInt), nil
 	}
-	return true
 }

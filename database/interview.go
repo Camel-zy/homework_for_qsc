@@ -11,7 +11,7 @@ func CreateInterview(requestInterview *model.Interview) error {
 
 func QueryInterviewById(id uint) (*model.Interview, error) {
 	var dbInterview model.Interview
-	result := DB.First(&dbInterview, "id = ?", id)
+	result := DB.First(&dbInterview, id)
 	return &dbInterview, result.Error
 }
 

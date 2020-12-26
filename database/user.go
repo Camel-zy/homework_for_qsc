@@ -9,9 +9,9 @@ func CreateUser(requestUser *model.User) error {
 	return result.Error
 }
 
-func QueryUserById(id string) (*model.User, error) {
+func QueryUserById(id uint) (*model.User, error) {
 	var dbUser model.User
-	result := DB.First(&dbUser, "id = ?", id)
+	result := DB.First(&dbUser, id)
 	return &dbUser, result.Error
 }
 

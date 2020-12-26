@@ -11,7 +11,7 @@ func CreateEvent(requestEvent *model.Event) error {
 
 func QueryEventById(id uint) (*model.Event, error) {
 	var dbEvent model.Event
-	result := DB.First(&dbEvent, "id = ?", id)
+	result := DB.First(&dbEvent, id)
 	return &dbEvent, result.Error
 }
 

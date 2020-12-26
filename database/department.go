@@ -9,9 +9,9 @@ func CreateDepartment(requestDepartment *model.Department) error {
 	return result.Error
 }
 
-func QueryDepartmentById(id string) (*model.Department, error) {
+func QueryDepartmentById(id uint) (*model.Department, error) {
 	var dbDepartment model.Department
-	result := DB.First(&dbDepartment, "id = ?", id)
+	result := DB.First(&dbDepartment, id)
 	return &dbDepartment, result.Error
 }
 
@@ -24,5 +24,24 @@ func UpdateDepartmentById(requestDepartment *model.Department) error {
 func QueryAllDepartment() (*[]model.Department, error) {
 	var dbDepartment []model.Department
 	result := DB.Find(&dbDepartment)
+	return &dbDepartment, result.Error
+}
+
+func QueryDepartmentByIdUnderOrganization(oid uint, did uint) (*model.Department, error) {
+	var dbDepartment model.Department
+	result := DB.Where(&model.Department{ID: did, OrganizationID: oid}).First(&dbDepartment)
+	return &dbDepartment, result.Error
+}
+
+func QueryAllDepartmentUnderOrganization(oid uint) (*[]model.Department, error) {
+	var dbDepartment []model.Department
+
+	/* we need to tell the user whether the organization can be found */
+	if findOrganizationError := DB.First(&model.Organization{}, oid).Error; findOrganizationError != nil {
+		return nil, findOrganizationError
+	}
+
+	/* then, the organization exists */
+	result := DB.Where(&model.Department{OrganizationID: oid}).Find(&dbDepartment)
 	return &dbDepartment, result.Error
 }

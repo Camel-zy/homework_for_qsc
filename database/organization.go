@@ -9,9 +9,9 @@ func CreateOrganization(requestOrganization *model.Organization) error {
 	return result.Error
 }
 
-func QueryOrganizationById(id string) (*model.Organization, error) {
+func QueryOrganizationById(id uint) (*model.Organization, error) {
 	var dbOrganization model.Organization
-	result := DB.First(&dbOrganization, "id = ?", id)
+	result := DB.First(&dbOrganization, id)
 	return &dbOrganization, result.Error
 }
 

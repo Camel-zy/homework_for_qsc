@@ -12,11 +12,9 @@ import (
 // TODO: handle Internal Server Errors
 // TODO: set proper custom error code
 func GetUser(c echo.Context) error {
-	uid := c.QueryParam("uid")
-	if !utils.IsUnsignedInteger(uid) {
+	if uid, err := utils.IsUnsignedInteger(c.QueryParam("uid")); err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{Code: 2, Description: "uid needs to be an unsigned integer"})
-	}
-	if user, err := database.QueryUserById(uid); errors.Is(err, gorm.ErrRecordNotFound) {
+	} else if user, err := database.QueryUserById(uid); errors.Is(err, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, &utils.Error{Code: 3, Description: err.Error()})
 	} else {
 		return c.JSON(http.StatusOK, &user)
@@ -29,11 +27,9 @@ func GetAllUser(c echo.Context) error {
 }
 
 func GetOrganization(c echo.Context) error {
-	oid := c.QueryParam("oid")
-	if !utils.IsUnsignedInteger(oid) {
+	if oid, err := utils.IsUnsignedInteger(c.QueryParam("oid")); err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{Code: 2, Description: "oid needs to be an unsigned integer"})
-	}
-	if organization, err := database.QueryOrganizationById(oid); errors.Is(err, gorm.ErrRecordNotFound) {
+	} else if organization, err := database.QueryOrganizationById(oid); errors.Is(err, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, &utils.Error{Code: 3, Description: err.Error()})
 	} else {
 		return c.JSON(http.StatusOK, &organization)
@@ -45,19 +41,25 @@ func GetAllOrganization(c echo.Context) error {
 	return c.JSON(http.StatusOK, &organizations)
 }
 
-func GetDepartment(c echo.Context) error {
-	did := c.QueryParam("did")
-	if !utils.IsUnsignedInteger(did) {
-		return c.JSON(http.StatusBadRequest, &utils.Error{Code: 2, Description: "did need to be an unsigned integer"})
+func GetDepartmentUnderOrganization(c echo.Context) error {
+	oid, errOid := utils.IsUnsignedInteger(c.QueryParam("oid"))
+	did, errDid := utils.IsUnsignedInteger(c.QueryParam("did"))
+	if errOid != nil || errDid != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{Code: 2, Description: "oid and did need to be an unsigned integer"})
 	}
-	if organization, err := database.QueryDepartmentById(did); errors.Is(err, gorm.ErrRecordNotFound) {
+	if department, err := database.QueryDepartmentByIdUnderOrganization(oid, did); errors.Is(err, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, &utils.Error{Code: 3, Description: err.Error()})
 	} else {
-		return c.JSON(http.StatusOK, &organization)
+		return c.JSON(http.StatusOK, &department)
 	}
 }
 
-func GetAllDepartment(c echo.Context) error {
-	department, _ := database.QueryAllDepartment()
-	return c.JSON(http.StatusOK, &department)
+func GetAllDepartmentUnderOrganization(c echo.Context) error {
+	if oid, err := utils.IsUnsignedInteger(c.QueryParam("oid")); err != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{Code: 2, Description: "oid needs to be an unsigned integer"})
+	} else if departments, err := database.QueryAllDepartmentUnderOrganization(oid); errors.Is(err, gorm.ErrRecordNotFound){
+		return c.JSON(http.StatusNotFound, &utils.Error{Code: 3, Description: "organization " + err.Error()})
+	} else {
+		return c.JSON(http.StatusOK, &departments)
+	}
 }

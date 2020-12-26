@@ -11,7 +11,7 @@ func CreateMessage(requestMessage *model.Message)  error {
 
 func QueryMessageById (id uint) (*model.Message,error){
     var dbMessage model.Message
-    result := DB.First(&dbMessage, "id = ?",id)
+    result := DB.First(&dbMessage, id)
     return &dbMessage, result.Error
 }
 
