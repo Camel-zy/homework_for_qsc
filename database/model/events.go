@@ -21,6 +21,7 @@ type Interview struct {
 	Description     string     `gorm:"size:200"`
 	EventID         uint       `gorm:"not null"`
 	Event           Event      // FOREIGN KEY (EventID) REFERENCES Event(EventID)
+	DepartmentID    uint       `gorm:"not null"`
 	OtherInfo       string     `gorm:"size:200"`
 	Location        string     `gorm:"size:200"`
 	MaxInterviewee  uint       `gorm:"default:6"`
@@ -35,4 +36,11 @@ type JoinedInterview struct {
 	InterviewID  uint       `gorm:"not null"`
 	Result       uint       `gorm:"default:0"`
 	UpdatedTime  time.Time  `gorm:"not null"`
+}
+
+type CrossInterview struct {
+	ID              uint       `gorm:"not null;autoIncrement;primaryKey"`
+	OrganizationID  uint       `gorm:"not null"`
+	InterviewID     uint       `gorm:"not null"`
+	UpdatedTime     time.Time  `gorm:"not null"`
 }
