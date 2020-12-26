@@ -23,7 +23,42 @@ func GetUser(c echo.Context) error {
 	}
 }
 
-func GetAllUser (c echo.Context) error {
+func GetAllUser(c echo.Context) error {
 	users, _ := database.QueryAllUser()
 	return c.JSON(http.StatusOK, &users)
+}
+
+func GetOrganization(c echo.Context) error {
+	oid := c.QueryParam("oid")
+	if !utils.IsUnsignedInteger(oid) {
+		return c.JSON(http.StatusBadRequest, &utils.Error{Code: 2, Description: "oid needs to be an uint"})
+	}
+	if organization, err := database.QueryOrganizationById(oid); errors.Is(err, gorm.ErrRecordNotFound) {
+		return c.JSON(http.StatusNotFound, &utils.Error{Code: 3, Description: err.Error()})
+	} else {
+		return c.JSON(http.StatusOK, &organization)
+	}
+}
+
+func GetAllOrganization(c echo.Context) error {
+	organizations, _ := database.QueryAllOrganization()
+	return c.JSON(http.StatusOK, &organizations)
+}
+
+func GetAllDepartment(c echo.Context) error {
+	department, _ := database.QueryAllDepartment()
+	return c.JSON(http.StatusOK, &department)
+}
+
+func GetDepartment(c echo.Context) error {
+	oid := c.QueryParam("oid")
+	did := c.QueryParam("did")
+	if !utils.IsUnsignedInteger(oid) || !utils.IsUnsignedInteger(did) {
+		return c.JSON(http.StatusBadRequest, &utils.Error{Code: 2, Description: "oid and did need to be an uint"})
+	}
+	if organization, err := database.QueryDepartmentById(oid, did); errors.Is(err, gorm.ErrRecordNotFound) {
+		return c.JSON(http.StatusNotFound, &utils.Error{Code: 3, Description: err.Error()})
+	} else {
+		return c.JSON(http.StatusOK, &organization)
+	}
 }

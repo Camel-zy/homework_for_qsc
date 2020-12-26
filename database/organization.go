@@ -9,7 +9,7 @@ func CreateOrganization(requestOrganization *model.Organization) error {
 	return result.Error
 }
 
-func QueryOrganizationById(id uint) (*model.Organization, error) {
+func QueryOrganizationById(id string) (*model.Organization, error) {
 	var dbOrganization model.Organization
 	result := DB.First(&dbOrganization, "id = ?", id)
 	return &dbOrganization, result.Error
@@ -18,4 +18,11 @@ func QueryOrganizationById(id uint) (*model.Organization, error) {
 func UpdateOrganizationById(requestOrganization *model.Organization) error {
 	result := DB.Model(&model.Organization{ID: requestOrganization.ID}).Updates(requestOrganization)
 	return result.Error
+}
+
+// SELECT * FROM organizations;
+func QueryAllOrganization() (*[]model.Organization, error) {
+	var dbOrganization []model.Organization
+	result := DB.Find(&dbOrganization)
+	return &dbOrganization, result.Error
 }
