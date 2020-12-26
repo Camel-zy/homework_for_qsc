@@ -9,9 +9,9 @@ func CreateDepartment(requestDepartment *model.Department) error {
 	return result.Error
 }
 
-func QueryDepartmentById(oid string, did string) (*model.Department, error) {
+func QueryDepartmentById(id string) (*model.Department, error) {
 	var dbDepartment model.Department
-	result := DB.First(&dbDepartment, "id = ?", did)
+	result := DB.First(&dbDepartment, "id = ?", id)
 	return &dbDepartment, result.Error
 }
 

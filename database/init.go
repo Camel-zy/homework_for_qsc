@@ -31,7 +31,8 @@ func Init() {
 		&model.JoinedDepartment{},
 		&model.Event{},
 		&model.Interview{},
-		&model.JoinedInterview{})
+		&model.JoinedInterview{},
+		&model.Message{})
 	if err != nil {
 		panic(err)
 	}

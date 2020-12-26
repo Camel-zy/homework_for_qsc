@@ -14,7 +14,7 @@ import (
 func GetUser(c echo.Context) error {
 	uid := c.QueryParam("uid")
 	if !utils.IsUnsignedInteger(uid) {
-		return c.JSON(http.StatusBadRequest, &utils.Error{Code: 2, Description: "uid needs to be an uint"})
+		return c.JSON(http.StatusBadRequest, &utils.Error{Code: 2, Description: "uid needs to be an unsigned integer"})
 	}
 	if user, err := database.QueryUserById(uid); errors.Is(err, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, &utils.Error{Code: 3, Description: err.Error()})
@@ -31,7 +31,7 @@ func GetAllUser(c echo.Context) error {
 func GetOrganization(c echo.Context) error {
 	oid := c.QueryParam("oid")
 	if !utils.IsUnsignedInteger(oid) {
-		return c.JSON(http.StatusBadRequest, &utils.Error{Code: 2, Description: "oid needs to be an uint"})
+		return c.JSON(http.StatusBadRequest, &utils.Error{Code: 2, Description: "oid needs to be an unsigned integer"})
 	}
 	if organization, err := database.QueryOrganizationById(oid); errors.Is(err, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, &utils.Error{Code: 3, Description: err.Error()})
@@ -45,20 +45,19 @@ func GetAllOrganization(c echo.Context) error {
 	return c.JSON(http.StatusOK, &organizations)
 }
 
-func GetAllDepartment(c echo.Context) error {
-	department, _ := database.QueryAllDepartment()
-	return c.JSON(http.StatusOK, &department)
-}
-
 func GetDepartment(c echo.Context) error {
-	oid := c.QueryParam("oid")
 	did := c.QueryParam("did")
-	if !utils.IsUnsignedInteger(oid) || !utils.IsUnsignedInteger(did) {
-		return c.JSON(http.StatusBadRequest, &utils.Error{Code: 2, Description: "oid and did need to be an uint"})
+	if !utils.IsUnsignedInteger(did) {
+		return c.JSON(http.StatusBadRequest, &utils.Error{Code: 2, Description: "did need to be an unsigned integer"})
 	}
-	if organization, err := database.QueryDepartmentById(oid, did); errors.Is(err, gorm.ErrRecordNotFound) {
+	if organization, err := database.QueryDepartmentById(did); errors.Is(err, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, &utils.Error{Code: 3, Description: err.Error()})
 	} else {
 		return c.JSON(http.StatusOK, &organization)
 	}
+}
+
+func GetAllDepartment(c echo.Context) error {
+	department, _ := database.QueryAllDepartment()
+	return c.JSON(http.StatusOK, &department)
 }
