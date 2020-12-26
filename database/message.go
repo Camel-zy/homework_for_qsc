@@ -4,8 +4,8 @@ import (
 	"git.zjuqsc.com/rop/rop-back-neo/database/model"
 )
 
-func CreateMessage(requestmesaage *model.message)  error {
-    result := DB.Create(requestmesaage)
+func CreateMessage(requestmessage *model.Message)  error {
+    result := DB.Create(requestmessage)
     return result.Error
 }
 
