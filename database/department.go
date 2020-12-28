@@ -2,6 +2,7 @@ package database
 
 import (
 	"git.zjuqsc.com/rop/rop-back-neo/database/model"
+	"gorm.io/gorm/clause"
 )
 
 func CreateDepartment(requestDepartment *model.Department) error {
@@ -29,7 +30,7 @@ func QueryAllDepartment() (*[]model.Department, error) {
 
 func QueryDepartmentByIdUnderOrganization(oid uint, did uint) (*model.Department, error) {
 	var dbDepartment model.Department
-	result := DB.Where(&model.Department{ID: did, OrganizationID: oid}).First(&dbDepartment)
+	result := DB.Preload(clause.Associations).Where(&model.Department{ID: did, OrganizationID: oid}).First(&dbDepartment)
 	return &dbDepartment, result.Error
 }
 
@@ -42,6 +43,6 @@ func QueryAllDepartmentUnderOrganization(oid uint) (*[]model.Department, error) 
 	}
 
 	/* then, the organization exists */
-	result := DB.Where(&model.Department{OrganizationID: oid}).Find(&dbDepartment)
+	result := DB.Preload(clause.Associations).Where(&model.Department{OrganizationID: oid}).Find(&dbDepartment)
 	return &dbDepartment, result.Error
 }
