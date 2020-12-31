@@ -1,7 +1,8 @@
 init-git.sh
 dev.sh
 
-conf/login.json
+# ROP config files #
+conf/*.json
 
 # Jetbrains IDE cofig files #
 .idea
