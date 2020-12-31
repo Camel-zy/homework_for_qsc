@@ -1,6 +1,6 @@
 FROM golang:1.15
 
-ENV GOPROXY=https://goproxy.io,direct \
+ENV GOPROXY=https://mirrors.aliyun.com/goproxy/,direct \
     GO111MODULE=on \
     WORKDIR=/tmp/workdir/
 
