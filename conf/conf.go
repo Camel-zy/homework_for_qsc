@@ -5,8 +5,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-/*
- */
 func InitConf() {
 	viper.SetConfigName("conf")  // set the config file name. Viper will automatically detect the file extension name
 	viper.AddConfigPath("./conf")     // search the config file under the current directory

@@ -71,38 +71,3 @@ The value of key `is_secure_mode` in the configuration file is expected to be se
 
 Before trying to send a request to this service, you need to set at least one cookie `qp2gl_sesstok` to the request header. You can also add another cookie `qp2gl_sesstok_secure` at the same time if you want, for the program can handle this situation properly.  
 For more information of these to cookies, you are *strongly* suggested reading the documentation of *Passport API v2*
-
-
-
-# Errors
-
-### API
-| Code | Description |
-| :---: | :-------- |
-| SUCCESS | No error occurred |
-| BAD_REQUEST | The format of request contains error |
-| USR_NOT_FOUND | Requested user not found |
-| ORG_NOT_FOUND | Requested organization not found |
-| DEP_NOT_FOUND | Requested department not found |
-
-### Authentication
-| Code | Description |
-| :---: | :-------- |
-| COOKIE_NOT_FOUND | You are required to provide a QSC passport cookie. |
-| AUTH_SERVICE_ERROR | Authentication services of QSC Passport is unreachable due to some reason. If this keeps happening, please consult backend developers. |
-| AUTH_FAILED | The authentication failed according to the response of QSC passport authentication service. |
-
-
-
-# API in brief
-
-### `/api`
-| URL | Method | Required Parameter | Response | Type |
-| --- | :---: | ---- | -------------| :----: |
-| `/`                 | GET |     | The version of the current APIs | string |
-| `/user`             | GET | uid | A user's metadata | JSON |
-| `/user/all`         | GET |     | A list of all users' metadata | JSON |
-| `/organization`     | GET | oid | A organization's metadata | JSON |
-| `/organization/all` | GET |     | A list of all organizations' metadata | JSON |
-| `/organization/department`       | GET | oid did | A department's metadata under a specific organization | JSON |
-| `/organization/department/all`   | GET | oid | A list of all departments' metadata under a specific organization | JSON |
