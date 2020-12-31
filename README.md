@@ -13,40 +13,47 @@
 
 
 ## Used packages
-| Web Framework | ORM | Database | Config |
-| :---------: | :---: | :------: | :-----: |
-| echo | GORM 2.0 | PostgreSQL | Viper |
+| Web Framework | ORM | Database | Config | Auth |
+| :---------: | :---: | :------: | :-----: | :-----------: |
+| echo | GORM 2.0 | PostgreSQL | Viper | jwt-go |
 
 ## Directories
 `database` stores CRUD functions and models of the tables.  
 `web` stores functions that handle requests and perform responses, and also includes custom middlewares.  
 `conf` stores functions related to the configuration file, and it is also the default directory of configuration file.
 
-## Before you start
-Please create `conf/login.json` from the root of your project directory.  
-The configurations related to *database connection* are stored in this file, with the format shown below:  
-```json
-{
-  "login": {
-    "user":   "rop",
-    "password": "rop_pass",
-    "host":   "localhost",
-    "port":   "5432",
-    "db_name": "rop"
-  },
-  "passport": {
-    "is_secure_mode": false,
-    "app_id": "rop",
-    "app_secret": "???????????",
-    "api_name": "https://api.zjuqsc.com/passport/get_member_by_token?"
-  }
-}
+## Configuration
+Please create a configuration under file `./conf` directory before running.  
+The configuration file can be in JSON, YAML, TOML or INI format. This means the file name might be `conf.json`, `conf.yaml`, `conf.toml` or `conf.ini`. Just pick a format you like best.  
+**Please make sure the extension of configuration file is correct!**   
+Here is a sample of a YAML format configuration file:  
+
+```yaml
+# conf/conf.yaml
+login:
+  user: rop
+  password: rop_pass
+  host: localhost
+  port: 5432
+  db_name: rop
+passport:
+  is_secure_mode: false
+  app_id: rop
+  app_secret: ?????????????
+  api_name: https://api.zjuqsc.com/passport/get_member_by_token?
+jwt:
+  secret_key: ?????????????
 ```
-When you want to deploy this service, please change `is_secure_mode` to `true`. For more information about this, you are required to read the documentation of *Passport API v2*.  
-To get the `app_secret`, consult the admin. 
+
+When you deploy this service, please change `is_secure_mode` to `true`. For more information about this, you are required to read the documentation of *Passport API v2*.  
+To get the `app_secret`, consult the admin.   
+The `secrut_key` of JWT can be created by your own. It can be literally anything, just make sure it is hard for others to guess.  
 
 The value of these variables depends on the configuration of your PostgreSQL database. **Please don't just simply copy and paste it without thinking about any possible modification.**  
 This is only a short-term solution. Configuration solutions like `Viper` are considered to be used in the future.
+
+# Authenticate by JWT
+This feature is still under development, and might be removed permanently in the future.  
 
 # Testing
 The value of key `is_secure_mode` in the configuration file is expected to be set `false` during the testing period.  

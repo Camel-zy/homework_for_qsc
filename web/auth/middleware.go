@@ -1,4 +1,4 @@
-package middleware
+package auth
 
 import (
 	"encoding/json"
@@ -10,22 +10,20 @@ import (
 )
 
 type auth struct {
-	Err int `json:"err"`
+	Err  int   `json:"err"`
+	Uid  uint  `json:"uid"`
 }
 
 // TODO: add error message and error code
 // TODO: do not request for authentication every time
-func Auth(next echo.HandlerFunc) echo.HandlerFunc {
+func Middleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		isSecureMode := viper.GetBool("passport.is_secure_mode")
 		appID := viper.GetString("passport.app_id")
 		appSecret := viper.GetString("passport.app_secret")
 		apiName := viper.GetString("passport.api_name")
 
-		/* generate url parameter string */
-		params := url.Values{}
-		params.Add("appid", appID)
-		params.Add("appsecret", appSecret)
+		/* get cookies */
 		var cookieName , tokenUrlParamName string
 		if isSecureMode {
 			cookieName = "qp2gl_sesstok_secure"
@@ -38,6 +36,11 @@ func Auth(next echo.HandlerFunc) echo.HandlerFunc {
 		if getCookieErr != nil {
 			return c.JSON(http.StatusUnauthorized, nil)
 		}
+
+		/* generate url parameter string */
+		params := url.Values{}
+		params.Add("appid", appID)
+		params.Add("appsecret", appSecret)
 		params.Add(tokenUrlParamName, cookie.Value)
 
 		/* create a request */

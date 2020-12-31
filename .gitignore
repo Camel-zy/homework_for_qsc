@@ -3,6 +3,9 @@ dev.sh
 
 # ROP config files #
 conf/*.json
+conf/*.yaml
+conf/*.toml
+conf/*.ini
 
 # Jetbrains IDE cofig files #
 .idea
