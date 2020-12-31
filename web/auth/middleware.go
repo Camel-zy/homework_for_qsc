@@ -2,6 +2,7 @@ package auth
 
 import (
 	"encoding/json"
+	"git.zjuqsc.com/rop/rop-back-neo/utils"
 	"github.com/labstack/echo/v4"
 	"github.com/spf13/viper"
 	"io/ioutil"
@@ -14,7 +15,6 @@ type auth struct {
 	Uid  uint  `json:"uid"`
 }
 
-// TODO: add error message and error code
 // TODO: do not request for authentication every time
 func Middleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
@@ -34,7 +34,7 @@ func Middleware(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 		cookie, getCookieErr := c.Cookie(cookieName)
 		if getCookieErr != nil {
-			return c.JSON(http.StatusUnauthorized, nil)
+			return c.JSON(http.StatusUnauthorized, &utils.Error{Code: "COOKIE_NOT_FOUND", Data: "qsc passport cookie is required"})
 		}
 
 		/* generate url parameter string */
@@ -50,7 +50,7 @@ func Middleware(next echo.HandlerFunc) echo.HandlerFunc {
 		client := &http.Client{}
 		resp, getErr := client.Do(req)
 		if getErr != nil{
-			panic(getErr)
+			return c.JSON(http.StatusServiceUnavailable, &utils.Error{Code: "AUTH_SERVICE_ERROR", Data: "error occurs when sending request to auth service"})
 		}
 		defer resp.Body.Close()
 
@@ -69,7 +69,7 @@ func Middleware(next echo.HandlerFunc) echo.HandlerFunc {
 
 		/* the request can be authorized IF AND ONLY IF error code is 0 */
 		if authResult.Err != 0 {
-			return c.JSON(http.StatusUnauthorized, nil)
+			return c.JSON(http.StatusUnauthorized, &utils.Error{Code: "AUTH_FAILED", Data: "auth failed according to the response of QSC Passport auth service"})
 		}
 
 		return next(c)

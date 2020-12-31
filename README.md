@@ -12,15 +12,22 @@
 [![Vulnerabilities](https://sonarqube.zjuqsc.com/api/project_badges/measure?project=rop-back-neo&metric=vulnerabilities)](https://sonarqube.zjuqsc.com/dashboard?id=rop-back-neo)
 
 
-## Used packages
+
+## Overview
 | Web Framework | ORM | Database | Config | Auth |
 | :---------: | :---: | :------: | :-----: | :-----------: |
 | echo | GORM 2.0 | PostgreSQL | Viper | jwt-go |
+
+port: `:1323`
+
+
 
 ## Directories
 `database` stores CRUD functions and models of the tables.  
 `web` stores functions that handle requests and perform responses, and also includes custom middlewares.  
 `conf` stores functions related to the configuration file, and it is also the default directory of configuration file.
+
+
 
 ## Configuration
 Please create a configuration under file `./conf` directory before running.  
@@ -52,11 +59,50 @@ The `secrut_key` of JWT can be created by your own. It can be literally anything
 The value of these variables depends on the configuration of your PostgreSQL database. **Please don't just simply copy and paste it without thinking about any possible modification.**  
 This is only a short-term solution. Configuration solutions like `Viper` are considered to be used in the future.
 
+
+
 # Authenticate by JWT
 This feature is still under development, and might be removed permanently in the future.  
+
+
 
 # Testing
 The value of key `is_secure_mode` in the configuration file is expected to be set `false` during the testing period.  
 
 Before trying to send a request to this service, you need to set at least one cookie `qp2gl_sesstok` to the request header. You can also add another cookie `qp2gl_sesstok_secure` at the same time if you want, for the program can handle this situation properly.  
 For more information of these to cookies, you are *strongly* suggested reading the documentation of *Passport API v2*
+
+
+
+# Errors
+
+### API
+| Code | Description |
+| :---: | :-------- |
+| SUCCESS | No error occurred |
+| BAD_REQUEST | The format of request contains error |
+| USR_NOT_FOUND | Requested user not found |
+| ORG_NOT_FOUND | Requested organization not found |
+| DEP_NOT_FOUND | Requested department not found |
+
+### Authentication
+| Code | Description |
+| :---: | :-------- |
+| COOKIE_NOT_FOUND | You are required to provide a QSC passport cookie. |
+| AUTH_SERVICE_ERROR | Authentication services of QSC Passport is unreachable due to some reason. If this keeps happening, please consult backend developers. |
+| AUTH_FAILED | The authentication failed according to the response of QSC passport authentication service. |
+
+
+
+# API in brief
+
+### `/api`
+| URL | Method | Required Parameter | Response | Type |
+| --- | :---: | ---- | -------------| :----: |
+| `/`                 | GET |     | The version of the current APIs | string |
+| `/user`             | GET | uid | A user's metadata | JSON |
+| `/user/all`         | GET |     | A list of all users' metadata | JSON |
+| `/organization`     | GET | oid | A organization's metadata | JSON |
+| `/organization/all` | GET |     | A list of all organizations' metadata | JSON |
+| `/organization/department`       | GET | oid did | A department's metadata under a specific organization | JSON |
+| `/organization/department/all`   | GET | oid | A list of all departments' metadata under a specific organization | JSON |

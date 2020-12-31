@@ -13,5 +13,5 @@ func InitWebFramework() {
 }
 
 func StartServer() {
-	e.Logger.Fatal(e.Start(":8080"))
+	e.Logger.Fatal(e.Start(":1323"))
 }

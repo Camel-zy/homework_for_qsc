@@ -6,8 +6,8 @@ import (
 )
 
 type Error struct {
-	Code         int     `json:"code"`
-	Description  string  `json:"description"`
+	Code  string       `json:"code"`
+	Data  interface{}  `json:"data"`
 }
 
 func IsUnsignedInteger(input string) (uint, error) {
