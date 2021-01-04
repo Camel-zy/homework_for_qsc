@@ -46,6 +46,8 @@ func aesDecrypt(encryptedByteText, key []byte) (string, error) {
 	return string(origData), nil
 }
 
+// TODO: force AES-256, and call these functions in functions related to JWT generating and parsing
+// TODO: add documents for the implemented AES encryption
 func AesBase64Encrypt(plainText string, aesKey []byte) (base64String string, err error)  {
 	encryptedByteText, err := aesEncrypt([]byte(plainText), aesKey)
 	if err != nil {
