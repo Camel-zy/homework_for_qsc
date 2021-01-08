@@ -20,3 +20,16 @@ It's really weird to send an authentication request to the Passport API each tim
 To do this, we need to store the status of a user in some sort of way. Maybe we can cache it in the memory. Maybe we can store it in the database. Maybe we can make good use of the `payload` part of JWT. 
 Since the payload of JWT is not encrypted, maybe we need to encrypt it or use `JWE` instead. For encryption, we may simply use `XOR`, or maybe we can also use the `aes` package.  
 The final implementation is still under discussion. Currently, the generation and parsing functions of JWT has been implemented.  
+
+### Draft of encryption implementation
+
+| Sequence | Layer name | Implementation |
+| :--- | :--- | :------------ |
+| 1 | Padding | PKCS #5 |
+| 2 | Block cipher mode | CBC |
+| 2 | Encryption algorithm | AES-256 |
+| 3 | Binary-to-text encoding | Base64 |
+
+This seems complicated, although in fact it is quite easy to understand.  
+I'm afraid this will puzzle other maintainers...  
+Maybe `JWE` is better than this...  

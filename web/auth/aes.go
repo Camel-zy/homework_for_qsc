@@ -5,68 +5,80 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"encoding/base64"
-	"fmt"
+	"errors"
 )
 
-func pkcs5Padding(plaintext []byte, blockSize int) []byte{
-	padding := blockSize-len(plaintext)%blockSize
-	paddingText := bytes.Repeat([]byte{byte(padding)},padding)
-	return append(plaintext, paddingText...)
+func pkcs5Padding(plainText []byte, blockSize int) []byte{
+	padding := blockSize - len(plainText) % blockSize           // size of the free space in a block
+	paddingData := bytes.Repeat([]byte{byte(padding)}, padding) // we need to fill the up free space
+	return append(plainText, paddingData...)
 }
 
-func pkcs5Unpadding(origData []byte) []byte{
-	length := len(origData)
-	unpadding := int(origData[length-1])
-	return origData[:(length - unpadding)]
+func pkcs5TransPadding(dataWithPadding []byte) []byte{
+	dataLength := len(dataWithPadding)
+	paddingLength := int(dataWithPadding[dataLength- 1])
+	return dataWithPadding[:(dataLength - paddingLength)] // only return the text before padding text
 }
 
-func aesEncrypt(origData, key []byte) ([]byte, error){
+func aesEncrypt(plainText, key []byte) ([]byte, error){
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, err
 	}
 	blockSize := block.BlockSize()
-	origData = pkcs5Padding(origData,blockSize)
+	plainText = pkcs5Padding(plainText,blockSize)
 	blockMode := cipher.NewCBCEncrypter(block,key[:blockSize])
-	encryptedByteText := make([]byte, len(origData))
-	blockMode.CryptBlocks(encryptedByteText,origData)
-	return encryptedByteText, nil
+	encryptedByteData := make([]byte, len(plainText))
+	blockMode.CryptBlocks(encryptedByteData, plainText)
+	return encryptedByteData, nil
 }
 
-func aesDecrypt(encryptedByteText, key []byte) (string, error) {
+func aesDecrypt(encryptedByteText, key []byte) (plainText string, err error) {
 	block, err := aes.NewCipher(key)
 	if err != nil {
-		return "", err
+		return
 	}
 	blockSize := block.BlockSize()
 	blockMode := cipher.NewCBCDecrypter(block, key[:blockSize])
-	origData := make([]byte, len(encryptedByteText))
-	blockMode.CryptBlocks(origData, encryptedByteText)
-	origData = pkcs5Unpadding(origData)
-	return string(origData), nil
-}
-
-// TODO: force AES-256, and call these functions in functions related to JWT generating and parsing
-// TODO: add documents for the implemented AES encryption
-func AesBase64Encrypt(plainText string, aesKey []byte) (base64String string, err error)  {
-	encryptedByteText, err := aesEncrypt([]byte(plainText), aesKey)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	base64String = base64.StdEncoding.EncodeToString(encryptedByteText)
+	buffer := make([]byte, len(encryptedByteText))
+	blockMode.CryptBlocks(buffer, encryptedByteText)
+	plainText = string(pkcs5TransPadding(buffer))
 	return
 }
 
-func AesBase64Decrypt(base64String string, aesKey []byte) (plainText string, err error) {
-	encryptedByteText, err := base64.StdEncoding.DecodeString(base64String)
+/* Check the validity of a AES-256 key. */
+func checkAes256Key(aesKey []byte) error {
+	if len(aesKey) != 24 {
+		return errors.New("the length of a AES-256 key needs to be 24 bytes")
+	}
+	return nil
+}
+
+// TODO: call these functions in functions related to JWT generating and parsing
+func Aes256Base64Encrypt(plainText string, aesKey []byte) (base64String string, err error) {
+	err = checkAes256Key(aesKey)
 	if err != nil {
-		fmt.Println(err)
 		return
 	}
-	plainText, err = aesDecrypt(encryptedByteText, aesKey)
+	encryptedByteData, err := aesEncrypt([]byte(plainText), aesKey)
 	if err != nil {
-		fmt.Println(err)
+		return
+	}
+	base64String = base64.StdEncoding.EncodeToString(encryptedByteData)
+	return
+}
+
+func Aes256Base64Decrypt(base64String string, aesKey []byte) (plainText string, err error) {
+	err = checkAes256Key(aesKey)
+	if err != nil {
+		return
+	}
+	encryptedByteData, err := base64.StdEncoding.DecodeString(base64String)
+	if err != nil {
+		return
+	}
+	plainText, err = aesDecrypt(encryptedByteData, aesKey)
+	if err != nil {
 		return
 	}
 	return
