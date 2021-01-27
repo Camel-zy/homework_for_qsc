@@ -37,7 +37,7 @@ Here is a sample of a YAML format configuration file:
 
 ```yaml
 # conf/conf.yaml
-login:
+login:           # please set these values according to your DB config
   user: rop
   password: rop_pass
   host: localhost
@@ -49,6 +49,8 @@ passport:
   app_secret: ?????????????  # consult the admin for this
   api_name: https://api.zjuqsc.com/passport/get_member_by_token?
 jwt:
+  issuer: rop                # note: you can freely change this
+  max_age: 600               # seconds
   secret_key: ?????????????  # set this by yourself
 ```
 
@@ -61,9 +63,10 @@ This is only a short-term solution. Configuration solutions like `Viper` are con
 
 
 
-# Authenticate by JWT
-This feature is still under development, and might be removed permanently in the future.  
-
+# Authentication
+If the cookie `qsc_rop_jwt` doesn't exist, or if this cookie is invalid for some reason, then this program will send an authentication request to the QSC Passport services, with the value stored in `qp2gl_sesstok` or `qp2gl_sesstok_secure`. 
+According to this response, if the user is authorized, then a `qsc_rop_jwt` cookie will be set, and before this cookie expires, the user can quickly access this ROP Backend service.  
+For further information about authentication, the documentation under `web/auth` directory may help you.  
 
 
 # Testing

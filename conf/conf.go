@@ -18,12 +18,13 @@ func InitConf() {
 
 	loginKeys := []string{"user", "password", "host", "port", "db_name"}
 	passportKeys := []string{"is_secure_mode", "app_id", "app_secret", "api_name"}
+	jwtKeys := []string{"issuer", "max_age", "secret_key"}
 
 	/* check the existence of the required values */
-	getKeyErrExists := false
-	getKeyErrExists = checkConfIsSet("login", loginKeys) || getKeyErrExists
-	getKeyErrExists = checkConfIsSet("passport", passportKeys) || getKeyErrExists
-	if getKeyErrExists {
+	getKeyErr := checkConfIsSet("login", loginKeys) ||
+		         checkConfIsSet("passport", passportKeys) ||
+		         checkConfIsSet("jwt", jwtKeys)
+	if getKeyErr {
 		panic("Error occurs wile getting keys, please check your config file.")
 	}
 

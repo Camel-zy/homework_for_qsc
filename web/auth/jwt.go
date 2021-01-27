@@ -4,21 +4,22 @@ import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/spf13/viper"
+	"strconv"
 	"time"
 )
 
 // the functions in this file are currently unused.
 
-func GenerateJWT(uid string) (string, *time.Time) {
+func generateJWT(uid uint) (string, *time.Time) {
 	mySigningKey := []byte(viper.GetString("jwt.secret_key"))
 
-	maxAge := 60 * 10     // 10 minuets
+	maxAge := viper.GetInt("jwt.max_age")     // read from configuration file
 	expireTime := time.Now().Add(time.Duration(maxAge) * time.Second)
 
 	claims := &jwt.StandardClaims{
 		ExpiresAt: expireTime.Unix(),
-		Issuer:    "rop",
-		Subject:   uid,      // FIXME: Encrypt this!!!
+		Issuer:    viper.GetString("jwt.issuer"),
+		Subject:   strconv.Itoa(int(uid)),      // FIXME: Encrypt this!!!
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString(mySigningKey)
@@ -28,7 +29,7 @@ func GenerateJWT(uid string) (string, *time.Time) {
 	return tokenString, &expireTime
 }
 
-func ParseJWT(tokenString string) *jwt.Token {
+func parseJWT(tokenString string) (*jwt.Token, error) {
 	mySigningKey := []byte(viper.GetString("jwt.secret_key"))
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -37,7 +38,8 @@ func ParseJWT(tokenString string) *jwt.Token {
 		return mySigningKey, nil
 	})
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
-	return token
+
+	return token, nil
 }

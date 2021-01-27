@@ -13,11 +13,17 @@ https://api.zjuqsc.com/passport/get_member_by_token?appid=rop&appsecret=PleaseCo
 In testing environment, we usually use `qp2gl_sesstok`, since we do not have a valid certificate in this environment. However, in production environment, we will use HTTPS, so `qp2gl_sesstok_secure` will be used.  
 To solve this problem properly, a value in the configuration file is required to tell something about the current environment, that is, whether it is production environment or not. The name of this value is `is_secure_mode`, and you can see it in the example of configuration file.  
 
-**You can find all the procedures mentioned above in `./middleware.go`**
+The thing is, sending authentication requests frequently is pretty annoying. 
+In this case, this ROP Backend service has an "independent" way of authentication, and it is implemented by using JWT.  
+
+If the cookie `qsc_rop_jwt` doesn't exist, or if this cookie is invalid for some reason, then this program will send an authentication request to the QSC Passport services, with the value stored in `qp2gl_sesstok` or `qp2gl_sesstok_secure`. 
+According to this response, if the user is authorized, then a `qsc_rop_jwt` cookie will be set, and before this cookie expires, the user can quickly access the ROP Backend service.
+
+**You can find all the procedures mentioned above in the source code files under the current directory.**
+
+
 
 ### Improvements
-It's really weird to send an authentication request to the Passport API each time we receive a request from ROP frontend. The thing is, **we need to reduce the frequency of sending authentication requests**.  
-To do this, we need to store the status of a user in some sort of way. Maybe we can cache it in the memory. Maybe we can store it in the database. Maybe we can make good use of the `payload` part of JWT. 
 Since the payload of JWT is not encrypted, maybe we need to encrypt it or use `JWE` instead. For encryption, we may simply use `XOR`, or maybe we can also use the `aes` package.  
 The final implementation is still under discussion. Currently, the generation and parsing functions of JWT has been implemented.  
 
