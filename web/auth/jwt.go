@@ -8,8 +8,6 @@ import (
 	"time"
 )
 
-// the functions in this file are currently unused.
-
 func generateJWT(uid uint) (string, *time.Time) {
 	mySigningKey := []byte(viper.GetString("jwt.secret_key"))
 

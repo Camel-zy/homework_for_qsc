@@ -1,3 +1,12 @@
+/*
+The functions defined in this file are currently unused,
+and might not be used in the future.
+Why there needs a "padding"? What is "CBC"?
+We are not going to talk about these things here.
+Please search on the Internet if you have questions.
+The Wikipedia page "AES Encryption" may help you.
+ */
+
 package auth
 
 import (
@@ -8,6 +17,8 @@ import (
 	"errors"
 )
 
+/*************** Padding ****************/
+
 func pkcs5Padding(plainText []byte, blockSize int) []byte{
 	padding := blockSize - len(plainText) % blockSize           // size of the free space in a block
 	paddingData := bytes.Repeat([]byte{byte(padding)}, padding) // we need to fill the up free space
@@ -17,8 +28,10 @@ func pkcs5Padding(plainText []byte, blockSize int) []byte{
 func pkcs5TransPadding(dataWithPadding []byte) []byte{
 	dataLength := len(dataWithPadding)
 	paddingLength := int(dataWithPadding[dataLength- 1])
-	return dataWithPadding[:(dataLength - paddingLength)] // only return the text before padding text
+	return dataWithPadding[:(dataLength - paddingLength)]       // only return the text before padding text
 }
+
+/*************** AES Encryption ****************/
 
 func aesEncrypt(plainText, key []byte) ([]byte, error){
 	block, err := aes.NewCipher(key)
@@ -54,7 +67,8 @@ func checkAes256Key(aesKey []byte) error {
 	return nil
 }
 
-// TODO: call these functions in functions related to JWT generating and parsing
+/****************************************************/
+
 func Aes256Base64Encrypt(plainText string, aesKey []byte) (base64String string, err error) {
 	err = checkAes256Key(aesKey)
 	if err != nil {
