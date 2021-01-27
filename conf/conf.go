@@ -16,16 +16,18 @@ func InitConf() {
 
 	fmt.Println("Configuration file loaded.")
 
-	loginKeys := []string{"user", "password", "host", "port", "db_name"}
-	passportKeys := []string{"is_secure_mode", "app_id", "app_secret", "api_name"}
-	jwtKeys := []string{"issuer", "max_age", "secret_key"}
+	var confItems = map[string][]string {
+		"rop": {"api_version"},
+		"sql": {"user", "password", "host", "port", "db_name"},
+		"passport": {"is_secure_mode", "app_id", "app_secret", "api_name"},
+		"jwt": {"issuer", "max_age", "secret_key"},
+	}
 
-	/* check the existence of the required values */
-	getKeyErr := checkConfIsSet("login", loginKeys) ||
-		         checkConfIsSet("passport", passportKeys) ||
-		         checkConfIsSet("jwt", jwtKeys)
-	if getKeyErr {
-		panic("Error occurs wile getting keys, please check your config file.")
+	for k, v := range confItems {
+		err := checkConfIsSet(k, v)
+		if err {
+			panic(fmt.Sprintf("\"%s\" item of your config file hasn't been set properly. \nPlease check your config file.", k))
+		}
 	}
 
 	fmt.Println("Configuration file checking succeeded. All required values are set.")
@@ -44,10 +46,7 @@ func checkConfIsSet(name string, keys []string) (getKeyErrExists bool) {
 }
 
 func GetDatabaseLoginInfo() string {
-	if !viper.IsSet("login") {
-		panic("\"login\" not set in config file.")
-	}
-	loginInfo := viper.GetStringMapString("login")
+	loginInfo := viper.GetStringMapString("sql")
 
 	return fmt.Sprintf("user=%s password=%s host=%s port=%s dbname=%s sslmode=disable TimeZone=Asia/Shanghai",
 		loginInfo["user"],

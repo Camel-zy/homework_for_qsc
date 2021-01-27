@@ -37,7 +37,9 @@ Here is a sample of a YAML format configuration file:
 
 ```yaml
 # conf/conf.yaml
-login:           # please set these values according to your DB config
+rop:
+  api_version: 0.0
+sql:           # please set these values according to your DB config
   user: rop
   password: rop_pass
   host: localhost
