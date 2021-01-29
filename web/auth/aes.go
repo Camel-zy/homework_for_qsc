@@ -27,7 +27,7 @@ func pkcs5Padding(plainText []byte, blockSize int) []byte{
 
 func pkcs5TransPadding(dataWithPadding []byte) []byte{
 	dataLength := len(dataWithPadding)
-	paddingLength := int(dataWithPadding[dataLength- 1])
+	paddingLength := int(dataWithPadding[dataLength - 1])
 	return dataWithPadding[:(dataLength - paddingLength)]       // only return the text before padding text
 }
 
@@ -39,8 +39,8 @@ func aesEncrypt(plainText, key []byte) ([]byte, error){
 		return nil, err
 	}
 	blockSize := block.BlockSize()
-	plainText = pkcs5Padding(plainText,blockSize)
-	blockMode := cipher.NewCBCEncrypter(block,key[:blockSize])
+	plainText = pkcs5Padding(plainText, blockSize)
+	blockMode := cipher.NewCBCEncrypter(block, key[:blockSize])
 	encryptedByteData := make([]byte, len(plainText))
 	blockMode.CryptBlocks(encryptedByteData, plainText)
 	return encryptedByteData, nil
@@ -59,9 +59,9 @@ func aesDecrypt(encryptedByteText, key []byte) (plainText string, err error) {
 	return
 }
 
-/* Check the validity of a AES-256 key. */
-func checkAes256Key(aesKey []byte) error {
-	if len(aesKey) != 24 {
+/* Check the validity of a AES-128 key. */
+func checkAesKey(aesKey []byte) error {
+	if len(aesKey) != 16 {
 		return errors.New("the length of a AES-256 key needs to be 24 bytes")
 	}
 	return nil
@@ -69,8 +69,8 @@ func checkAes256Key(aesKey []byte) error {
 
 /****************************************************/
 
-func Aes256Base64Encrypt(plainText string, aesKey []byte) (base64String string, err error) {
-	err = checkAes256Key(aesKey)
+func AesBase64Encrypt(plainText string, aesKey []byte) (base64String string, err error) {
+	err = checkAesKey(aesKey)
 	if err != nil {
 		return
 	}
@@ -82,8 +82,8 @@ func Aes256Base64Encrypt(plainText string, aesKey []byte) (base64String string, 
 	return
 }
 
-func Aes256Base64Decrypt(base64String string, aesKey []byte) (plainText string, err error) {
-	err = checkAes256Key(aesKey)
+func AesBase64Decrypt(base64String string, aesKey []byte) (plainText string, err error) {
+	err = checkAesKey(aesKey)
 	if err != nil {
 		return
 	}

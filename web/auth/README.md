@@ -28,13 +28,13 @@ Since the payload of JWT is not encrypted, maybe we need to encrypt it or use `J
 The final implementation is still under discussion. Currently, the generation and parsing functions of JWT has been implemented.  
 
 ### Draft of encryption implementation
-**AES256-CBC-MD5**  
+**AES128-CBC-Base64**  
 
 | Sequence | Layer name | Implementation |
 | :--- | :--- | :------------ |
 | 1 | Padding | PKCS 5 |
 | 2 | Block cipher mode | CBC |
-| 2 | Encryption algorithm | AES-256 |
+| 2 | Encryption algorithm | AES-128 |
 | 3 | Binary-to-text encoding | Base64 |
 
 This seems complicated, although in fact it is quite easy to understand.  
