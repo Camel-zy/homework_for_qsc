@@ -14,9 +14,9 @@
 
 
 ## Overview
-| Web Framework | ORM | Database | Config | Auth |
-| :---------: | :---: | :------: | :-----: | :-----------: |
-| echo | GORM 2.0 | PostgreSQL | Viper | jwt-go |
+| Web Framework | ORM | Database | Config | Auth | Unit Test |
+| :---------: | :---: | :------: | :-----: | :---: | :-----: |
+| echo | GORM 2.0 | PostgreSQL | Viper | jwt-go | testify |
 
 port: `:1323`
 

@@ -17,7 +17,7 @@ func generateJWT(uid uint) (string, *time.Time) {
 	claims := &jwt.StandardClaims{
 		ExpiresAt: expireTime.Unix(),
 		Issuer:    viper.GetString("jwt.issuer"),
-		Subject:   strconv.Itoa(int(uid)),      // FIXME: Encrypt this!!!
+		Subject:   strconv.Itoa(int(uid)),      // you may want to encrypt this
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString(mySigningKey)
