@@ -5,12 +5,17 @@ import (
 	"git.zjuqsc.com/rop/rop-back-neo/database"
 	"git.zjuqsc.com/rop/rop-back-neo/utils"
 	"github.com/labstack/echo/v4"
+	"github.com/spf13/viper"
 	"gorm.io/gorm"
 	"net/http"
 )
 
+func getApiVersion(c echo.Context) error {
+	return c.String(http.StatusOK, viper.GetString("rop.api_version"))
+}
+
 // TODO: handle Internal Server Errors
-func GetUser(c echo.Context) error {
+func getUser(c echo.Context) error {
 	uid, typeErr := utils.IsUnsignedInteger(c.QueryParam("uid"));
 	if typeErr != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{Code: "BAD_REQUEST", Data: "uid needs to be an unsigned integer"})
@@ -24,12 +29,12 @@ func GetUser(c echo.Context) error {
 	return c.JSON(http.StatusOK, &utils.Error{Code: "SUCCESS", Data: &user})
 }
 
-func GetAllUser(c echo.Context) error {
+func getAllUser(c echo.Context) error {
 	users, _ := database.QueryAllUser()
 	return c.JSON(http.StatusOK, &utils.Error{Code: "SUCCESS", Data: &users})
 }
 
-func GetOrganization(c echo.Context) error {
+func getOrganization(c echo.Context) error {
 	oid, typeErr := utils.IsUnsignedInteger(c.QueryParam("oid"))
 	if typeErr != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{Code: "BAD_REQUEST", Data: "oid needs to be an unsigned integer"})
@@ -43,12 +48,12 @@ func GetOrganization(c echo.Context) error {
 	return c.JSON(http.StatusOK, &utils.Error{Code: "SUCCESS", Data: &organization})
 }
 
-func GetAllOrganization(c echo.Context) error {
+func getAllOrganization(c echo.Context) error {
 	organizations, _ := database.QueryAllOrganization()
 	return c.JSON(http.StatusOK, &utils.Error{Code: "SUCCESS", Data: &organizations})
 }
 
-func GetDepartmentUnderOrganization(c echo.Context) error {
+func getDepartmentUnderOrganization(c echo.Context) error {
 	oid, errOid := utils.IsUnsignedInteger(c.QueryParam("oid"))
 	did, errDid := utils.IsUnsignedInteger(c.QueryParam("did"))
 
@@ -69,7 +74,7 @@ func GetDepartmentUnderOrganization(c echo.Context) error {
 	return c.JSON(http.StatusOK, &utils.Error{Code: "SUCCESS", Data: &department})
 }
 
-func GetAllDepartmentUnderOrganization(c echo.Context) error {
+func getAllDepartmentUnderOrganization(c echo.Context) error {
 	oid, typeErr := utils.IsUnsignedInteger(c.QueryParam("oid"))
 	if typeErr != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{Code: "BAD_REQUEST", Data: "oid needs to be an unsigned integer"})

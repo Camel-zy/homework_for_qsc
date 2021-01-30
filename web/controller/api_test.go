@@ -1,4 +1,4 @@
-package web
+package controller
 
 import (
 	"git.zjuqsc.com/rop/rop-back-neo/database"
@@ -21,7 +21,7 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func TestController(t *testing.T) {
+func TestApi(t *testing.T) {
 	t.Parallel()
 	for _, v := range testCases {
 		v := v
