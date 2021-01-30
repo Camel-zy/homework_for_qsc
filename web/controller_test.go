@@ -6,10 +6,11 @@ import (
 	"github.com/stretchr/testify/assert"
 	"gorm.io/driver/sqlite"
 	"net/http"
+	"os"
 	"testing"
 )
 
-func TestController(t *testing.T) {
+func TestMain(m *testing.M) {
 	/* open a sqlite in-memory database */
 	database.Connect(sqlite.Open("file::memory:?cache=shared"))
 	database.CreateTables()
@@ -17,12 +18,20 @@ func TestController(t *testing.T) {
 	database.CreateRowsForTest()
 	InitWebFramework(true)
 
+	os.Exit(m.Run())
+}
+
+func TestController(t *testing.T) {
+	t.Parallel()
 	for _, v := range testCases {
 		v := v
-		req := utils.CreateRequest("GET", v.req.urlPath + v.req.urlQuery, nil)
-		resp := utils.CreateResponse(req, e)
-		assert.Equal(t, v.resp.statusCode, resp.StatusCode)
-		// TODO: check whether the struct (unmarshalled from JSON string in HTTP response) is expected
+		t.Run(v.name, func(t *testing.T) {
+			t.Parallel()
+			req := utils.CreateRequest("GET", v.req.urlPath + v.req.urlQuery, nil)
+			resp := utils.CreateResponse(req, e)
+			assert.Equal(t, v.resp.statusCode, resp.StatusCode)
+			// TODO: check whether the struct (unmarshalled from JSON string in HTTP response) is expected
+		})
 	}
 }
 
@@ -42,13 +51,40 @@ var testCases = []struct {
 	resp resp
 } {
 	{
-		name: "Get One Department from Organization",
+		name: "GetOneExistingDepartmentFromOneExistingOrganization",
 		req: req{
 			urlPath: "/api/organization/department",
 			urlQuery: "?oid=1&did=1",
 		},
 		resp: resp{
 			statusCode: http.StatusOK,
+		},
+	}, {
+		name: "GetOneExistingDepartmentFromOneNonExistingOrganization",
+		req: req{
+			urlPath: "/api/organization/department",
+			urlQuery: "?oid=100&did=1",
+		},
+		resp: resp{
+			statusCode: http.StatusNotFound,
+		},
+	}, {
+		name: "GetOneNonExistingDepartmentFromOneExistingOrganization",
+		req: req{
+			urlPath: "/api/organization/department",
+			urlQuery: "?oid=1&did=100",
+		},
+		resp: resp{
+			statusCode: http.StatusNotFound,
+		},
+	}, {
+		name: "BadRequest",
+		req: req{
+			urlPath: "/api/organization/department",
+			urlQuery: "?oid=1",
+		},
+		resp: resp{
+			statusCode: http.StatusBadRequest,
 		},
 	},
 }
