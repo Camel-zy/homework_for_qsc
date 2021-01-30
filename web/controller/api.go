@@ -35,7 +35,7 @@ func GetOrganization(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, &utils.Error{Code: "BAD_REQUEST", Data: "oid needs to be an unsigned integer"})
 	}
 
-	organization, orgErr := database.QueryOrganizationById(oid);
+	organization, orgErr := database.QueryOrganizationById(oid)
 	if errors.Is(orgErr, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, &utils.Error{Code: "ORG_NOT_FOUND", Data: "organization not found"})
 	}

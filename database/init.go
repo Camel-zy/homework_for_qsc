@@ -1,16 +1,14 @@
 package database
 
 import (
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
-
 	"git.zjuqsc.com/rop/rop-back-neo/database/model"
+	"gorm.io/gorm"
 )
 
 var DB *gorm.DB
 
-func Connect(dbConfig string) {
-	db, err := gorm.Open(postgres.Open(dbConfig), &gorm.Config{})
+func Connect(dialector gorm.Dialector) {
+	db, err := gorm.Open(dialector, &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
@@ -20,7 +18,7 @@ func Connect(dbConfig string) {
 	DB = db
 }
 
-func Init() {
+func CreateTables() {
 	if DB == nil {
 		panic("DB is nil")
 	}

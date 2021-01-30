@@ -14,13 +14,16 @@
 
 
 ## Overview
-| Web Framework | ORM | Database | Config | Auth | Unit Test |
-| :---------: | :---: | :------: | :-----: | :---: | :-----: |
-| echo | GORM 2.0 | PostgreSQL | Viper | jwt-go | testify |
+| Web Framework | ORM | Database | Config | Auth |
+| :---------: | :---: | :------: | :-----: | :---: |
+| echo | GORM 2.0 | PostgreSQL | Viper | jwt-go |
 
-port: `:1323`
+service port: `:1323`
 
-
+### Unit test
+| Tool | In-Memory Database |
+| :---: | :---------: |
+| testify | sqlite |
 
 ## Directories
 `database` stores CRUD functions and models of the tables.  

@@ -5,8 +5,10 @@ import (
 )
 
 var e *echo.Echo
+var testMain = false
 
-func InitWebFramework() {
+func InitWebFramework(test bool) {
+	testMain = test
 	e = echo.New()
 	e.HideBanner = true
 	addRoutes(e)
