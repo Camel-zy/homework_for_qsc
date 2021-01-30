@@ -6,11 +6,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"gorm.io/driver/sqlite"
 	"net/http"
-	"os"
 	"testing"
 )
 
-func TestMain(m *testing.M) {
+func TestController(t *testing.T) {
 	/* open a sqlite in-memory database */
 	database.Connect(sqlite.Open("file::memory:?cache=shared"))
 	database.CreateTables()
@@ -18,10 +17,6 @@ func TestMain(m *testing.M) {
 	database.CreateRowsForTest()
 	InitWebFramework(true)
 
-	os.Exit(m.Run())
-}
-
-func TestController(t *testing.T) {
 	for _, v := range testCases {
 		v := v
 		req := utils.CreateRequest("GET", v.req.urlPath + v.req.urlQuery, nil)

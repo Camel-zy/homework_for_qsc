@@ -18,6 +18,7 @@ func end(c echo.Context) error {
 // TODO: test QSC Passport authentication
 func TestMiddleware(t *testing.T) {
 	e := echo.New()
+	e.Use(Middleware)
 	e.GET("/test_authentication", end)
 
 	rand.Seed(time.Now().Unix())
