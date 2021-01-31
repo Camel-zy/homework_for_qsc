@@ -1,14 +1,14 @@
 package controller
 
 import (
-	"git.zjuqsc.com/rop/rop-back-neo/web/auth"
+	"git.zjuqsc.com/rop/rop-back-neo/web/middleware"
 	"github.com/labstack/echo/v4"
 )
 
 func addRoutes(e *echo.Echo) {
 	api := e.Group("/api")
 	if !testMain {
-		api.Use(auth.Middleware)
+		api.Use(middleware.Auth)
 	}
 	api.GET("", getApiVersion)
 	api.GET("/user", getUser)

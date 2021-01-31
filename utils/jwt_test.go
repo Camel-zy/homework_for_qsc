@@ -1,4 +1,4 @@
-package auth
+package utils
 
 import (
 	"bytes"
@@ -29,8 +29,8 @@ func TestJWT(t *testing.T) {
 	rand.Seed(time.Now().Unix())
 	uid := uint(rand.Intn(1e5))
 
-	jwtString, _ := generateJWT(uid)
-	jwtToken, err := parseJWT(jwtString)
+	jwtString, _ := GenerateJWT(uid)
+	jwtToken, err := ParseJWT(jwtString)
 	assert.Nil(t, err)
 	claims, ok := jwtToken.Claims.(jwt.MapClaims)
 	assert.True(t, ok)

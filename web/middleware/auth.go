@@ -1,4 +1,4 @@
-package auth
+package middleware
 
 import (
 	"encoding/json"
@@ -19,7 +19,7 @@ type auth struct {
 	Uid  uint  `json:"uid"`
 }
 
-func Middleware(next echo.HandlerFunc) echo.HandlerFunc {
+func Auth(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		/* authenticate QSC JWT token */
 		_, err := authRopJwt(c)
@@ -51,7 +51,7 @@ func Middleware(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		/* generate JWT and set it into cookie field */
-		jwtString, timeWhenGen := generateJWT(authResult.Uid)
+		jwtString, timeWhenGen := utils.GenerateJWT(authResult.Uid)
 		setCookie(c, jwtName, jwtString, timeWhenGen)
 
 		return next(c)
@@ -119,7 +119,7 @@ func authRopJwt(c echo.Context) (*jwt.Token, error) {
 	}
 
 	/* check validity of JWT */
-	jwtToken, err := parseJWT(cookie.Value)
+	jwtToken, err := utils.ParseJWT(cookie.Value)
 	return jwtToken, err
 }
 

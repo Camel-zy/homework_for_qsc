@@ -2,7 +2,7 @@ package controller
 
 import (
 	"git.zjuqsc.com/rop/rop-back-neo/database"
-	"git.zjuqsc.com/rop/rop-back-neo/web/utils"
+	"git.zjuqsc.com/rop/rop-back-neo/test"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/driver/sqlite"
 	"net/http"
@@ -15,7 +15,7 @@ func TestMain(m *testing.M) {
 	database.Connect(sqlite.Open("file::memory:?cache=shared"))
 	database.CreateTables()
 
-	database.CreateRowsForTest()
+	test.CreateDatabaseRows()
 	InitWebFramework(true)
 
 	os.Exit(m.Run())
@@ -24,11 +24,11 @@ func TestMain(m *testing.M) {
 func TestApi(t *testing.T) {
 	t.Parallel()
 	for _, v := range testCases {
-		v := v
+		v := v  // for fear of the errors caused by go-routines
 		t.Run(v.name, func(t *testing.T) {
 			t.Parallel()
-			req := utils.CreateRequest("GET", v.req.urlPath + v.req.urlQuery, nil)
-			resp := utils.CreateResponse(req, e)
+			req := test.CreateRequest("GET", v.req.urlPath + v.req.urlQuery, nil)
+			resp := test.CreateResponse(req, e)
 			assert.Equal(t, v.resp.statusCode, resp.StatusCode)
 			// TODO: check whether the struct (unmarshalled from JSON string in HTTP response) is expected
 		})

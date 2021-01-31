@@ -1,4 +1,4 @@
-package auth
+package utils
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func generateJWT(uid uint) (string, *time.Time) {
+func GenerateJWT(uid uint) (string, *time.Time) {
 	mySigningKey := []byte(viper.GetString("jwt.secret_key"))
 
 	maxAge := viper.GetInt("jwt.max_age")     // read from configuration file
@@ -27,7 +27,7 @@ func generateJWT(uid uint) (string, *time.Time) {
 	return tokenString, &expireTime
 }
 
-func parseJWT(tokenString string) (*jwt.Token, error) {
+func ParseJWT(tokenString string) (*jwt.Token, error) {
 	mySigningKey := []byte(viper.GetString("jwt.secret_key"))
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {

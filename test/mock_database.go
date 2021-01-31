@@ -1,6 +1,7 @@
-package database
+package test
 
 import (
+	"git.zjuqsc.com/rop/rop-back-neo/database"
 	"git.zjuqsc.com/rop/rop-back-neo/database/model"
 )
 
@@ -8,7 +9,7 @@ import (
 This function will be called by the main test procedure
 And should not be called out of test
 */
-func CreateRowsForTest() {
+func CreateDatabaseRows() {
 	migration := []interface{} {
 		&model.Organization {
 			ID: uint(1),
@@ -32,7 +33,7 @@ func CreateRowsForTest() {
 	}
 
 	for _, v := range migration {
-		result := DB.Create(v)
+		result := database.DB.Create(v)
 		if result.Error != nil {
 			panic(result.Error)
 		}

@@ -1,4 +1,4 @@
-package auth
+package utils
 
 import (
 	"github.com/stretchr/testify/assert"
@@ -6,9 +6,9 @@ import (
 )
 
 func TestCheckAesKey(t *testing.T) {
-	assert.Nil(t, checkAesKey(make([]byte, 16)))     // AES-128
-	assert.NotNil(t, checkAesKey(make([]byte, 24)))  // AES-192
-	assert.NotNil(t, checkAesKey(make([]byte, 32)))  // AES-256
+	assert.Nil(t, checkAesKey(make([]byte, 16)))    // AES-128
+	assert.NotNil(t, checkAesKey(make([]byte, 24))) // AES-192
+	assert.NotNil(t, checkAesKey(make([]byte, 32))) // AES-256
 }
 
 func TestAesBase64Encrypt(t *testing.T) {

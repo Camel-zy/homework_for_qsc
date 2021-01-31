@@ -7,7 +7,7 @@ Please search on the Internet if you have questions.
 The Wikipedia page "AES Encryption" may help you.
  */
 
-package auth
+package utils
 
 import (
 	"bytes"
