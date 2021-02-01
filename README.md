@@ -76,7 +76,7 @@ According to this response, if the user is authorized, then a `qsc_rop_jwt` cook
 For further information about authentication, the documentation under `web/auth` directory may help you.  
 
 
-# Testing
+# Getting Started
 The value of key `is_secure_mode` in the configuration file is expected to be set `false` during the testing period.  
 
 Before trying to send a request to this service, you need to set at least one cookie `qp2gl_sesstok` to the request header. You can also add another cookie `qp2gl_sesstok_secure` at the same time if you want, for the program can handle this situation properly.  

@@ -16,7 +16,7 @@ func getApiVersion(c echo.Context) error {
 
 // TODO: handle Internal Server Errors
 func getUser(c echo.Context) error {
-	uid, typeErr := utils.IsUnsignedInteger(c.QueryParam("uid"));
+	uid, typeErr := utils.IsUnsignedInteger(c.QueryParam("uid"))
 	if typeErr != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{Code: "BAD_REQUEST", Data: "uid needs to be an unsigned integer"})
 	}

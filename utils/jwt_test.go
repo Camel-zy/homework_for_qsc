@@ -1,9 +1,8 @@
 package utils
 
 import (
-	"bytes"
+	"git.zjuqsc.com/rop/rop-back-neo/test"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"math/rand"
 	"strconv"
@@ -13,18 +12,7 @@ import (
 
 // Test if the JWT can be correctly parsed after generated
 func TestJWT(t *testing.T) {
-	/* init configuration */
-	viper.SetConfigType("json")
-	var yamlExample = []byte(`
-	{
-		"jwt": {
-			"issuer": "rop", 
-			"max_age": 600, 
-			"secret_key": "AllYourBase"
-		}
-	}
-	`)
-	_ = viper.ReadConfig(bytes.NewBuffer(yamlExample))
+	test.MockJwtConf(600)
 
 	rand.Seed(time.Now().Unix())
 	uid := uint(rand.Intn(1e5))

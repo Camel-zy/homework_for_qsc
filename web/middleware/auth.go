@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"encoding/json"
+	"errors"
 	"git.zjuqsc.com/rop/rop-back-neo/utils"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
@@ -59,6 +60,19 @@ func Auth(next echo.HandlerFunc) echo.HandlerFunc {
 }
 
 /*
+This function will be mocked during unit test.
+*/
+var requestToQscPassport = func(apiName string, params *url.Values) (resp *http.Response, err error) {
+	/* create a request */
+	req, _ := http.NewRequest("GET", apiName + params.Encode(), nil)
+
+	/* send a request and get the response */
+	client := &http.Client{}
+	resp, err = client.Do(req)
+	return
+}
+
+/*
 This function checks the validity of QSC Passport cookie.
 It sends a request to QSC Passport authentication server,
 and check the response. If the user is authorized, return nil.
@@ -75,14 +89,11 @@ func authByQscPassport(c echo.Context, cookie *http.Cookie, tokenUrlParamName st
 	params.Add("appsecret", appSecret)
 	params.Add(tokenUrlParamName, cookie.Value)
 
-	/* create a request */
-	req, _ := http.NewRequest("GET", apiName + params.Encode(), nil)
+	resp, getErr := requestToQscPassport(apiName, &params)
 
-	/* send a request and get the response */
-	client := &http.Client{}
-	resp, getErr := client.Do(req)
 	if getErr != nil{
-		return nil, c.JSON(http.StatusServiceUnavailable, &utils.Error{Code: "AUTH_SERVICE_ERROR", Data: "error occurs when sending request to auth service"})
+		c.JSON(http.StatusServiceUnavailable, &utils.Error{Code: "AUTH_SERVICE_ERROR", Data: "error occurs when sending request to auth service"})
+		return nil, errors.New("AUTH_SERVICE_ERROR")
 	}
 	defer resp.Body.Close()
 
@@ -101,7 +112,8 @@ func authByQscPassport(c echo.Context, cookie *http.Cookie, tokenUrlParamName st
 
 	/* the request can be authorized IF AND ONLY IF error code is 0 */
 	if authResult.Err != 0 {
-		return nil, c.JSON(http.StatusUnauthorized, &utils.Error{Code: "AUTH_FAILED", Data: "auth failed according to the response of QSC Passport auth service"})
+		c.JSON(http.StatusUnauthorized, &utils.Error{Code: "AUTH_FAILED", Data: "auth failed according to the response of QSC Passport auth service"})
+		return nil, errors.New("AUTH_FAILED")
 	}
 
 	return &authResult, nil
