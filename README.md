@@ -13,17 +13,17 @@
 
 
 
-## Overview
-| Web Framework | ORM | Database | Config | Auth |
+## External Packages 
+| Web Framework | ORM | Database | Config Manager | Authentication |
 | :---------: | :---: | :------: | :-----: | :---: |
-| echo | GORM 2.0 | PostgreSQL | Viper | jwt-go |
+| labstack/echo/v4 | gorm.io/gorm | gorm.io/driver/postgres | spf13/viper | dgrijalva/jwt-go |
 
 service port: `:1323`
 
 ### Unit test
-| Tool | In-Memory Database |
+| Assert | In-Memory Database |
 | :---: | :---------: |
-| testify | sqlite |
+| stretchr/testify | gorm.io/driver/sqlite |
 
 ## Directories
 `conf` contain functions related to the configuration file, and it is also the default directory of configuration file.  
@@ -70,13 +70,13 @@ This is only a short-term solution. Configuration solutions like `Viper` are con
 
 
 
-# Authentication
+## Authentication
 If the cookie `qsc_rop_jwt` doesn't exist, or if this cookie is invalid for some reason, then this program will send an authentication request to the QSC Passport services, with the value stored in `qp2gl_sesstok` or `qp2gl_sesstok_secure`. 
 According to this response, if the user is authorized, then a `qsc_rop_jwt` cookie will be set, and before this cookie expires, the user can quickly access this ROP Backend service.  
 For further information about authentication, the documentation under `web/auth` directory may help you.  
 
 
-# Getting Started
+## Getting Started
 The value of key `is_secure_mode` in the configuration file is expected to be set `false` during the testing period.  
 
 Before trying to send a request to this service, you need to set at least one cookie `qp2gl_sesstok` to the request header. You can also add another cookie `qp2gl_sesstok_secure` at the same time if you want, for the program can handle this situation properly.  
