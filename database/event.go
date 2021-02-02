@@ -2,6 +2,7 @@ package database
 
 import (
 	"git.zjuqsc.com/rop/rop-back-neo/database/model"
+	"gorm.io/gorm/clause"
 )
 
 func CreateEvent(requestEvent *model.Event) error {
