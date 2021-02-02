@@ -28,7 +28,7 @@ func QueryEventByIdOfOrganization(oid uint, eid uint) (*model.Event, error) {
 }
 
 func QueryAllEventOfOrganization(oid uint) (*[]model.Event, error) {
-	var dbEvent model.Event
+	var dbEvent []model.Event
 	if findOrganizationError := DB.First(&model.Organization{}, oid).Error; findOrganizationError != nil {
 		return nil, findOrganizationError
 	}

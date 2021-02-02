@@ -18,7 +18,7 @@ func getApiVersion(c echo.Context) error {
 func getUser(c echo.Context) error {
 	uid, typeErr := utils.IsUnsignedInteger(c.QueryParam("uid"))
 	if typeErr != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{Code: "BAD_REQUEST", Data: "uid needs to be an unsigned integer"})
+		return c.JSON(http.StatusBadRequest, &utils.Error{Code: "BAD_REQUEST", Data: "uid need to be an unsigned integer"})
 	}
 
 	user, usrErr := database.QueryUserById(uid);
@@ -37,7 +37,7 @@ func getAllUser(c echo.Context) error {
 func getOrganization(c echo.Context) error {
 	oid, typeErr := utils.IsUnsignedInteger(c.QueryParam("oid"))
 	if typeErr != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{Code: "BAD_REQUEST", Data: "oid needs to be an unsigned integer"})
+		return c.JSON(http.StatusBadRequest, &utils.Error{Code: "BAD_REQUEST", Data: "oid need to be an unsigned integer"})
 	}
 
 	organization, orgErr := database.QueryOrganizationById(oid)
@@ -77,7 +77,7 @@ func getDepartmentUnderOrganization(c echo.Context) error {
 func getAllDepartmentUnderOrganization(c echo.Context) error {
 	oid, typeErr := utils.IsUnsignedInteger(c.QueryParam("oid"))
 	if typeErr != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{Code: "BAD_REQUEST", Data: "oid needs to be an unsigned integer"})
+		return c.JSON(http.StatusBadRequest, &utils.Error{Code: "BAD_REQUEST", Data: "oid need to be an unsigned integer"})
 	}
 
 	departments, depErr := database.QueryAllDepartmentUnderOrganization(oid)
@@ -112,7 +112,7 @@ func getEventOfOrganization(c echo.Context) error {
 func getAllEventOfOrganization(c echo.Context) error {
 	oid, typeErr := utils.IsUnsignedInteger(c.QueryParam("oid"))
 	if typeErr != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{Code: "BAD_REQUEST", Data: "oid needs to be an unsigned integer"})
+		return c.JSON(http.StatusBadRequest, &utils.Error{Code: "BAD_REQUEST", Data: "oid need to be an unsigned integer"})
 	}
 
 	events, evtErr := database.QueryAllEventOfOrganization(oid)
