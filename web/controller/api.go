@@ -87,3 +87,38 @@ func getAllDepartmentUnderOrganization(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, &utils.Error{Code: "SUCCESS", Data: &departments})
 }
+
+func getEventOfOrganization(c echo.Context) error {
+	oid, errOid := utils.IsUnsignedInteger(c.QueryParam("oid"))
+	eid, errEid := utils.IsUnsignedInteger(c.QueryParam("eid"))
+
+	if errOid != nil || errEid != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{Code: "BAD_REQUEST", Data: "oid and eid need to be an unsigned integer"})
+	}
+
+	_, orgErr := database.QueryOrganizationById(oid)
+	if errors.Is(orgErr, gorm.ErrRecordNotFound) {
+		return c.JSON(http.StatusNotFound, &utils.Error{Code: "ORG_NOT_FOUND", Data: "organization not found"})
+	}
+
+	event, evtErr := database.QueryEventByIdOfOrganization(oid, eid)
+	if errors.Is(evtErr, gorm.ErrRecordNotFound) {
+		return c.JSON(http.StatusNotFound, &utils.Error{Code: "EVT_NOT_FOUND", Data: "event not found"})
+	}
+
+	return c.JSON(http.StatusOK, &utils.Error{Code: "SUCCESS", Data: &event})
+}
+
+func getAllEventOfOrganization(c echo.Context) error {
+	oid, typeErr := utils.IsUnsignedInteger(c.QueryParam("oid"))
+	if typeErr != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{Code: "BAD_REQUEST", Data: "oid needs to be an unsigned integer"})
+	}
+
+	events, evtErr := database.QueryAllEventOfOrganization(oid)
+	if errors.Is(evtErr, gorm.ErrRecordNotFound){
+		return c.JSON(http.StatusNotFound, &utils.Error{Code: "ORG_NOT_FOUND", Data: "organization not found"})
+	}
+
+	return c.JSON(http.StatusOK, &utils.Error{Code: "SUCCESS", Data: &events})
+}

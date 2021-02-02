@@ -17,4 +17,6 @@ func addRoutes(e *echo.Echo) {
 	api.GET("/organization/all", getAllOrganization)
 	api.GET("/organization/department", getDepartmentUnderOrganization)
 	api.GET("/organization/department/all", getAllDepartmentUnderOrganization)
+	api.GET("/organization/event", getEventOfOrganization)
+	api.GET("/organization/event/all", getAllEventOfOrganization)
 }
