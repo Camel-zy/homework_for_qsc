@@ -13,99 +13,99 @@ func TestEventApi(t *testing.T) {
 		v := v  // for fear of the errors caused by go-routines
 		t.Run(v.name, func(t *testing.T) {
 			t.Parallel()
-			req := test.CreateRequest("GET", v.req.urlPath + v.req.urlQuery, nil)
-			resp := test.CreateResponse(req, e)
-			assert.Equal(t, v.resp.statusCode, resp.StatusCode)
-			// TODO: check whether the struct (unmarshalled from JSON string in HTTP response) is expected
+			Req := test.CreateRequest("GET", v.Req.urlPath + v.Req.urlQuery, nil)
+			Resp := test.CreateResponse(Req, e)
+			assert.Equal(t, v.Resp.statusCode, Resp.StatusCode)
+			// TODO: check whether the struct (unmarshalled from JSON string in HTTP Response) is expected
 		})
 	}
 }
 
-type req struct {
+type Req struct {
 	urlPath    string
 	urlQuery   string
 }
-type resp struct {
+type Resp struct {
 	statusCode int
 	jsonStruct interface{}  // TODO: maybe we need to change the type of this
 }
 
 var testCases = []struct {
 	name string
-	req  req
-	resp resp
+	Req  Req
+	Resp Resp
 } {
 	{
 		name: "GetOneExistingEventFromOneExistingOrganization",
-		req: req{
+		Req: Req{
 			urlPath: "/api/organization/event",
 			urlQuery: "?oid=1&eid=1",
 		},
-		resp: resp{
+		Resp: Resp{
 			statusCode: http.StatusOK,
 		},
 	}, {
 		name: "GetOneExistingEventFromOneNonExistingOrganization",
-		req: req{
+		Req: Req{
 			urlPath: "/api/organization/event",
 			urlQuery: "?oid=100&eid=1",
 		},
-		resp: resp{
+		Resp: Resp{
 			statusCode: http.StatusNotFound,
 		},
 	}, {
 		name: "GetOneNonExistingEventFromOneExistingOrganization",
-		req: req{
+		Req: Req{
 			urlPath: "/api/organization/event",
 			urlQuery: "?oid=1&eid=100",
 		},
-		resp: resp{
+		Resp: Resp{
 			statusCode: http.StatusNotFound,
 		},
 	}, {
 		name: "BadRequestForOrganization",
-		req: req{
+		Req: Req{
 			urlPath: "/api/organization/event",
 			urlQuery: "?oid=1",
 		},
-		resp: resp{
+		Resp: Resp{
 			statusCode: http.StatusBadRequest,
 		},
 	},
 	{
 		name: "GetOneExistingInterviewFromOneExistingEvent",
-		req: req{
+		Req: Req{
 			urlPath: "/api/event/interview",
 			urlQuery: "?eid=1&iid=1",
 		},
-		resp: resp{
+		Resp: Resp{
 			statusCode: http.StatusOK,
 		},
 	}, {
 		name: "GetOneExistingInterviewFromOneNonExistingEvent",
-		req: req{
+		Req: Req{
 			urlPath: "/api/event/interview",
 			urlQuery: "?eid=100&iid=1",
 		},
-		resp: resp{
+		Resp: Resp{
 			statusCode: http.StatusNotFound,
 		},
 	}, {
 		name: "GetOneNonExistingInterviewFromOneExistingEvent",
-		req: req{
+		Req: Req{
 			urlPath: "/api/event/interview",
 			urlQuery: "?eid=1&iid=100",
 		},
-		resp: resp{
+		Resp: Resp{
 			statusCode: http.StatusNotFound,
 		},
 	}, {
 		name: "BadRequestForEvent",
-		req: req{
+		Req: Req{
 			urlPath: "/api/event/interview",
 			urlQuery: "?eid=1",
 		},
-		resp: resp{
+		Resp: Resp{
 			statusCode: http.StatusBadRequest,
 		},
 	},
