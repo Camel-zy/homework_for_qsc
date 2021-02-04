@@ -14,9 +14,9 @@
 
 
 ## External Packages 
-| Web Framework | ORM | Database | Config Manager | Authentication |
-| :---------: | :---: | :------: | :-----: | :---: |
-| labstack/echo/v4 | gorm.io/gorm | gorm.io/driver/postgres | spf13/viper | dgrijalva/jwt-go |
+| Web Framework | ORM | Database | Object Storage | Config Manager | Authentication |
+| :---------: | :---: | :------: | :-----: | :-----: | :---: |
+| labstack/echo/v4 | gorm.io/gorm | gorm.io/driver/postgres | minio/minio-go/v7 | spf13/viper | dgrijalva/jwt-go |
 
 service port: `:1323`
 
@@ -45,12 +45,18 @@ Here is a sample of a YAML format configuration file:
 rop:
   api_version: 0.0
   test: true   # set this value true if you want to skip authentication
-sql:           # please set these values according to your DB config
+sql:           # please set these values according to your psql config
   user: rop
   password: rop_pass
   host: localhost
   port: 5432
   db_name: rop
+minio:     # please set these values according to your MinIO config
+  endpoint: 127.0.0.1:9000
+  id: minioadmin
+  secret: minioadmin
+  secure: false
+  bucket_name: rop
 passport:
   is_secure_mode: false
   app_id: rop

@@ -11,6 +11,7 @@ func init() {
 	conf.Init()
 	database.Connect(postgres.Open(conf.GetDatabaseLoginInfo()))
 	database.CreateTables()
+	database.ConnectObjectStorage()
 	controller.InitWebFramework()
 }
 

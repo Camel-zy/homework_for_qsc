@@ -19,6 +19,7 @@ func Init() {
 	var confItems = map[string][]string {
 		"rop": {"api_version", "test"},
 		"sql": {"user", "password", "host", "port", "db_name"},
+		"minio": {"endpoint", "id", "secret", "secure", "bucket_name"},
 		"passport": {"is_secure_mode", "app_id", "app_secret", "api_name"},
 		"jwt": {"issuer", "max_age", "secret_key"},
 	}

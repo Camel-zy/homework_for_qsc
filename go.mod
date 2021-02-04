@@ -6,7 +6,7 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/jackc/pgx/v4 v4.10.0 // indirect
 	github.com/labstack/echo/v4 v4.1.17
-	github.com/magiconair/properties v1.8.1
+	github.com/minio/minio-go/v7 v7.0.7
 	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.5.1
 	golang.org/x/crypto v0.0.0-20201217014255-9d1352758620 // indirect

@@ -7,18 +7,35 @@ import (
 
 func addRoutes(e *echo.Echo) {
 	api := e.Group("/api")
+
 	if !testMain {
 		api.Use(middleware.Auth)
 	}
+
 	api.GET("", getApiVersion)
-	api.GET("/user", getUser)
-	api.GET("/user/all", getAllUser)
-	api.GET("/organization", getOrganization)
-	api.GET("/organization/all", getAllOrganization)
-	api.GET("/organization/department", getDepartmentUnderOrganization)
-	api.GET("/organization/department/all", getAllDepartmentUnderOrganization)
-	api.GET("/organization/event", getEventOfOrganization)
-	api.GET("/organization/event/all", getAllEventOfOrganization)
-	api.GET("/event/interview", getInterviewInEvent)
-	api.GET("/event/interview/all", getAllInterviewInEvent)
+
+	user := api.Group("/user")
+	user.GET("", getUser)
+	user.GET("/all", getAllUser)
+
+	organization := api.Group("/organization")
+	organization.GET("", getOrganization)
+	organization.GET("/all", getAllOrganization)
+	organization.GET("/department", getDepartmentUnderOrganization)
+	organization.GET("/department/all", getAllDepartmentUnderOrganization)
+	organization.GET("/event", getEventOfOrganization)
+	organization.GET("/event/all", getAllEventOfOrganization)
+
+	event := api.Group("/event")
+	event.GET("interview", getInterviewInEvent)
+	event.GET("interview/all", getAllInterviewInEvent)
+
+	/*
+	CAUTIOUS: These routers are created only for demo
+	This will be fixed on Feb 5th
+	(RalXYZ)
+	*/
+	image := api.Group("/image")
+	image.POST("", setImage)
+	image.GET("", getImage)
 }
