@@ -9,7 +9,7 @@ import (
 
 func TestEventApi(t *testing.T) {
 	t.Parallel()
-	for _, v := range testCases {
+	for _, v := range TestCases {
 		v := v  // for fear of the errors caused by go-routines
 		t.Run(v.name, func(t *testing.T) {
 			t.Parallel()
@@ -30,7 +30,7 @@ type Resp struct {
 	jsonStruct interface{}  // TODO: maybe we need to change the type of this
 }
 
-var testCases = []struct {
+var TestCases = []struct {
 	name string
 	Req  Req
 	Resp Resp
