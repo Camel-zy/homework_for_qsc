@@ -44,6 +44,7 @@ Here is a sample of a YAML format configuration file:
 # conf/conf.yaml
 rop:
   api_version: 0.0
+  test: true   # set this value true if you want to skip authentication
 sql:           # please set these values according to your DB config
   user: rop
   password: rop_pass

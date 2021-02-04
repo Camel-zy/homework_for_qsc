@@ -2,13 +2,14 @@ package controller
 
 import (
 	"github.com/labstack/echo/v4"
+	"github.com/spf13/viper"
 )
 
 var e *echo.Echo
 var testMain = false
 
-func InitWebFramework(test bool) {
-	testMain = test
+func InitWebFramework() {
+	testMain = viper.GetBool("rop.test")
 	e = echo.New()
 	e.HideBanner = true
 	addRoutes(e)

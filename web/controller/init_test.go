@@ -3,6 +3,7 @@ package controller
 import (
 	"git.zjuqsc.com/rop/rop-back-neo/database"
 	"git.zjuqsc.com/rop/rop-back-neo/test"
+	"github.com/spf13/viper"
 	"gorm.io/driver/sqlite"
 	"os"
 	"testing"
@@ -14,7 +15,10 @@ func TestMain(m *testing.M) {
 	database.CreateTables()
 
 	test.CreateDatabaseRows()
-	InitWebFramework(true)
+
+	// set "rop.test" true to skip authentication
+	viper.Set("rop.test", true)
+	InitWebFramework()
 
 	os.Exit(m.Run())
 }

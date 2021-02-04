@@ -17,7 +17,7 @@ func Init() {
 	fmt.Println("Configuration file loaded.")
 
 	var confItems = map[string][]string {
-		"rop": {"api_version"},
+		"rop": {"api_version", "test"},
 		"sql": {"user", "password", "host", "port", "db_name"},
 		"passport": {"is_secure_mode", "app_id", "app_secret", "api_name"},
 		"jwt": {"issuer", "max_age", "secret_key"},
