@@ -1,27 +1,13 @@
 package controller
 
 import (
-	"git.zjuqsc.com/rop/rop-back-neo/database"
 	"git.zjuqsc.com/rop/rop-back-neo/test"
 	"github.com/stretchr/testify/assert"
-	"gorm.io/driver/sqlite"
 	"net/http"
-	"os"
 	"testing"
 )
 
-func TestMain(m *testing.M) {
-	/* open a sqlite in-memory database */
-	database.Connect(sqlite.Open("file::memory:?cache=shared"))
-	database.CreateTables()
-
-	test.CreateDatabaseRows()
-	InitWebFramework(true)
-
-	os.Exit(m.Run())
-}
-
-func TestApi(t *testing.T) {
+func TestUserApi(t *testing.T) {
 	t.Parallel()
 	for _, v := range testCases {
 		v := v  // for fear of the errors caused by go-routines
