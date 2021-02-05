@@ -3,7 +3,7 @@ package controller
 import (
 	"errors"
 	"fmt"
-	"git.zjuqsc.com/rop/rop-back-neo/database"
+	"git.zjuqsc.com/rop/rop-back-neo/model"
 	"git.zjuqsc.com/rop/rop-back-neo/utils"
 	"github.com/labstack/echo/v4"
 	"github.com/minio/minio-go/v7"
@@ -38,7 +38,7 @@ func setImage(c echo.Context) error {
 	}
 
 	uuidFileName := uuid.NewV4().String() // create a UUID v4 string (RFC 4122)
-	image := database.Image{
+	image := model.Image{
 		OriginalName: fileHeader.Filename,
 		CurrentName:  uuidFileName,
 		UserID:       uint(1),       // FIXME: This is currently fake
@@ -48,7 +48,7 @@ func setImage(c echo.Context) error {
 		panic(err)
 	}
 
-	err = database.CreateFile(c.Request().Context(), uuidFileName, mimeType, file, fileHeader.Size)
+	err = model.CreateFile(c.Request().Context(), uuidFileName, mimeType, file, fileHeader.Size)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "ERROR_STORE_FILE",
@@ -66,7 +66,7 @@ This will be fixed on Feb 5th
 (RalXYZ)
  */
 func getImage(c echo.Context) error {
-	image := database.Image{UserID: uint(1)}  // FIXME: This is currently fake
+	image := model.Image{UserID: uint(1)} // FIXME: This is currently fake
 	err := image.GetByUid()
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, &utils.Error{
@@ -77,7 +77,7 @@ func getImage(c echo.Context) error {
 		panic(err)
 	}
 
-	file, err := database.GetFile(c.Request().Context(), image.CurrentName)
+	file, err := model.GetFile(c.Request().Context(), image.CurrentName)
 	if err != nil {
 		panic(err)
 	}

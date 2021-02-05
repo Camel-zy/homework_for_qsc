@@ -1,8 +1,7 @@
 package test
 
 import (
-	"git.zjuqsc.com/rop/rop-back-neo/database"
-	"git.zjuqsc.com/rop/rop-back-neo/database/model"
+	"git.zjuqsc.com/rop/rop-back-neo/model"
 )
 
 /*
@@ -56,8 +55,8 @@ func CreateDatabaseRows() {
 	}
 
 	for _, v := range migration {
-		result := database.DB.Create(v)
-		if result.Error != nil {
+		result := model.CreateRow(v)
+		if result != nil {
 			panic(result.Error)
 		}
 	}

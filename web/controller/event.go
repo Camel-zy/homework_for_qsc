@@ -2,7 +2,7 @@ package controller
 
 import (
 	"errors"
-	"git.zjuqsc.com/rop/rop-back-neo/database"
+	"git.zjuqsc.com/rop/rop-back-neo/model"
 	"git.zjuqsc.com/rop/rop-back-neo/utils"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
@@ -17,12 +17,12 @@ func getEventOfOrganization(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, &utils.Error{Code: "BAD_REQUEST", Data: "oid and eid need to be an unsigned integer"})
 	}
 
-	_, orgErr := database.QueryOrganizationById(oid)
+	_, orgErr := model.QueryOrganizationById(oid)
 	if errors.Is(orgErr, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, &utils.Error{Code: "ORG_NOT_FOUND", Data: "organization not found"})
 	}
 
-	event, evtErr := database.QueryEventByIdOfOrganization(oid, eid)
+	event, evtErr := model.QueryEventByIdOfOrganization(oid, eid)
 	if errors.Is(evtErr, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, &utils.Error{Code: "EVT_NOT_FOUND", Data: "event not found"})
 	}
@@ -36,7 +36,7 @@ func getAllEventOfOrganization(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, &utils.Error{Code: "BAD_REQUEST", Data: "oid need to be an unsigned integer"})
 	}
 
-	events, evtErr := database.QueryAllEventOfOrganization(oid)
+	events, evtErr := model.QueryAllEventOfOrganization(oid)
 	if errors.Is(evtErr, gorm.ErrRecordNotFound){
 		return c.JSON(http.StatusNotFound, &utils.Error{Code: "ORG_NOT_FOUND", Data: "organization not found"})
 	}
@@ -52,12 +52,12 @@ func getInterviewInEvent(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, &utils.Error{Code: "BAD_REQUEST", Data: "eid and iid need to be an unsigned integer"})
 	}
 
-	_, evtErr := database.QueryEventById(eid)
+	_, evtErr := model.QueryEventById(eid)
 	if errors.Is(evtErr, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, &utils.Error{Code: "EVT_NOT_FOUND", Data: "event not found"})
 	}
 
-	interview, itvErr := database.QueryInterviewByIdInEvent(eid, iid)
+	interview, itvErr := model.QueryInterviewByIdInEvent(eid, iid)
 	if errors.Is(itvErr, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, &utils.Error{Code: "ITV_NOT_FOUND", Data: "interview not found"})
 	}
@@ -71,7 +71,7 @@ func getAllInterviewInEvent(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, &utils.Error{Code: "BAD_REQUEST", Data: "eid need to be an unsigned integer"})
 	}
 
-	interviews, itvErr := database.QueryAllInterviewInEvent(eid)
+	interviews, itvErr := model.QueryAllInterviewInEvent(eid)
 	if errors.Is(itvErr, gorm.ErrRecordNotFound){
 		return c.JSON(http.StatusNotFound, &utils.Error{Code: "EVT_NOT_FOUND", Data: "event not found"})
 	}

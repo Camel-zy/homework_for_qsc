@@ -2,16 +2,16 @@ package main
 
 import (
 	"git.zjuqsc.com/rop/rop-back-neo/conf"
-	"git.zjuqsc.com/rop/rop-back-neo/database"
+	"git.zjuqsc.com/rop/rop-back-neo/model"
 	"git.zjuqsc.com/rop/rop-back-neo/web/controller"
 	"gorm.io/driver/postgres"
 )
 
 func main() {
 	conf.Init()
-	database.Connect(postgres.Open(conf.GetDatabaseLoginInfo()))
-	database.CreateTables()
-	database.ConnectObjectStorage()
+	model.Connect(postgres.Open(conf.GetDatabaseLoginInfo()))
+	model.CreateTables()
+	model.ConnectObjectStorage()
 	controller.InitWebFramework()
 	controller.StartServer()
 }

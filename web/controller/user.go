@@ -2,7 +2,7 @@ package controller
 
 import (
 	"errors"
-	"git.zjuqsc.com/rop/rop-back-neo/database"
+	"git.zjuqsc.com/rop/rop-back-neo/model"
 	"git.zjuqsc.com/rop/rop-back-neo/utils"
 	"github.com/labstack/echo/v4"
 	"github.com/spf13/viper"
@@ -21,7 +21,7 @@ func getUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, &utils.Error{Code: "BAD_REQUEST", Data: "uid need to be an unsigned integer"})
 	}
 
-	user, usrErr := database.QueryUserById(uid);
+	user, usrErr := model.QueryUserById(uid);
 	if  errors.Is(usrErr, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, &utils.Error{Code: "USR_NOT_FOUND", Data: "user not found"})
 	}
@@ -30,7 +30,7 @@ func getUser(c echo.Context) error {
 }
 
 func getAllUser(c echo.Context) error {
-	users, _ := database.QueryAllUser()
+	users, _ := model.QueryAllUser()
 	return c.JSON(http.StatusOK, &utils.Error{Code: "SUCCESS", Data: &users})
 }
 
@@ -40,7 +40,7 @@ func getOrganization(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, &utils.Error{Code: "BAD_REQUEST", Data: "oid need to be an unsigned integer"})
 	}
 
-	organization, orgErr := database.QueryOrganizationById(oid)
+	organization, orgErr := model.QueryOrganizationById(oid)
 	if errors.Is(orgErr, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, &utils.Error{Code: "ORG_NOT_FOUND", Data: "organization not found"})
 	}
@@ -49,7 +49,7 @@ func getOrganization(c echo.Context) error {
 }
 
 func getAllOrganization(c echo.Context) error {
-	organizations, _ := database.QueryAllOrganization()
+	organizations, _ := model.QueryAllOrganization()
 	return c.JSON(http.StatusOK, &utils.Error{Code: "SUCCESS", Data: &organizations})
 }
 
@@ -61,12 +61,12 @@ func getDepartmentUnderOrganization(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, &utils.Error{Code: "BAD_REQUEST", Data: "oid and did need to be an unsigned integer"})
 	}
 
-	_, orgErr := database.QueryOrganizationById(oid)
+	_, orgErr := model.QueryOrganizationById(oid)
 	if errors.Is(orgErr, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, &utils.Error{Code: "ORG_NOT_FOUND", Data: "organization not found"})
 	}
 
-	department, depErr := database.QueryDepartmentByIdUnderOrganization(oid, did)
+	department, depErr := model.QueryDepartmentByIdUnderOrganization(oid, did)
 	if errors.Is(depErr, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, &utils.Error{Code: "DEP_NOT_FOUND", Data: "department not found"})
 	}
@@ -80,7 +80,7 @@ func getAllDepartmentUnderOrganization(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, &utils.Error{Code: "BAD_REQUEST", Data: "oid need to be an unsigned integer"})
 	}
 
-	departments, depErr := database.QueryAllDepartmentUnderOrganization(oid)
+	departments, depErr := model.QueryAllDepartmentUnderOrganization(oid)
 	if errors.Is(depErr, gorm.ErrRecordNotFound){
 		return c.JSON(http.StatusNotFound, &utils.Error{Code: "ORG_NOT_FOUND", Data: "organization not found"})
 	}

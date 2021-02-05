@@ -27,7 +27,7 @@ service port: `:1323`
 
 ## Directories
 `conf` contain functions related to the configuration file, and it is also the default directory of configuration file.  
-`database` contain CRUD functions and models of the tables.  
+`model` contain CRUD functions and models of the tables.  
 `test` contain functions only called by the unit test procedures.  
 `utils` contain functions that could not be classified into any other directory.  
 `web` contain functions that handle requests and perform responses, and also includes custom middlewares.
