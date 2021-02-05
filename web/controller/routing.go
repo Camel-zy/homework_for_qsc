@@ -30,7 +30,7 @@ func addRoutes(e *echo.Echo) {
 
 	/*
 	CAUTIOUS: These routers are created only for demo
-	This will be fixed on Feb 5th
+	This will be fixed
 	(RalXYZ)
 	*/
 	image := api.Group("/image")

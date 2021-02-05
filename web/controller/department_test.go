@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestUserApi(t *testing.T) {
+func TestDepartmentApi(t *testing.T) {
 	t.Parallel()
 	for _, v := range testCases {
 		v := v  // for fear of the errors caused by go-routines
@@ -21,21 +21,7 @@ func TestUserApi(t *testing.T) {
 	}
 }
 
-type req struct {
-	urlPath    string
-	urlQuery   string
-}
-type resp struct {
-	statusCode int
-	jsonStruct interface{}  // TODO: maybe we need to change the type of this
-}
-
-/* TODO: add more test cases */
-var testCases = []struct {
-	name string
-	req  req
-	resp resp
-} {
+var testCases = []testCase{
 	{
 		name: "GetOneExistingDepartmentFromOneExistingOrganization",
 		req: req{
@@ -49,7 +35,7 @@ var testCases = []struct {
 		name: "GetOneExistingDepartmentFromOneNonExistingOrganization",
 		req: req{
 			urlPath: "/api/organization/department",
-			urlQuery: "?oid=100&did=1",
+			urlQuery: "?oid=2147483647&did=1",
 		},
 		resp: resp{
 			statusCode: http.StatusNotFound,
@@ -58,7 +44,7 @@ var testCases = []struct {
 		name: "GetOneNonExistingDepartmentFromOneExistingOrganization",
 		req: req{
 			urlPath: "/api/organization/department",
-			urlQuery: "?oid=1&did=100",
+			urlQuery: "?oid=1&did=2147483647",
 		},
 		resp: resp{
 			statusCode: http.StatusNotFound,
@@ -68,6 +54,34 @@ var testCases = []struct {
 		req: req{
 			urlPath: "/api/organization/department",
 			urlQuery: "?oid=1",
+		},
+		resp: resp{
+			statusCode: http.StatusBadRequest,
+		},
+	}, {
+		name: "GetAllDepartmentsFromOneExistingOrganization",
+		req: req{
+			urlPath: "/api/organization/department/all",
+			urlQuery: "?oid=1",
+		},
+		resp: resp{
+			statusCode: http.StatusOK,
+		},
+	},
+	{
+		name: "GetAllDepartmentsFromOneNoneExistingOrganization",
+		req: req{
+			urlPath: "/api/organization/department/all",
+			urlQuery: "?oid=2147483647",
+		},
+		resp: resp{
+			statusCode: http.StatusNotFound,
+		},
+	}, {
+		name: "BadRequest",
+		req: req{
+			urlPath: "/api/organization/department/all",
+			urlQuery: "?oid=AStupidStringThatMayCrashTheService",
 		},
 		resp: resp{
 			statusCode: http.StatusBadRequest,

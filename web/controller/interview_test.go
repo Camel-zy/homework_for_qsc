@@ -7,9 +7,9 @@ import (
 	"testing"
 )
 
-func TestEventApi(t *testing.T) {
+func TestInterviewApi(t *testing.T) {
 	t.Parallel()
-	for _, v := range eventTestCases {
+	for _, v := range interviewTestCases {
 		v := v  // for fear of the errors caused by go-routines
 		t.Run(v.name, func(t *testing.T) {
 			t.Parallel()
@@ -21,39 +21,39 @@ func TestEventApi(t *testing.T) {
 	}
 }
 
-var eventTestCases = []testCase{
+var interviewTestCases = []testCase{
 	{
-		name: "GetOneExistingEventFromOneExistingOrganization",
+		name: "GetOneExistingInterviewFromOneExistingEvent",
 		req: req{
-			urlPath: "/api/organization/event",
-			urlQuery: "?oid=1&eid=1",
+			urlPath: "/api/organization/event/interview",
+			urlQuery: "?eid=1&iid=1",
 		},
 		resp: resp{
 			statusCode: http.StatusOK,
 		},
 	}, {
-		name: "GetOneExistingEventFromOneNonExistingOrganization",
+		name: "GetOneExistingInterviewFromOneNonExistingEvent",
 		req: req{
-			urlPath: "/api/organization/event",
-			urlQuery: "?oid=100&eid=1",
+			urlPath: "/api/organization/event/interview",
+			urlQuery: "?eid=100&iid=1",
 		},
 		resp: resp{
 			statusCode: http.StatusNotFound,
 		},
 	}, {
-		name: "GetOneNonExistingEventFromOneExistingOrganization",
+		name: "GetOneNonExistingInterviewFromOneExistingEvent",
 		req: req{
-			urlPath: "/api/organization/event",
-			urlQuery: "?oid=1&eid=100",
+			urlPath: "/api/organization/event/interview",
+			urlQuery: "?eid=1&iid=100",
 		},
 		resp: resp{
 			statusCode: http.StatusNotFound,
 		},
 	}, {
-		name: "BadRequestForOrganization",
+		name: "BadRequestForEvent",
 		req: req{
-			urlPath: "/api/organization/event",
-			urlQuery: "?oid=1",
+			urlPath: "/api/organization/event/interview",
+			urlQuery: "?eid=1",
 		},
 		resp: resp{
 			statusCode: http.StatusBadRequest,

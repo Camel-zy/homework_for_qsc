@@ -15,6 +15,11 @@ import (
 
 var fileKey = "file"
 
+/*
+CAUTIOUS: This function is only a demo
+This will be fixed
+(RalXYZ)
+*/
 func setImage(c echo.Context) error {
 	/* get file from HTTP request */
 	fileHeader, err := c.FormFile(fileKey)
@@ -61,8 +66,7 @@ func setImage(c echo.Context) error {
 
 /*
 CAUTIOUS: This function is only a demo
-It can only retrieve a file named "test.jpg" currently.
-This will be fixed on Feb 5th
+This will be fixed
 (RalXYZ)
  */
 func getImage(c echo.Context) error {
