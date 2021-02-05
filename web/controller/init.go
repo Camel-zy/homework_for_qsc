@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/labstack/echo/v4"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
@@ -13,6 +14,8 @@ func InitWebFramework() {
 	e = echo.New()
 	e.HideBanner = true
 	addRoutes(e)
+
+	logrus.Info("Echo framework initialized")
 }
 
 func StartServer() {

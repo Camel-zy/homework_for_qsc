@@ -2,19 +2,20 @@ package conf
 
 import (
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
 func Init() {
 	viper.SetConfigName("conf")  // set the config file name. Viper will automatically detect the file extension name
-	viper.AddConfigPath("./conf")     // search the config file under the current directory
+	viper.AddConfigPath("./")     // search the config file under the current directory
 	// viper.AddConfigPath("foo")  // you can search this config file under multiple directories
 
 	if err := viper.ReadInConfig(); err != nil {
-		panic(fmt.Errorf("Fatal error while reading config file: %s \n", err))
+		logrus.Panic(err)
 	}
 
-	fmt.Println("Configuration file loaded.")
+	logrus.Info("Configuration file loaded")
 
 	var confItems = map[string][]string {
 		"rop": {"api_version", "test"},
@@ -25,21 +26,18 @@ func Init() {
 	}
 
 	for k, v := range confItems {
-		err := checkConfIsSet(k, v)
-		if err {
-			panic(fmt.Sprintf("\"%s\" item of your config file hasn't been set properly. \nPlease check your config file.", k))
-		}
+		_ = checkConfIsSet(k, v)
 	}
 
-	fmt.Println("Configuration file checking succeeded. All required values are set.")
+	logrus.Info("All required values in configuration file are set")
 }
 
 func checkConfIsSet(name string, keys []string) (getKeyErrExists bool) {
 	getKeyErrExists = false
 	for i := range keys {
 		if !viper.IsSet(name + "." + keys[i]) {
-			fmt.Printf("\"%s\" not set", keys[i])
-			fmt.Printf("in\"" + name + "\"\n")
+			logrus.WithField(name, keys[i]).
+				Fatal("The following item of your configuration file hasn't been set properly: ")
 			getKeyErrExists = true
 		}
 	}

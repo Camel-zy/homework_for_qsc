@@ -14,9 +14,9 @@
 
 
 ## External Packages 
-| Web Framework | ORM | Database | Object Storage | Config Manager | Authentication |
-| :---------: | :---: | :------: | :-----: | :-----: | :---: |
-| labstack/echo/v4 | gorm.io/gorm | gorm.io/driver/postgres | minio/minio-go/v7 | spf13/viper | dgrijalva/jwt-go |
+| Web Framework | ORM | Database | Object Storage | Config Manager | Log Manager | Authentication |
+| :---------: | :---: | :------: | :-----: | :-----: | :---: | :---: |
+| labstack/echo/v4 | gorm.io/gorm | gorm.io/driver/postgres | minio/minio-go/v7 | spf13/viper | sirupsen/logrus | dgrijalva/jwt-go |
 
 service port: `:1323`
 
@@ -35,8 +35,10 @@ service port: `:1323`
 
 
 ## Configuration
-Please create a configuration under file `./conf` directory before running.  
-The configuration file can be in JSON, YAML, TOML or INI format. This means the file name might be `conf.json`, `conf.yaml`, `conf.toml` or `conf.ini`. Just pick a format you like best.  
+Please create a configuration file under the project root directory before running.  
+The configuration file can be in JSON, YAML, TOML or INI format. 
+This means the file name could be `conf.json`, `conf.yaml`, `conf.toml` or `conf.ini`. 
+Just pick a format you like best.  
 **Please make sure the extension of configuration file is correct!**   
 Here is a sample of a YAML format configuration file:  
 
@@ -68,23 +70,32 @@ jwt:
   secret_key: ?????????????  # set this by yourself
 ```
 
-When you deploy this service, please change `is_secure_mode` to `true`. For more information about this, you are required to read the documentation of *Passport API v2*.  
+When you deploy this service, please change `is_secure_mode` to `true`. 
+For more information about this, you are required to read the documentation of *Passport API v2*.  
 To get the `app_secret`, consult the admin.   
-The `secrut_key` of JWT can be created by your own. It can be literally anything, just make sure it is hard for others to guess.  
+The `secrut_key` of JWT can be created by your own. 
+It can be literally anything, just make sure it is hard for others to guess.  
 
-The value of these variables depends on the configuration of your PostgreSQL database. **Please don't just simply copy and paste it without thinking about any possible modification.**  
+The value of these variables depends on the configuration of your PostgreSQL database. 
+**Please don't just simply copy and paste it without thinking about any possible modification.**  
 This is only a short-term solution. Configuration solutions like `Viper` are considered to be used in the future.
 
 
 
 ## Authentication
-If the cookie `qsc_rop_jwt` doesn't exist, or if this cookie is invalid for some reason, then this program will send an authentication request to the QSC Passport services, with the value stored in `qp2gl_sesstok` or `qp2gl_sesstok_secure`. 
-According to this response, if the user is authorized, then a `qsc_rop_jwt` cookie will be set, and before this cookie expires, the user can quickly access this ROP Backend service.  
+If the cookie `qsc_rop_jwt` doesn't exist, or if this cookie is invalid for some reason, 
+then this program will send an authentication request to the QSC Passport services, 
+with the value stored in `qp2gl_sesstok` or `qp2gl_sesstok_secure`. 
+According to this response, if the user is authorized, then a `qsc_rop_jwt` cookie will be set, 
+and before this cookie expires, the user can quickly access this ROP Backend service.  
 For further information about authentication, the documentation under `web/auth` directory may help you.  
 
 
 ## Getting Started
 The value of key `is_secure_mode` in the configuration file is expected to be set `false` during the testing period.  
 
-Before trying to send a request to this service, you need to set at least one cookie `qp2gl_sesstok` to the request header. You can also add another cookie `qp2gl_sesstok_secure` at the same time if you want, for the program can handle this situation properly.  
+Before trying to send a request to this service, 
+you need to set at least one cookie `qp2gl_sesstok` to the request header. 
+You can also add another cookie `qp2gl_sesstok_secure` at the same time if you want, 
+for the program can handle this situation properly.  
 For more information of these to cookies, you are *strongly* suggested reading the documentation of *Passport API v2*

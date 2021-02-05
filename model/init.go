@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"gorm.io/gorm"
 )
@@ -16,11 +17,13 @@ func Connect(dialector gorm.Dialector) {
 	var err error
 	gormDb, err = gorm.Open(dialector, &gorm.Config{})
 	if err != nil {
-		panic(err)
+		logrus.Fatal(err)
 	}
 	if gormDb == nil {
-		panic("DB is nil")
+		logrus.Fatal("DB is nil")
 	}
+
+	logrus.Info("PostgreSQL connected")
 }
 
 func CreateTables() {
@@ -38,7 +41,7 @@ func CreateTables() {
 		&Message{},
 		&Image{})
 	if err != nil {
-		panic(err)
+		logrus.Fatal(err)
 	}
 }
 
@@ -59,13 +62,15 @@ func ConnectObjectStorage() {
 	}
 	_, err = minioClient.ListBuckets(context.Background())
 	if err != nil {
-		panic(err)
+		logrus.Fatal(err)
 	}
 
 	err = createBuckets(bucketName)
 	if err != nil {
-		panic(err)
+		logrus.Fatal(err)
 	}
+
+	logrus.Info("MinIO connected")
 }
 
 func createBuckets(name string) error {

@@ -2,10 +2,10 @@ init-git.sh
 dev.sh
 
 # ROP config files #
-conf/*.json
-conf/*.yaml
-conf/*.toml
-conf/*.ini
+*.json
+*.yaml
+*.toml
+*.ini
 
 # Jetbrains IDE cofig files #
 .idea
