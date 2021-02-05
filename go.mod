@@ -7,6 +7,7 @@ require (
 	github.com/jackc/pgx/v4 v4.10.0 // indirect
 	github.com/labstack/echo/v4 v4.1.17
 	github.com/minio/minio-go/v7 v7.0.7
+	github.com/satori/go.uuid v1.2.0
 	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.5.1
 	golang.org/x/crypto v0.0.0-20201217014255-9d1352758620 // indirect

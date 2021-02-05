@@ -36,7 +36,8 @@ func CreateTables() {
 		&model.Event{},
 		&model.Interview{},
 		&model.JoinedInterview{},
-		&model.Message{})
+		&model.Message{},
+		&Image{})
 	if err != nil {
 		panic(err)
 	}

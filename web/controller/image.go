@@ -1,23 +1,20 @@
 package controller
 
 import (
+	"errors"
 	"fmt"
 	"git.zjuqsc.com/rop/rop-back-neo/database"
 	"git.zjuqsc.com/rop/rop-back-neo/utils"
 	"github.com/labstack/echo/v4"
 	"github.com/minio/minio-go/v7"
+	"github.com/satori/go.uuid"
+	"gorm.io/gorm"
 	"io"
 	"net/http"
 )
 
 var fileKey = "file"
 
-
-/*
-CAUTIOUS: This function is only a demo
-This will be fixed on Feb 5th
-(RalXYZ)
-*/
 func setImage(c echo.Context) error {
 	/* get file from HTTP request */
 	fileHeader, err := c.FormFile(fileKey)
@@ -40,8 +37,18 @@ func setImage(c echo.Context) error {
 		})
 	}
 
-	// FIXME: set file name and bucket name properly
-	err = database.CreateFile(c.Request().Context(), fileHeader.Filename, mimeType, file, fileHeader.Size)
+	uuidFileName := uuid.NewV4().String() // create a UUID v4 string (RFC 4122)
+	image := database.Image{
+		OriginalName: fileHeader.Filename,
+		CurrentName:  uuidFileName,
+		UserID:       uint(1),       // FIXME: This is currently fake
+	}
+	err = image.Save()
+	if err != nil {
+		panic(err)
+	}
+
+	err = database.CreateFile(c.Request().Context(), uuidFileName, mimeType, file, fileHeader.Size)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "ERROR_STORE_FILE",
@@ -59,8 +66,18 @@ This will be fixed on Feb 5th
 (RalXYZ)
  */
 func getImage(c echo.Context) error {
-	fileName := "test.jpg"  // FIXME: get this from psql
-	file, err := database.GetFile(c.Request().Context(), fileName)
+	image := database.Image{UserID: uint(1)}  // FIXME: This is currently fake
+	err := image.GetByUid()
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return c.JSON(http.StatusNotFound, &utils.Error{
+			Code: "FILE_NOT_FOUND",
+			Data: "File not found",
+		})
+	} else if err != nil {
+		panic(err)
+	}
+
+	file, err := database.GetFile(c.Request().Context(), image.CurrentName)
 	if err != nil {
 		panic(err)
 	}
@@ -83,7 +100,7 @@ func getImage(c echo.Context) error {
 		panic(err)
 	}
 
-	c.Response().Header().Set("Content-Disposition", fmt.Sprintf(`inline; filename="%s"`, fileName))
+	c.Response().Header().Set("Content-Disposition", fmt.Sprintf(`inline; filename="%s"`, image.OriginalName))
 	c.Response().Header().Set("Cache-Control", "public; max-age=259200")  // 3 months
 
 	return c.Stream(http.StatusOK, mimeType, file)

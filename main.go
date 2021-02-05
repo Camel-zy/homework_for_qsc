@@ -7,14 +7,11 @@ import (
 	"gorm.io/driver/postgres"
 )
 
-func init() {
+func main() {
 	conf.Init()
 	database.Connect(postgres.Open(conf.GetDatabaseLoginInfo()))
 	database.CreateTables()
 	database.ConnectObjectStorage()
 	controller.InitWebFramework()
-}
-
-func main() {
 	controller.StartServer()
 }

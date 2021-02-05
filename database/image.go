@@ -2,10 +2,28 @@ package database
 
 import (
 	"context"
+	"git.zjuqsc.com/rop/rop-back-neo/database/model"
 	"github.com/minio/minio-go/v7"
+	"gorm.io/gorm/clause"
 	"io"
 	"mime/multipart"
 )
+
+type Image struct {
+	ID           uint `gorm:"autoIncrement;primaryKey"`
+	UserID       uint
+	User         model.User
+	OriginalName string
+	CurrentName  string
+}
+
+func (image *Image) Save() error {
+	return DB.Save(image).Error
+}
+
+func (image *Image) GetByUid() error {
+	return DB.Preload(clause.Associations).Where(&model.User{ID: image.UserID}).First(image).Error
+}
 
 func CreateFile(ctx context.Context, objectName, contentType string, file multipart.File, objectSize int64) error {
 	/* set file pointer to the start of the file */
