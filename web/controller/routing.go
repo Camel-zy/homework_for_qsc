@@ -25,10 +25,8 @@ func addRoutes(e *echo.Echo) {
 	organization.GET("/department/all", getAllDepartmentUnderOrganization)
 	organization.GET("/event", getEventOfOrganization)
 	organization.GET("/event/all", getAllEventOfOrganization)
-
-	event := api.Group("/event")
-	event.GET("interview", getInterviewInEvent)
-	event.GET("interview/all", getAllInterviewInEvent)
+	organization.GET("/event/interview", getInterviewInEvent)
+	organization.GET("/event/interview/all", getAllInterviewInEvent)
 
 	/*
 	CAUTIOUS: These routers are created only for demo

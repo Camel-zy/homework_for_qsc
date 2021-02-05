@@ -72,41 +72,41 @@ var TestCases = []struct {
 			statusCode: http.StatusBadRequest,
 		},
 	},
-	// {
-	// 	name: "GetOneExistingInterviewFromOneExistingEvent",
-	// 	Req: Req{
-	// 		urlPath: "/api/event/interview",
-	// 		urlQuery: "?eid=1&iid=1",
-	// 	},
-	// 	Resp: Resp{
-	// 		statusCode: http.StatusOK,
-	// 	},
-	// }, {
-	// 	name: "GetOneExistingInterviewFromOneNonExistingEvent",
-	// 	Req: Req{
-	// 		urlPath: "/api/event/interview",
-	// 		urlQuery: "?eid=100&iid=1",
-	// 	},
-	// 	Resp: Resp{
-	// 		statusCode: http.StatusNotFound,
-	// 	},
-	// }, {
-	// 	name: "GetOneNonExistingInterviewFromOneExistingEvent",
-	// 	Req: Req{
-	// 		urlPath: "/api/event/interview",
-	// 		urlQuery: "?eid=1&iid=100",
-	// 	},
-	// 	Resp: Resp{
-	// 		statusCode: http.StatusNotFound,
-	// 	},
-	// }, {
-	// 	name: "BadRequestForEvent",
-	// 	Req: Req{
-	// 		urlPath: "/api/event/interview",
-	// 		urlQuery: "?eid=1",
-	// 	},
-	// 	Resp: Resp{
-	// 		statusCode: http.StatusBadRequest,
-	// 	},
-	// },
+	{
+		name: "GetOneExistingInterviewFromOneExistingEvent",
+		Req: Req{
+			urlPath: "/api/organization/event/interview",
+			urlQuery: "?eid=1&iid=1",
+		},
+		Resp: Resp{
+			statusCode: http.StatusOK,
+		},
+	}, {
+		name: "GetOneExistingInterviewFromOneNonExistingEvent",
+		Req: Req{
+			urlPath: "/api/organization/event/interview",
+			urlQuery: "?eid=100&iid=1",
+		},
+		Resp: Resp{
+			statusCode: http.StatusNotFound,
+		},
+	}, {
+		name: "GetOneNonExistingInterviewFromOneExistingEvent",
+		Req: Req{
+			urlPath: "/api/organization/event/interview",
+			urlQuery: "?eid=1&iid=100",
+		},
+		Resp: Resp{
+			statusCode: http.StatusNotFound,
+		},
+	}, {
+		name: "BadRequestForEvent",
+		Req: Req{
+			urlPath: "/api/organization/event/interview",
+			urlQuery: "?eid=1",
+		},
+		Resp: Resp{
+			statusCode: http.StatusBadRequest,
+		},
+	},
 }
