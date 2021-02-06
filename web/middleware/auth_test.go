@@ -51,7 +51,7 @@ func TestMain(m *testing.M) {
 	/* generate a valid JWT string for test */
 	rand.Seed(time.Now().Unix())
 	uid := uint(rand.Intn(1e5))
-	validJwtString, _ = utils.GenerateJWT(uid)
+	validJwtString, _, _ = utils.GenerateJWT(uid)
 
 	/* this constructor needs to be called after everything has been initialized */
 	constructTestCases()

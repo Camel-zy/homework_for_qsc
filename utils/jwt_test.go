@@ -17,7 +17,7 @@ func TestJWT(t *testing.T) {
 	rand.Seed(time.Now().Unix())
 	uid := uint(rand.Intn(1e5))
 
-	jwtString, _ := GenerateJWT(uid)
+	jwtString, _, _ := GenerateJWT(uid)
 	jwtToken, err := ParseJWT(jwtString)
 	assert.Nil(t, err)
 	claims, ok := jwtToken.Claims.(jwt.MapClaims)

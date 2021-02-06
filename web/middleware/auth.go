@@ -6,6 +6,7 @@ import (
 	"git.zjuqsc.com/rop/rop-back-neo/utils"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"io/ioutil"
 	"net/http"
@@ -51,7 +52,14 @@ func Auth(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		/* step three: generate JWT and set it into cookie field */
-		jwtString, timeWhenGen := utils.GenerateJWT(authResult.Uid)
+		jwtString, timeWhenGen, err := utils.GenerateJWT(authResult.Uid)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, &utils.Error{
+				Code: "JWT_GEN_FAILED",
+				Data: "Error occurs when generating ROP JWT",
+			})
+			return err
+		}
 		setCookie(c, jwtName, jwtString, timeWhenGen)
 
 		return next(c)
@@ -87,7 +95,10 @@ func authByQscPassport(c echo.Context) (*auth, error) {
 	}
 	cookie, getCookieErr := c.Cookie(cookieName)
 	if getCookieErr != nil {
-		c.JSON(http.StatusUnauthorized, &utils.Error{Code: "COOKIE_NOT_FOUND", Data: "qsc passport cookie is required"})
+		c.JSON(http.StatusUnauthorized, &utils.Error{
+			Code: "COOKIE_NOT_FOUND",
+			Data: "QSC passport cookie is required",
+		})
 		return nil, errors.New("COOKIE_NOT_FOUND")
 	}
 
@@ -104,7 +115,11 @@ func authByQscPassport(c echo.Context) (*auth, error) {
 	resp, getErr := requestToQscPassport(apiName, &params)
 
 	if getErr != nil{
-		c.JSON(http.StatusServiceUnavailable, &utils.Error{Code: "AUTH_SERVICE_ERROR", Data: "error occurs when sending request to auth service"})
+		logrus.Error(getErr)
+		c.JSON(http.StatusInternalServerError, &utils.Error{
+			Code: "AUTH_SERVICE_ERROR",
+			Data: "Error occurs when sending request to auth service",
+		})
 		return nil, errors.New("AUTH_SERVICE_ERROR")
 	}
 	defer resp.Body.Close()
@@ -112,19 +127,32 @@ func authByQscPassport(c echo.Context) (*auth, error) {
 	/* read the body of the response */
 	body, readErr := ioutil.ReadAll(resp.Body)
 	if readErr != nil {
-		panic(readErr)
+		logrus.Error(readErr)
+		c.JSON(http.StatusInternalServerError, &utils.Error{
+			Code: "AUTH_SERVICE_ERROR",
+			Data: "Cannot read the response from QSC Passport",
+		})
+		return nil, readErr
 	}
 
 	/* get the value of key "err" from the JSON response */
 	authResult := auth{}
 	jsonErr := json.Unmarshal(body, &authResult)
 	if jsonErr != nil {
-		panic(jsonErr)
+		logrus.Error(jsonErr)
+		c.JSON(http.StatusInternalServerError, &utils.Error{
+			Code: "AUTH_SERVICE_ERROR",
+			Data: "Cannot unmarshal JSON from QSC Passport response",
+		})
+		return nil, jsonErr
 	}
 
 	/* the request can be authorized IF AND ONLY IF error code is 0 */
 	if authResult.Err != 0 {
-		c.JSON(http.StatusUnauthorized, &utils.Error{Code: "AUTH_FAILED", Data: "auth failed according to the response of QSC Passport auth service"})
+		c.JSON(http.StatusUnauthorized, &utils.Error{
+			Code: "AUTH_FAILED",
+			Data: "Auth failed according to the response of QSC Passport auth service",
+		})
 		return nil, errors.New("AUTH_FAILED")
 	}
 

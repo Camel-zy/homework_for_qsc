@@ -3,12 +3,13 @@ package utils
 import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"strconv"
 	"time"
 )
 
-func GenerateJWT(uid uint) (string, *time.Time) {
+func GenerateJWT(uid uint) (string, *time.Time, error) {
 	mySigningKey := []byte(viper.GetString("jwt.secret_key"))
 
 	maxAge := viper.GetInt("jwt.max_age")     // read from configuration file
@@ -22,9 +23,10 @@ func GenerateJWT(uid uint) (string, *time.Time) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString(mySigningKey)
 	if err != nil {
-		panic(err)
+		logrus.Error(err)
+		return "", nil, err
 	}
-	return tokenString, &expireTime
+	return tokenString, &expireTime, nil
 }
 
 func ParseJWT(tokenString string) (*jwt.Token, error) {

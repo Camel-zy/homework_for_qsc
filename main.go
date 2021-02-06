@@ -9,6 +9,7 @@ import (
 
 func main() {
 	conf.Init()
+
 	model.Connect(postgres.Open(conf.GetDatabaseLoginInfo()))
 	model.CreateTables()
 

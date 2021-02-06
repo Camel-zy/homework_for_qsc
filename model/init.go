@@ -28,7 +28,7 @@ func Connect(dialector gorm.Dialector) {
 
 func CreateTables() {
 	if gormDb == nil {
-		panic("DB is nil")
+		logrus.Fatal("DB is nil")
 	}
 	err := gormDb.AutoMigrate(
 		&User{},
