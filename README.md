@@ -36,24 +36,32 @@ service port: `:1323`
 `utils` contain functions that could not be classified into any other directory.  
 `web` contain functions that handle requests and perform responses, and also includes custom middlewares.
 
+## Quick Start  
+1. Clone repository
+2. Install PostgreSQL and MinIO
+3. Create database and bucket
+4. Set configuration file properly (**IMPORTANT!!!**)
+5. Run!
 
+If you cannot understand the processes mentioned above, 
+then you need to find documentations in our GitLab Wiki for help.  
 
-## Configuration
+## How to set configuration file correctly
 Please create a configuration file under the project root directory before running.  
-The configuration file can be in JSON, YAML, TOML or INI format. 
-This means the file name could be `conf.json`, `conf.yaml`, `conf.toml` or `conf.ini`. 
+The configuration file can be in JSON, YAML, TOML or INI format.
+This means the file name could be `conf.json`, `conf.yaml`, `conf.toml` or `conf.ini`.
 Just pick a format you like best.  
 **Please make sure the extension of configuration file is correct!**   
-Here is a sample of a YAML format configuration file while deployment (**NOT FOR TESTING**). 
-If you want to make some testings on your own device, some values in the configuration file needs to be changed. 
-For more information, please seek for the related documentation on GitLab Wiki.  
+Here is a sample of a YAML format configuration file while deployment (**NOT FOR TESTING**).
+If you want to make some testings on your own device, some values in the configuration file needs to be changed.
+For more information, please seek for the related documentation on GitLab Wiki.
 
 ```yaml
 # conf/conf.yaml
 rop:
   api_version: 0.0
   test: false  # set this value true if you want to skip authentication
-sql:           # please set these values according to your psql config
+sql:           # please set these values according to your psql configuration
   user: rop
   password: rop_pass
   host: localhost
@@ -79,29 +87,8 @@ jwt:
 
 For more information about this, you are required to read the documentation of *Passport API v2*.  
 To get the `app_secret`, consult the admin.   
-The `secret_key` of JWT can be set by your own. 
-It can be literally anything, just make sure it is hard for others to guess.  
+The `secret_key` of JWT can be set by your own.
+It can be literally anything, just make sure it is hard for others to guess.
 
-The value of these variables depends on the configuration of your PostgreSQL database. 
+The value of these variables depends on the configuration of your PostgreSQL database.
 **Please don't just simply copy and paste it without thinking about any possible modification.**  
-This is only a short-term solution. Configuration solutions like `Viper` are considered to be used in the future.
-
-
-
-## Authentication
-If the cookie `qsc_rop_jwt` doesn't exist, or if this cookie is invalid for some reason, 
-then this program will send an authentication request to the QSC Passport services, 
-with the value stored in `qp2gl_sesstok` or `qp2gl_sesstok_secure`. 
-According to this response, if the user is authorized, then a `qsc_rop_jwt` cookie will be set, 
-and before this cookie expires, the user can quickly access this ROP Backend service.  
-For further information about authentication, the documentation under `web/auth` directory may help you.  
-
-
-## Getting Started
-The value of key `is_secure_mode` in the configuration file is expected to be set `false` during the testing period.  
-
-Before trying to send a request to this service, 
-you need to set at least one cookie `qp2gl_sesstok` to the request header. 
-You can also add another cookie `qp2gl_sesstok_secure` at the same time if you want, 
-for the program can handle this situation properly.  
-For more information of these to cookies, you are *strongly* suggested reading the documentation of *Passport API v2*
