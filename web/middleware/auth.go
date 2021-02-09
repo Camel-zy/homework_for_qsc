@@ -118,7 +118,7 @@ func authByQscPassport(c echo.Context) (*auth, error) {
 		logrus.Error(getErr)
 		c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "AUTH_SERVICE_ERROR",
-			Data: "Error occurs when sending request to auth service",
+			Data: "Error occurs after sending request to QSC Passport, no response from QSC Passport",
 		})
 		return nil, errors.New("AUTH_SERVICE_ERROR")
 	}

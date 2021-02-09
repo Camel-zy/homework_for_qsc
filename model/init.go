@@ -50,6 +50,10 @@ func CreateRow(request interface{}) error {
 }
 
 func ConnectObjectStorage() {
+	if !viper.GetBool("minio.enable") {
+		return
+	}
+
 	bucketName = viper.GetString("minio.bucket_name")
 
 	var err error

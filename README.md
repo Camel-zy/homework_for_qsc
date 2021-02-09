@@ -14,14 +14,18 @@
 
 
 ## External Packages 
-| Web Framework | ORM | Database | Object Storage | Config Manager | Log Manager | Authentication |
-| :---------: | :---: | :------: | :-----: | :-----: | :---: | :---: |
-| labstack/echo/v4 | gorm.io/gorm | gorm.io/driver/postgres | minio/minio-go/v7 | spf13/viper | sirupsen/logrus | dgrijalva/jwt-go |
+| Web Framework | ORM | Database Driver | Object Storage Driver |
+| :---------: | :---: | :------: | :-----: |
+| labstack/echo/v4 | gorm.io/gorm | gorm.io/driver/postgres | minio/minio-go/v7 |
+
+| Configuration Manager | Log Manager | Authentication |
+| :-----: | :---: | :---: |
+spf13/viper | sirupsen/logrus | dgrijalva/jwt-go |
 
 service port: `:1323`
 
 ### Unit test
-| Assert | In-Memory Database |
+| Assert | In-Memory Database Driver |
 | :---: | :---------: |
 | stretchr/testify | gorm.io/driver/sqlite |
 
@@ -53,7 +57,8 @@ sql:           # please set these values according to your psql config
   host: localhost
   port: 5432
   db_name: rop
-minio:     # please set these values according to your MinIO config
+minio:          # please set these values according to your MinIO configuration
+  enable: true  # set this to false if you haven't installed MinIO on your device
   endpoint: 127.0.0.1:9000
   id: minioadmin
   secret: minioadmin
@@ -62,7 +67,7 @@ minio:     # please set these values according to your MinIO config
 passport:
   is_secure_mode: false
   app_id: rop
-  app_secret: ?????????????  # consult the admin for this
+  app_secret:                # consult the admin for this
   api_name: https://api.zjuqsc.com/passport/get_member_by_token?
 jwt:
   issuer: rop                # note: you can freely change this
