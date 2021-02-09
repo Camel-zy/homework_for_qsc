@@ -26,19 +26,18 @@ func Init() {
 	}
 
 	for k, v := range confItems {
-		_ = checkConfIsSet(k, v)
+		checkConfIsSet(k, v)
 	}
 
 	logrus.Info("All required values in configuration file are set")
 }
 
-func checkConfIsSet(name string, keys []string) (getKeyErrExists bool) {
-	getKeyErrExists = false
+func checkConfIsSet(name string, keys []string) {
 	for i := range keys {
-		if !viper.IsSet(name + "." + keys[i]) {
-			logrus.WithField(name, keys[i]).
+		wholeKey := name + "." + keys[i]
+		if !viper.IsSet(wholeKey) {
+			logrus.WithField(wholeKey, nil).
 				Fatal("The following item of your configuration file hasn't been set properly: ")
-			getKeyErrExists = true
 		}
 	}
 	return

@@ -44,13 +44,15 @@ The configuration file can be in JSON, YAML, TOML or INI format.
 This means the file name could be `conf.json`, `conf.yaml`, `conf.toml` or `conf.ini`. 
 Just pick a format you like best.  
 **Please make sure the extension of configuration file is correct!**   
-Here is a sample of a YAML format configuration file:  
+Here is a sample of a YAML format configuration file while deployment (**NOT FOR TESTING**). 
+If you want to make some testings on your own device, some values in the configuration file needs to be changed. 
+For more information, please seek for the related documentation on GitLab Wiki.  
 
 ```yaml
 # conf/conf.yaml
 rop:
   api_version: 0.0
-  test: true   # set this value true if you want to skip authentication
+  test: false  # set this value true if you want to skip authentication
 sql:           # please set these values according to your psql config
   user: rop
   password: rop_pass
@@ -65,20 +67,19 @@ minio:          # please set these values according to your MinIO configuration
   secure: false
   bucket_name: rop
 passport:
-  is_secure_mode: false
+  is_secure_mode: true
   app_id: rop
   app_secret:                # consult the admin for this
   api_name: https://api.zjuqsc.com/passport/get_member_by_token?
 jwt:
   issuer: rop                # note: you can freely change this
   max_age: 600               # seconds
-  secret_key: ?????????????  # set this by yourself
+  secret_key:                # set this by yourself
 ```
 
-When you deploy this service, please change `is_secure_mode` to `true`. 
 For more information about this, you are required to read the documentation of *Passport API v2*.  
 To get the `app_secret`, consult the admin.   
-The `secrut_key` of JWT can be created by your own. 
+The `secret_key` of JWT can be set by your own. 
 It can be literally anything, just make sure it is hard for others to guess.  
 
 The value of these variables depends on the configuration of your PostgreSQL database. 
