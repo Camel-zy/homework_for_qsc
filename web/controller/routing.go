@@ -3,13 +3,17 @@ package controller
 import (
 	"git.zjuqsc.com/rop/rop-back-neo/web/middleware"
 	"github.com/labstack/echo/v4"
+	"github.com/spf13/viper"
 )
 
 func addRoutes(e *echo.Echo) {
 	api := e.Group("/api")
 
-	if !testMain {
+	if !testController {
 		api.Use(middleware.Auth)
+		if !viper.GetBool("passport.enable") {
+			middleware.MockPassport()
+		}
 	}
 
 	api.GET("", getApiVersion)

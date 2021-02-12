@@ -16,6 +16,9 @@ import (
 
 const jwtName = "qsc_rop_jwt"
 
+const qp2glSesstokName = "qp2gl_sesstok"
+const qp2glSesstokSecureName = "qp2gl_sesstok_secure"
+
 type auth struct {
 	Err  int   `json:"err"`
 	Uid  uint  `json:"uid"`
@@ -87,10 +90,10 @@ func authByQscPassport(c echo.Context) (*auth, error) {
 	/* get cookies, which name is defined by QSC Passport */
 	var cookieName, tokenUrlParamName string
 	if isSecureMode {
-		cookieName = "qp2gl_sesstok_secure"
+		cookieName = qp2glSesstokSecureName
 		tokenUrlParamName = "token_secure"
 	} else {
-		cookieName = "qp2gl_sesstok"
+		cookieName = qp2glSesstokName
 		tokenUrlParamName = "token"
 	}
 	cookie, getCookieErr := c.Cookie(cookieName)

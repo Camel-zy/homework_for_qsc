@@ -57,10 +57,9 @@ If you want to make some testings on your own device, some values in the configu
 For more information, please seek for the related documentation on GitLab Wiki.
 
 ```yaml
-# conf/conf.yaml
+# conf.yaml
 rop:
   api_version: 0.0
-  test: false  # set this value true if you want to skip authentication
 sql:           # please set these values according to your psql configuration
   user: rop
   password: rop_pass
@@ -75,6 +74,7 @@ minio:          # please set these values according to your MinIO configuration
   secure: false
   bucket_name: rop
 passport:
+  enable: true   # this must be set true in production environment!!!
   is_secure_mode: true
   app_id: rop
   app_secret:                # consult the admin for this
@@ -85,9 +85,15 @@ jwt:
   secret_key:                # set this by yourself
 ```
 
+If you set `passport.enable` false, you will be in a superuser testing mode. 
+This means that if you set the session token of QSC Passport as "MockToken" in the Cookie field of your request, 
+you can quickly pass the authentication of a mocked QSC Passport, while using the identity `UID=0`.  
+This field is designed for testing purpose, which means you *must* set it true in production environment.  
+
+
 For more information about this, you are required to read the documentation of *Passport API v2*.  
-To get the `app_secret`, consult the admin.   
-The `secret_key` of JWT can be set by your own.
+To get the `passport.app_secret`, consult the admin.   
+The `jwt.secret_key` can be set by your own.
 It can be literally anything, just make sure it is hard for others to guess.
 
 The value of these variables depends on the configuration of your PostgreSQL database.

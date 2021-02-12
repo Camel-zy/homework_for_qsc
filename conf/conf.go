@@ -18,10 +18,10 @@ func Init() {
 	logrus.Info("Configuration file loaded")
 
 	var confItems = map[string][]string {
-		"rop": {"api_version", "test"},
+		"rop": {"api_version"},
 		"sql": {"user", "password", "host", "port", "db_name"},
-		"minio": {"endpoint", "id", "secret", "secure", "bucket_name"},
-		"passport": {"is_secure_mode", "app_id", "app_secret", "api_name"},
+		"minio": {"enable", "endpoint", "id", "secret", "secure", "bucket_name"},
+		"passport": {"enable", "is_secure_mode", "app_id", "app_secret", "api_name"},
 		"jwt": {"issuer", "max_age", "secret_key"},
 	}
 
