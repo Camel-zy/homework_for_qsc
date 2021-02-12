@@ -23,8 +23,7 @@ func MockPassport() {
 		resp = utils.CreateResponse(req, ePassport)
 		return
 	}
-
-	mockQscPassportConf()
+	viper.Set("passport.api_name", "/passport/get_member_by_token?")
 }
 
 /* A mocked QSC Passport service */
@@ -54,7 +53,7 @@ func mockQscPassportConf() {
 	{
 		"passport": {
 			"enable": false,
-			"test": true,
+			"is_secure_mode": true,
 			"app_id": "NotImportant", 
 			"app_secret": "StillNotImportant",
 			"api_name": "/passport/get_member_by_token?"
