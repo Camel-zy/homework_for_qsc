@@ -8,8 +8,8 @@ import (
 
 func Init() {
 	viper.SetConfigName("conf")  // set the config file name. Viper will automatically detect the file extension name
+	viper.AddConfigPath("/etc/rop-neo")  // search `/etc`
 	viper.AddConfigPath("./")     // search the config file under the current directory
-	// viper.AddConfigPath("foo")  // you can search this config file under multiple directories
 
 	if err := viper.ReadInConfig(); err != nil {
 		logrus.Panic(err)
