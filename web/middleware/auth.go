@@ -43,8 +43,9 @@ It makes authentication faster (sending request to a remote server is relatively
 func Auth(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		/* step one: authenticate QSC JWT token */
-		_, err := authByRopJwt(c)
+		jwtToken , err := authByRopJwt(c)
 		if err == nil {
+			setUid(c, jwtToken)
 			return next(c)
 		}
 
@@ -55,7 +56,8 @@ func Auth(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		/* step three: generate JWT and set it into cookie field */
-		jwtString, timeWhenGen, err := utils.GenerateJWT(authResult.Uid)
+		jwtString, timeWhenGen, err := utils.GenerateJwt(authResult.Uid)
+		c.Set("uid", authResult.Uid)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, &utils.Error{
 				Code: "JWT_GEN_FAILED",
@@ -188,7 +190,8 @@ func authByRopJwt(c echo.Context) (*jwt.Token, error) {
 	}
 
 	/* check validity of JWT */
-	jwtToken, err := utils.ParseJWT(cookie.Value)
+	jwtToken, err := utils.ParseJwt(cookie.Value)
+
 	return jwtToken, err
 }
 
@@ -198,4 +201,10 @@ func setCookie(c echo.Context, name string, token string, expireTime *time.Time)
 	cookie.Value = token
 	cookie.Expires = *expireTime
 	c.SetCookie(cookie)
+}
+
+func setUid(c echo.Context, jwtToken *jwt.Token) {
+	claims := jwtToken.Claims.(jwt.MapClaims)
+	uid, _ := utils.IsUnsignedInteger(claims["sub"].(string))
+	c.Set("uid", uid)
 }

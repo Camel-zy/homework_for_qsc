@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func GenerateJWT(uid uint) (string, *time.Time, error) {
+func GenerateJwt(uid uint) (string, *time.Time, error) {
 	mySigningKey := []byte(viper.GetString("jwt.secret_key"))
 
 	maxAge := viper.GetInt("jwt.max_age")     // read from configuration file
@@ -29,7 +29,7 @@ func GenerateJWT(uid uint) (string, *time.Time, error) {
 	return tokenString, &expireTime, nil
 }
 
-func ParseJWT(tokenString string) (*jwt.Token, error) {
+func ParseJwt(tokenString string) (*jwt.Token, error) {
 	mySigningKey := []byte(viper.GetString("jwt.secret_key"))
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {

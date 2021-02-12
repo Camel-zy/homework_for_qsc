@@ -71,7 +71,7 @@ func setImage(c echo.Context) error {
 	image := model.Image{
 		OriginalName: fileHeader.Filename,
 		CurrentName:  uuidFileName,
-		UserID:       uint(1),       // FIXME: This is currently fake
+		UserID:       c.Get("uid").(uint),
 	}
 	err = image.Save()  // save the name relation into SQL database
 	if err != nil {
@@ -100,7 +100,7 @@ This will be fixed
 (RalXYZ)
  */
 func getImage(c echo.Context) error {
-	image := model.Image{UserID: uint(1)} // FIXME: This is currently fake
+	image := model.Image{UserID: c.Get("uid").(uint)}
 	err := image.GetByUid()  // get data from SQL
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, &utils.Error{
