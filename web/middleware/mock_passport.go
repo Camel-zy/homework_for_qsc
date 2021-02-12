@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"bytes"
-	"git.zjuqsc.com/rop/rop-back-neo/test"
+	"git.zjuqsc.com/rop/rop-back-neo/utils"
 	"github.com/labstack/echo/v4"
 	"github.com/spf13/viper"
 	"net/http"
@@ -19,8 +19,8 @@ func MockPassport() {
 	ePassport = echo.New()
 	ePassport.GET("/passport/get_member_by_token", mockQscPassportService)
 	requestToQscPassport = func(apiName string, params *url.Values) (resp *http.Response, err error) {
-		req := test.CreateRequest("GET", apiName + params.Encode(), nil)
-		resp = test.CreateResponse(req, ePassport)
+		req := utils.CreateRequest("GET", apiName + params.Encode(), nil)
+		resp = utils.CreateResponse(req, ePassport)
 		return
 	}
 

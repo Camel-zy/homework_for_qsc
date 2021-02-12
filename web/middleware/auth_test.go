@@ -54,10 +54,10 @@ func TestMiddleware(t *testing.T) {
 		t.Run(v.name, func(t *testing.T) {
 			// t.Parallel()
 			viper.Set("passport.is_secure_mode", v.isSecureMode)  // change secure mode based on testing case
-			req := test.CreateRequest("GET", "/test_authentication", nil)
+			req := utils.CreateRequest("GET", "/test_authentication", nil)
 			req.Header.Set("Cookie", v.cookie)
 
-			resp := test.CreateResponse(req, e)
+			resp := utils.CreateResponse(req, e)
 
 			if v.expectSuccess {
 				assert.Equal(t, http.StatusOK, resp.StatusCode)

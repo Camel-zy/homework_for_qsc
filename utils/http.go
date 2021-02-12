@@ -1,8 +1,8 @@
 /*
-This file seems to have no relation with any test procedure,
-but the functions in this file will be called only during the unit test.
+The functions in this file will be called during the unit test,
+and also might be called in the main procedure.
  */
-package test
+package utils
 
 import (
 	"bytes"
@@ -13,7 +13,7 @@ import (
 )
 
 /*
-Mock a HTTP request sent by front-end
+Create a HTTP request
  */
 func CreateRequest(method string, path string, data interface{}) *http.Request {
 	jsonByte, err := json.Marshal(data)

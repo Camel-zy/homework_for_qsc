@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"git.zjuqsc.com/rop/rop-back-neo/test"
+	"git.zjuqsc.com/rop/rop-back-neo/utils"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"testing"
@@ -13,8 +13,8 @@ func TestDepartmentApi(t *testing.T) {
 		v := v  // for fear of the errors caused by go-routines
 		t.Run(v.name, func(t *testing.T) {
 			t.Parallel()
-			req := test.CreateRequest("GET", v.req.urlPath + v.req.urlQuery, nil)
-			resp := test.CreateResponse(req, e)
+			req := utils.CreateRequest("GET", v.req.urlPath + v.req.urlQuery, nil)
+			resp := utils.CreateResponse(req, e)
 			assert.Equal(t, v.resp.statusCode, resp.StatusCode)
 			// TODO: check whether the struct (unmarshalled from JSON string in HTTP response) is expected
 		})
