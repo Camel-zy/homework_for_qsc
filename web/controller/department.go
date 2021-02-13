@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-func getDepartmentUnderOrganization(c echo.Context) error {
+func getDepartmentInOrganization(c echo.Context) error {
 	oid, errOid := utils.IsUnsignedInteger(c.QueryParam("oid"))
 	did, errDid := utils.IsUnsignedInteger(c.QueryParam("did"))
 
@@ -30,13 +30,13 @@ func getDepartmentUnderOrganization(c echo.Context) error {
 	return c.JSON(http.StatusOK, &utils.Error{Code: "SUCCESS", Data: &department})
 }
 
-func getAllDepartmentUnderOrganization(c echo.Context) error {
+func getAllDepartmentInOrganization(c echo.Context) error {
 	oid, typeErr := utils.IsUnsignedInteger(c.QueryParam("oid"))
 	if typeErr != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{Code: "BAD_REQUEST", Data: "oid need to be an unsigned integer"})
 	}
 
-	departments, depErr := model.QueryAllDepartmentUnderOrganization(oid)
+	departments, depErr := model.QueryAllDepartmentInOrganization(oid)
 	if errors.Is(depErr, gorm.ErrRecordNotFound){
 		return c.JSON(http.StatusNotFound, &utils.Error{Code: "ORG_NOT_FOUND", Data: "organization not found"})
 	}

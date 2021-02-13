@@ -25,7 +25,7 @@ var interviewTestCases = []testCase{
 	{
 		name: "GetOneExistingInterviewFromOneExistingEvent",
 		req: req{
-			urlPath: "/api/organization/event/interview",
+			urlPath: "/api/event/interview",
 			urlQuery: "?eid=1&iid=1",
 		},
 		resp: resp{
@@ -34,7 +34,7 @@ var interviewTestCases = []testCase{
 	}, {
 		name: "GetOneExistingInterviewFromOneNonExistingEvent",
 		req: req{
-			urlPath: "/api/organization/event/interview",
+			urlPath: "/api/event/interview",
 			urlQuery: "?eid=100&iid=1",
 		},
 		resp: resp{
@@ -43,7 +43,7 @@ var interviewTestCases = []testCase{
 	}, {
 		name: "GetOneNonExistingInterviewFromOneExistingEvent",
 		req: req{
-			urlPath: "/api/organization/event/interview",
+			urlPath: "/api//event/interview",
 			urlQuery: "?eid=1&iid=100",
 		},
 		resp: resp{
@@ -52,7 +52,7 @@ var interviewTestCases = []testCase{
 	}, {
 		name: "BadRequestForEvent",
 		req: req{
-			urlPath: "/api/organization/event/interview",
+			urlPath: "/api/event/interview",
 			urlQuery: "?eid=1",
 		},
 		resp: resp{

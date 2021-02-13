@@ -52,7 +52,7 @@ func QueryDepartmentByIdUnderOrganization(oid uint, did uint) (*Department, erro
 	return &dbDepartment, result.Error
 }
 
-func QueryAllDepartmentUnderOrganization(oid uint) (*[]Department, error) {
+func QueryAllDepartmentInOrganization(oid uint) (*[]Department, error) {
 	var dbDepartment []Department
 
 	/* we need to tell the user whether the organization can be found */

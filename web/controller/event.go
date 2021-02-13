@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-func getEventOfOrganization(c echo.Context) error {
+func getEventInOrganization(c echo.Context) error {
 	oid, errOid := utils.IsUnsignedInteger(c.QueryParam("oid"))
 	eid, errEid := utils.IsUnsignedInteger(c.QueryParam("eid"))
 
@@ -22,7 +22,7 @@ func getEventOfOrganization(c echo.Context) error {
 		return c.JSON(http.StatusNotFound, &utils.Error{Code: "ORG_NOT_FOUND", Data: "organization not found"})
 	}
 
-	event, evtErr := model.QueryEventByIdOfOrganization(oid, eid)
+	event, evtErr := model.QueryEventByIdInOrganization(oid, eid)
 	if errors.Is(evtErr, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, &utils.Error{Code: "EVT_NOT_FOUND", Data: "event not found"})
 	}
@@ -30,13 +30,13 @@ func getEventOfOrganization(c echo.Context) error {
 	return c.JSON(http.StatusOK, &utils.Error{Code: "SUCCESS", Data: &event})
 }
 
-func getAllEventOfOrganization(c echo.Context) error {
+func getAllEventInOrganization(c echo.Context) error {
 	oid, typeErr := utils.IsUnsignedInteger(c.QueryParam("oid"))
 	if typeErr != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{Code: "BAD_REQUEST", Data: "oid need to be an unsigned integer"})
 	}
 
-	events, evtErr := model.QueryAllEventOfOrganization(oid)
+	events, evtErr := model.QueryAllEventInOrganization(oid)
 	if errors.Is(evtErr, gorm.ErrRecordNotFound){
 		return c.JSON(http.StatusNotFound, &utils.Error{Code: "ORG_NOT_FOUND", Data: "organization not found"})
 	}

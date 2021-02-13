@@ -60,6 +60,9 @@ For more information, please seek for the related documentation on GitLab Wiki.
 # conf.yaml
 rop:
   api_version: 0.0
+  allow_origins:  # simply set a '*' in this field while testing
+    - example.com
+    - deploy.environment.zjuqsc.com
 sql:           # please set these values according to your psql configuration
   user: rop
   password: rop_pass
@@ -75,7 +78,7 @@ minio:          # please set these values according to your MinIO configuration
   bucket_name: rop
 passport:
   enable: true   # this must be set true in production environment!!!
-  is_secure_mode: true
+  is_secure_mode: true       # this determines which Passport cookie would be processed
   app_id: rop
   app_secret:                # consult the admin for this
   api_name: https://api.zjuqsc.com/passport/get_member_by_token?
