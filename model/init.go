@@ -33,6 +33,7 @@ func CreateTables() {
 	err := gormDb.AutoMigrate(
 		&User{},
 		&Organization{},
+		&OrganizationHasUser{},
 		&Department{},
 		&JoinedDepartment{},
 		&Event{},

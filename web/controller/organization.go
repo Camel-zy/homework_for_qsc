@@ -24,6 +24,6 @@ func getOrganization(c echo.Context) error {
 }
 
 func getAllOrganization(c echo.Context) error {
-	organizations, _ := model.QueryAllOrganization()
+	organizations, _ := model.QueryAllOrganization(c.Get("uid").(uint))
 	return c.JSON(http.StatusOK, &utils.Error{Code: "SUCCESS", Data: &organizations})
 }
