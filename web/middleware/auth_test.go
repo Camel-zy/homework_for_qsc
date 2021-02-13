@@ -26,7 +26,7 @@ const qp2glSesstokInvalid = "MockTokenInvalid"
 const qp2glSesstokSecureInvalid = "MockSecureTokenInvalid"
 
 func TestMain(m *testing.M) {
-	MockPassport()
+	MockPassport(mockQscPassportService)
 
 	/* initialize Viper */
 	test.MockJwtConf(600)

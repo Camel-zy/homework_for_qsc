@@ -21,7 +21,7 @@ func addRoutes(e *echo.Echo) {
 	if !testController {
 		api.Use(middleware.Auth)
 		if !viper.GetBool("passport.enable") {
-			middleware.MockPassport()
+			middleware.MockPassport(middleware.MockQscPassportServiceWillPass)
 		}
 	}
 

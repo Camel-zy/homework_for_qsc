@@ -200,6 +200,7 @@ func setCookie(c echo.Context, name string, token string, expireTime *time.Time)
 	cookie.Name = name
 	cookie.Value = token
 	cookie.Expires = *expireTime
+	cookie.Path = "/"
 	c.SetCookie(cookie)
 }
 

@@ -14,10 +14,10 @@ const qp2glSesstokSecureValid = "MockSecureToken"
 
 var ePassport *echo.Echo
 
-func MockPassport() {
+func MockPassport(mockQscPassportFunction func(c echo.Context) error) {
 	/* initialize mocked QSC Passport server */
 	ePassport = echo.New()
-	ePassport.GET("/passport/get_member_by_token", mockQscPassportService)
+	ePassport.GET("/passport/get_member_by_token", mockQscPassportFunction)
 	requestToQscPassport = func(apiName string, params *url.Values) (resp *http.Response, err error) {
 		req := utils.CreateRequest("GET", apiName + params.Encode(), nil)
 		resp = utils.CreateResponse(req, ePassport)
@@ -26,7 +26,7 @@ func MockPassport() {
 	viper.Set("passport.api_name", "/passport/get_member_by_token?")
 }
 
-/* A mocked QSC Passport service */
+/* A mocked QSC Passport service for go test */
 func mockQscPassportService(c echo.Context) error {
 	success := &auth{Err: 0, Uid: 0}
 	failed := &auth{Err: 1}
@@ -44,6 +44,13 @@ func mockQscPassportService(c echo.Context) error {
 		}
 	}
 	return c.JSON(http.StatusUnauthorized, failed)
+}
+
+/*
+The authentication will 100% pass
+*/
+func MockQscPassportServiceWillPass(c echo.Context) error {
+	return c.JSON(http.StatusOK, &auth{Err: 0, Uid: 0})
 }
 
 /* configurations for mocking a QSC Passport service */
