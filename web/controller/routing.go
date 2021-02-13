@@ -29,6 +29,9 @@ func addRoutes(e *echo.Echo) {
 	user.GET("", getUser)
 	user.GET("/all", getAllUser)
 
+	my := api.Group("/my")  // mainly for frontend rendering shortcut
+	my.GET("/calendar", getMyCalendar)
+
 	organization := api.Group("/organization")
 	organization.GET("", getOrganization)
 	organization.GET("/all", getAllOrganization)
