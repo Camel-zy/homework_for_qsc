@@ -5,6 +5,7 @@ import (
 	"github.com/labstack/echo/v4"
 	echoMiddleware "github.com/labstack/echo/v4/middleware"
 	"github.com/spf13/viper"
+	"github.com/swaggo/echo-swagger"
 	"net/http"
 )
 
@@ -17,6 +18,7 @@ func addRoutes(e *echo.Echo) {
 	e.GET("/api", getApiVersion)
 
 	api := e.Group("/api")
+	api.GET("/swagger/*", echoSwagger.WrapHandler)
 
 	if !testController {
 		api.Use(middleware.Auth)

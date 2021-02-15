@@ -9,6 +9,12 @@ import (
 	"net/http"
 )
 
+// @tags Organization
+// @summary Get the information of an organization
+// @description Get organization by oid
+// @produce  json
+// @param oid query uint true "Organization ID"
+// @router /organization/{oid} [get]
 func getOrganization(c echo.Context) error {
 	oid, typeErr := utils.IsUnsignedInteger(c.QueryParam("oid"))
 	if typeErr != nil {
