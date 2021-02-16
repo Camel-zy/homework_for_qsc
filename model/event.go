@@ -35,17 +35,8 @@ func QueryEventByID(id uint) (*Event, error) {
 	return &dbEvent, result.Error
 }
 
-<<<<<<< HEAD
 // SELECT * FROM event;
 func QueryEventByIDInOrganization(oid uint, eid uint) (*Event, error) {
-=======
-func UpdateEventById(requestEvent *Event) error {
-	result := gormDb.Model(&Event{ID: requestEvent.ID}).Updates(requestEvent)
-	return result.Error
-}
-
-func QueryEventByIdInOrganization(oid uint, eid uint) (*Event, error) {
->>>>>>> a66059cb899899d1f9fc618aa7de075315b9ad38
 	var dbEvent Event
 	result := gormDb.Preload(clause.Associations).Where(&Event{ID: eid, OrganizationID: oid}).First(&dbEvent)
 	return &dbEvent, result.Error

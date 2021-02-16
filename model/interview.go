@@ -52,17 +52,8 @@ func QueryInterviewByID(id uint) (*Interview, error) {
 	return &dbInterview, result.Error
 }
 
-<<<<<<< HEAD
 // SELECT * FROM Interview;
 func QueryInterviewByIDInEvent(eid uint, iid uint) (*Interview, error) {
-=======
-func UpdateInterviewById(requestInterview *Interview) error {
-	result := gormDb.Model(&Interview{ID: requestInterview.ID}).Updates(requestInterview)
-	return result.Error
-}
-
-func QueryInterviewByIdInEvent(eid uint, iid uint) (*Interview, error) {
->>>>>>> a66059cb899899d1f9fc618aa7de075315b9ad38
 	var dbInterview Interview
 	result := gormDb.Preload(clause.Associations).Where(&Interview{ID: iid, EventID: eid}).First(&dbInterview)
 	return &dbInterview, result.Error

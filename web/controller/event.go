@@ -10,7 +10,6 @@ import (
 	"gorm.io/gorm"
 )
 
-<<<<<<< HEAD
 // func addEvent(c echo.Context) error {
 
 // }
@@ -33,7 +32,6 @@ func getEvent(c echo.Context) error {
 	return c.JSON(http.StatusOK, &utils.Error{Code: "SUCCESS", Data: &event})
 }
 
-=======
 // @tags Organization
 // @summary Get event in organization
 // @description Get information of an event in a specific organization
@@ -42,7 +40,6 @@ func getEvent(c echo.Context) error {
 // @param eid query uint true "Event ID"
 // @produce json
 // @success 200 {object} model.Event
->>>>>>> a66059cb899899d1f9fc618aa7de075315b9ad38
 func getEventInOrganization(c echo.Context) error {
 	oid, errOid := utils.IsUnsignedInteger(c.QueryParam("oid"))
 	eid, errEid := utils.IsUnsignedInteger(c.QueryParam("eid"))
