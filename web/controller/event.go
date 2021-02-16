@@ -2,12 +2,35 @@ package controller
 
 import (
 	"errors"
+	"net/http"
+
 	"git.zjuqsc.com/rop/rop-back-neo/model"
 	"git.zjuqsc.com/rop/rop-back-neo/utils"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
-	"net/http"
 )
+
+// func addEvent(c echo.Context) error {
+
+// }
+
+// func setEvent(c echo.Context) error {
+
+// }
+
+func getEvent(c echo.Context) error {
+	eid, typeErr := utils.IsUnsignedInteger(c.QueryParam("eid"))
+	if typeErr != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{Code: "BAD_REQUEST", Data: "eid need to be an unsigned integer"})
+	}
+
+	event, evtErr := model.QueryEventByID(eid)
+	if errors.Is(evtErr, gorm.ErrRecordNotFound) {
+		return c.JSON(http.StatusNotFound, &utils.Error{Code: "EVT_NOT_FOUND", Data: "event not found"})
+	}
+
+	return c.JSON(http.StatusOK, &utils.Error{Code: "SUCCESS", Data: &event})
+}
 
 // @tags Organization
 // @summary Get event in organization
@@ -30,7 +53,7 @@ func getEventInOrganization(c echo.Context) error {
 		return c.JSON(http.StatusNotFound, &utils.Error{Code: "ORG_NOT_FOUND", Data: "organization not found"})
 	}
 
-	event, evtErr := model.QueryEventByIdInOrganization(oid, eid)
+	event, evtErr := model.QueryEventByIDInOrganization(oid, eid)
 	if errors.Is(evtErr, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, &utils.Error{Code: "EVT_NOT_FOUND", Data: "event not found"})
 	}
@@ -52,7 +75,7 @@ func getAllEventInOrganization(c echo.Context) error {
 	}
 
 	events, evtErr := model.QueryAllEventInOrganization(oid)
-	if errors.Is(evtErr, gorm.ErrRecordNotFound){
+	if errors.Is(evtErr, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, &utils.Error{Code: "ORG_NOT_FOUND", Data: "organization not found"})
 	}
 

@@ -2,12 +2,35 @@ package controller
 
 import (
 	"errors"
+	"net/http"
+
 	"git.zjuqsc.com/rop/rop-back-neo/model"
 	"git.zjuqsc.com/rop/rop-back-neo/utils"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
-	"net/http"
 )
+
+// func addInterview(c echo.Context) error {
+
+// }
+
+// func setInterview(c echo.Context) error {
+
+// }
+
+func getInterview(c echo.Context) error {
+	iid, typeErr := utils.IsUnsignedInteger(c.QueryParam("iid"))
+	if typeErr != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{Code: "BAD_REQUEST", Data: "iid need to be an unsigned integer"})
+	}
+
+	interview, itvErr := model.QueryInterviewByID(iid)
+	if errors.Is(itvErr, gorm.ErrRecordNotFound) {
+		return c.JSON(http.StatusNotFound, &utils.Error{Code: "ITV_NOT_FOUND", Data: "interview not found"})
+	}
+
+	return c.JSON(http.StatusOK, &utils.Error{Code: "SUCCESS", Data: &interview})
+}
 
 // @tags Event
 // @summary Get interview in event
@@ -25,12 +48,12 @@ func getInterviewInEvent(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, &utils.Error{Code: "BAD_REQUEST", Data: "eid and iid need to be an unsigned integer"})
 	}
 
-	_, evtErr := model.QueryEventById(eid)
+	_, evtErr := model.QueryEventByID(eid)
 	if errors.Is(evtErr, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, &utils.Error{Code: "EVT_NOT_FOUND", Data: "event not found"})
 	}
 
-	interview, itvErr := model.QueryInterviewByIdInEvent(eid, iid)
+	interview, itvErr := model.QueryInterviewByIDInEvent(eid, iid)
 	if errors.Is(itvErr, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, &utils.Error{Code: "ITV_NOT_FOUND", Data: "interview not found"})
 	}
@@ -52,7 +75,7 @@ func getAllInterviewInEvent(c echo.Context) error {
 	}
 
 	interviews, itvErr := model.QueryAllInterviewInEvent(eid)
-	if errors.Is(itvErr, gorm.ErrRecordNotFound){
+	if errors.Is(itvErr, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, &utils.Error{Code: "EVT_NOT_FOUND", Data: "event not found"})
 	}
 

@@ -1,21 +1,22 @@
 package model
 
 import (
-	"gorm.io/gorm/clause"
 	"time"
+
+	"gorm.io/gorm/clause"
 )
 
 type Event struct {
-	ID              uint          `gorm:"not null;autoIncrement;primaryKey"`
-	Name            string        `gorm:"size:40;not null"`
-	Description     string        `gorm:"size:200"`
-	OrganizationID  uint          `gorm:"not null"`
-	Organization    Organization  // FOREIGN KEY (OrganizationID) REFERENCES Organization(OrganizationID)
-	Status          uint          `gorm:"default:0"`  // 0 disabled, 1 testing, 2 running
-	OtherInfo       string        `gorm:"size:200"`
-	StartTime       time.Time     `gorm:"size:30;not null"`
-	EndTime         time.Time     `gorm:"size:30;not null"`
-	UpdatedTime     time.Time     `gorm:"not null"`
+	ID             uint         `gorm:"not null;autoIncrement;primaryKey"`
+	Name           string       `gorm:"size:40;not null"`
+	Description    string       `gorm:"size:200"`
+	OrganizationID uint         `gorm:"not null"`
+	Organization   Organization // FOREIGN KEY (OrganizationID) REFERENCES Organization(OrganizationID)
+	Status         uint         `gorm:"default:0"` // 0 disabled, 1 testing, 2 running
+	OtherInfo      string       `gorm:"size:200"`
+	StartTime      time.Time    `gorm:"size:30;not null"`
+	EndTime        time.Time    `gorm:"size:30;not null"`
+	UpdatedTime    time.Time    `gorm:"not null"`
 }
 
 func CreateEvent(requestEvent *Event) error {
@@ -23,18 +24,19 @@ func CreateEvent(requestEvent *Event) error {
 	return result.Error
 }
 
-func QueryEventById(id uint) (*Event, error) {
+func UpdateEventByID(requestEvent *Event) error {
+	result := gormDb.Model(&Event{ID: requestEvent.ID}).Updates(requestEvent)
+	return result.Error
+}
+
+func QueryEventByID(id uint) (*Event, error) {
 	var dbEvent Event
 	result := gormDb.First(&dbEvent, id)
 	return &dbEvent, result.Error
 }
 
-func UpdateEventById(requestEvent *Event) error {
-	result := gormDb.Model(&Event{ID: requestEvent.ID}).Updates(requestEvent)
-	return result.Error
-}
-
-func QueryEventByIdInOrganization(oid uint, eid uint) (*Event, error) {
+// SELECT * FROM event;
+func QueryEventByIDInOrganization(oid uint, eid uint) (*Event, error) {
 	var dbEvent Event
 	result := gormDb.Preload(clause.Associations).Where(&Event{ID: eid, OrganizationID: oid}).First(&dbEvent)
 	return &dbEvent, result.Error
