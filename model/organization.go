@@ -28,7 +28,7 @@ func CreateOrganization(requestOrganization *Organization) error {
 
 func QueryOrganizationById(id uint) (*Organization, error) {
 	var dbOrganization Organization
-	result := gormDb.First(&dbOrganization, id)
+	result := gormDb.Model(&Organization{}).First(&dbOrganization, id)
 	return &dbOrganization, result.Error
 }
 
@@ -37,7 +37,8 @@ func UpdateOrganizationById(requestOrganization *Organization) error {
 	return result.Error
 }
 
-func QueryAllOrganization(uid uint) (*[]Organization, error) {
+
+func QueryAllOrganization(uid uint) (*[]Brief, error) {
 	var dbOrganizationIds []OrganizationHasUser
 	gormDb.Select("organization_id").Where(&OrganizationHasUser{UserId: uid}).Find(&dbOrganizationIds)
 
@@ -51,7 +52,7 @@ func QueryAllOrganization(uid uint) (*[]Organization, error) {
 		}
 	}
 
-	var dbOrganization []Organization
-	result := gormDb.Find(&dbOrganization, organizationIds)
+	var dbOrganization []Brief
+	result := gormDb.Model(&Organization{}).Find(&dbOrganization, organizationIds)
 	return &dbOrganization, result.Error
 }

@@ -9,6 +9,12 @@ import (
 	"gorm.io/gorm"
 )
 
+type Brief struct {
+	ID              uint
+	Name            string
+	Description     string
+}
+
 var gormDb *gorm.DB
 var minioClient *minio.Client
 var bucketName string

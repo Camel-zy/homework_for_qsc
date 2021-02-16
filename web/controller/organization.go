@@ -10,11 +10,12 @@ import (
 )
 
 // @tags Organization
-// @summary Get the information of an organization
-// @description Get organization by oid
-// @produce  json
-// @param oid query uint true "Organization ID"
+// @summary Get information of organization
+// @description Get the information of a specific organization
 // @router /organization/{oid} [get]
+// @param oid query uint true "Organization ID"
+// @produce json
+// @success 200 {object} model.Organization
 func getOrganization(c echo.Context) error {
 	oid, typeErr := utils.IsUnsignedInteger(c.QueryParam("oid"))
 	if typeErr != nil {
@@ -29,6 +30,12 @@ func getOrganization(c echo.Context) error {
 	return c.JSON(http.StatusOK, &utils.Error{Code: "SUCCESS", Data: &organization})
 }
 
+// @tags Organization
+// @summary Get all organizations
+// @description Get brief information of all organizations
+// @router /organization/all [get]
+// @produce json
+// @success 200 {array} model.Brief
 func getAllOrganization(c echo.Context) error {
 	organizations, _ := model.QueryAllOrganization(c.Get("uid").(uint))
 	return c.JSON(http.StatusOK, &utils.Error{Code: "SUCCESS", Data: &organizations})
