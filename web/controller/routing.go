@@ -1,12 +1,13 @@
 package controller
 
 import (
+	"net/http"
+
 	"git.zjuqsc.com/rop/rop-back-neo/web/middleware"
 	"github.com/labstack/echo/v4"
 	echoMiddleware "github.com/labstack/echo/v4/middleware"
 	"github.com/spf13/viper"
-	"github.com/swaggo/echo-swagger"
-	"net/http"
+	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
 func addRoutes(e *echo.Echo) {
@@ -31,7 +32,7 @@ func addRoutes(e *echo.Echo) {
 	user.GET("", getUser)
 	user.GET("/all", getAllUser)
 
-	my := api.Group("/my")  // mainly for frontend rendering shortcut
+	my := api.Group("/my") // mainly for frontend rendering shortcut
 	my.GET("/calendar", getMyCalendar)
 
 	organization := api.Group("/organization")
@@ -43,13 +44,21 @@ func addRoutes(e *echo.Echo) {
 	organization.GET("/event/all", getAllEventInOrganization)
 
 	event := api.Group("/event")
+	// event.PUT("", addEvent)
+	// event.POST("", setEvent)
+	event.GET("", getEvent)
 	event.GET("/interview", getInterviewInEvent)
 	event.GET("/interview/all", getAllInterviewInEvent)
 
+	interview := api.Group("/interview")
+	// interview.PUT("", addInterview)
+	// interview.POST("", setInterview)
+	interview.GET("", getInterview)
+
 	/*
-	CAUTIOUS: These routers are created only for demo
-	This will be fixed
-	(RalXYZ)
+		CAUTIOUS: These routers are created only for demo
+		This will be fixed
+		(RalXYZ)
 	*/
 	image := api.Group("/image")
 	image.POST("", setImage)

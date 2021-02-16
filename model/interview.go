@@ -1,38 +1,39 @@
 package model
 
 import (
-	"gorm.io/gorm/clause"
 	"time"
+
+	"gorm.io/gorm/clause"
 )
 
 type Interview struct {
-	ID              uint       `gorm:"not null;autoIncrement;primaryKey"`
-	Name            string     `gorm:"size:40;not null"`
-	Description     string     `gorm:"size:200"`
-	EventID         uint       `gorm:"not null"`
-	Event           Event      // FOREIGN KEY (EventID) REFERENCES Event(EventID)
-	DepartmentID    uint       `gorm:"not null"`
-	OtherInfo       string     `gorm:"size:200"`
-	Location        string     `gorm:"size:200"`
-	MaxInterviewee  uint       `gorm:"default:6"`
-	StartTime       time.Time  `gorm:"not null"`
-	EndTime         time.Time  `gorm:"not null"`
-	UpdatedTime     time.Time  `gorm:"not null"`
+	ID             uint      `gorm:"not null;autoIncrement;primaryKey"`
+	Name           string    `gorm:"size:40;not null"`
+	Description    string    `gorm:"size:200"`
+	EventID        uint      `gorm:"not null"`
+	Event          Event     // FOREIGN KEY (EventID) REFERENCES Event(EventID)
+	DepartmentID   uint      `gorm:"not null"`
+	OtherInfo      string    `gorm:"size:200"`
+	Location       string    `gorm:"size:200"`
+	MaxInterviewee uint      `gorm:"default:6"`
+	StartTime      time.Time `gorm:"not null"`
+	EndTime        time.Time `gorm:"not null"`
+	UpdatedTime    time.Time `gorm:"not null"`
 }
 
 type JoinedInterview struct {
-	ID           uint       `gorm:"not null;autoIncrement;primaryKey"`
-	UserID       uint       `gorm:"not null"`
-	InterviewID  uint       `gorm:"not null"`
-	Result       uint       `gorm:"default:0"`
-	UpdatedTime  time.Time  `gorm:"not null"`
+	ID          uint      `gorm:"not null;autoIncrement;primaryKey"`
+	UserID      uint      `gorm:"not null"`
+	InterviewID uint      `gorm:"not null"`
+	Result      uint      `gorm:"default:0"`
+	UpdatedTime time.Time `gorm:"not null"`
 }
 
 type CrossInterview struct {
-	ID              uint       `gorm:"not null;autoIncrement;primaryKey"`
-	OrganizationID  uint       `gorm:"not null"`
-	InterviewID     uint       `gorm:"not null"`
-	UpdatedTime     time.Time  `gorm:"not null"`
+	ID             uint      `gorm:"not null;autoIncrement;primaryKey"`
+	OrganizationID uint      `gorm:"not null"`
+	InterviewID    uint      `gorm:"not null"`
+	UpdatedTime    time.Time `gorm:"not null"`
 }
 
 func CreateInterview(requestInterview *Interview) error {
@@ -40,19 +41,19 @@ func CreateInterview(requestInterview *Interview) error {
 	return result.Error
 }
 
-func QueryInterviewById(id uint) (*Interview, error) {
+func UpdateInterviewByID(requestInterview *Interview) error {
+	result := gormDb.Model(&Interview{ID: requestInterview.ID}).Updates(requestInterview)
+	return result.Error
+}
+
+func QueryInterviewByID(id uint) (*Interview, error) {
 	var dbInterview Interview
 	result := gormDb.First(&dbInterview, id)
 	return &dbInterview, result.Error
 }
 
-func UpdateInterviewById(requestInterview *Interview) error {
-	result := gormDb.Model(&Interview{ID: requestInterview.ID}).Updates(requestInterview)
-	return result.Error
-}
-
 // SELECT * FROM Interview;
-func QueryInterviewByIdInEvent(eid uint, iid uint) (*Interview, error) {
+func QueryInterviewByIDInEvent(eid uint, iid uint) (*Interview, error) {
 	var dbInterview Interview
 	result := gormDb.Preload(clause.Associations).Where(&Interview{ID: iid, EventID: eid}).First(&dbInterview)
 	return &dbInterview, result.Error
