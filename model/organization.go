@@ -1,6 +1,11 @@
 package model
 
-import "time"
+import (
+	"errors"
+	"github.com/sirupsen/logrus"
+	"gorm.io/gorm"
+	"time"
+)
 
 type Organization struct {
 	ID          uint      `gorm:"not null;autoIncrement;primaryKey"`
@@ -55,4 +60,15 @@ func QueryAllOrganization(uid uint) (*[]Brief, error) {
 	var dbOrganization []Brief
 	result := gormDb.Model(&Organization{}).Find(&dbOrganization, organizationIds)
 	return &dbOrganization, result.Error
+}
+
+func UserIsInOrganization(uid uint, oid uint) bool {
+	err := gormDb.First(&OrganizationHasUser{}, OrganizationHasUser{UserId: uid, OrganizationId: oid}).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return false
+	} else if err != nil {
+		logrus.WithField("uid", uid).WithField("oid", oid).Warn(err)
+		return false
+	}
+	return true
 }

@@ -32,7 +32,7 @@ func getInterview(c echo.Context) error {
 	return c.JSON(http.StatusOK, &utils.Error{Code: "SUCCESS", Data: &interview})
 }
 
-// @tags Event
+// @tags Interview
 // @summary Get interview in event
 // @description Get information of an interview in a specific event
 // @router /event/interview/{eid}{iid} [get]
@@ -61,7 +61,7 @@ func getInterviewInEvent(c echo.Context) error {
 	return c.JSON(http.StatusOK, &utils.Error{Code: "SUCCESS", Data: &interview})
 }
 
-// @tags Event
+// @tags Interview
 // @summary Get all interviews in event
 // @description Get all interviews in a specific event
 // @router /event/interview/all/{eid} [get]

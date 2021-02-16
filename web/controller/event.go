@@ -32,7 +32,7 @@ func getEvent(c echo.Context) error {
 	return c.JSON(http.StatusOK, &utils.Error{Code: "SUCCESS", Data: &event})
 }
 
-// @tags Organization
+// @tags Event
 // @summary Get event in organization
 // @description Get information of an event in a specific organization
 // @router /organization/event/{oid}{eid} [get]
@@ -61,7 +61,7 @@ func getEventInOrganization(c echo.Context) error {
 	return c.JSON(http.StatusOK, &utils.Error{Code: "SUCCESS", Data: &event})
 }
 
-// @tags Organization
+// @tags Event
 // @summary Get all events in organization
 // @description Get all events in a specific organization
 // @router /organization/event/all/{oid} [get]

@@ -7,7 +7,7 @@ import (
 	"github.com/labstack/echo/v4"
 	echoMiddleware "github.com/labstack/echo/v4/middleware"
 	"github.com/spf13/viper"
-	echoSwagger "github.com/swaggo/echo-swagger"
+	"github.com/swaggo/echo-swagger"
 )
 
 func addRoutes(e *echo.Echo) {
@@ -35,9 +35,9 @@ func addRoutes(e *echo.Echo) {
 	my := api.Group("/my") // mainly for frontend rendering shortcut
 	my.GET("/calendar", getMyCalendar)
 
-	organization := api.Group("/organization")
+	api.GET("/organization/all", getAllOrganization)
+	organization := api.Group("/organization", middleware.AuthOrganization)
 	organization.GET("", getOrganization)
-	organization.GET("/all", getAllOrganization)
 	organization.GET("/department", getDepartmentInOrganization)
 	organization.GET("/department/all", getAllDepartmentInOrganization)
 	organization.GET("/event", getEventInOrganization)

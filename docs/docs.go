@@ -31,7 +31,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Event"
+                    "Interview"
                 ],
                 "summary": "Get all interviews in event",
                 "parameters": [
@@ -63,7 +63,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Event"
+                    "Interview"
                 ],
                 "summary": "Get interview in event",
                 "parameters": [
@@ -122,7 +122,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Organization"
+                    "Event"
                 ],
                 "summary": "Get all events in organization",
                 "parameters": [
@@ -154,7 +154,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Organization"
+                    "Event"
                 ],
                 "summary": "Get event in organization",
                 "parameters": [
