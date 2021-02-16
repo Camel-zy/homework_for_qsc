@@ -51,19 +51,18 @@ func UpdateInterviewById(requestInterview *Interview) error {
 	return result.Error
 }
 
-// SELECT * FROM Interview;
 func QueryInterviewByIdInEvent(eid uint, iid uint) (*Interview, error) {
 	var dbInterview Interview
 	result := gormDb.Preload(clause.Associations).Where(&Interview{ID: iid, EventID: eid}).First(&dbInterview)
 	return &dbInterview, result.Error
 }
 
-func QueryAllInterviewInEvent(eid uint) (*[]Interview, error) {
-	var dbInterview []Interview
+func QueryAllInterviewInEvent(eid uint) (*[]Brief, error) {
+	var dbInterview []Brief
 	if findEventError := gormDb.First(&Event{}, eid).Error; findEventError != nil {
 		return nil, findEventError
 	}
-	result := gormDb.Preload(clause.Associations).Where(&Interview{EventID: eid}).Find(&dbInterview)
+	result := gormDb.Model(&Interview{}).Where(&Interview{EventID: eid}).Find(&dbInterview)
 	return &dbInterview, result.Error
 }
 

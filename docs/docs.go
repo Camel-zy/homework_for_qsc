@@ -24,16 +24,107 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/organization/{oid}": {
+        "/event/interview/all/{eid}": {
             "get": {
-                "description": "Get organization by oid",
+                "description": "Get all interviews in a specific event",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Event"
+                ],
+                "summary": "Get all interviews in event",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Event ID",
+                        "name": "eid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Brief"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/event/interview/{eid}{iid}": {
+            "get": {
+                "description": "Get information of an interview in a specific event",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Event"
+                ],
+                "summary": "Get interview in event",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Event ID",
+                        "name": "eid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Interview ID",
+                        "name": "iid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Interview"
+                        }
+                    }
+                }
+            }
+        },
+        "/organization/all": {
+            "get": {
+                "description": "Get brief information of all organizations",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Organization"
                 ],
-                "summary": "Get the information of an organization",
+                "summary": "Get all organizations",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Brief"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/organization/event/all/{oid}": {
+            "get": {
+                "description": "Get all events in a specific organization",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Organization"
+                ],
+                "summary": "Get all events in organization",
                 "parameters": [
                     {
                         "type": "integer",
@@ -42,7 +133,195 @@ var doc = `{
                         "in": "query",
                         "required": true
                     }
-                ]
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Brief"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/organization/event/{oid}{eid}": {
+            "get": {
+                "description": "Get information of an event in a specific organization",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Organization"
+                ],
+                "summary": "Get event in organization",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Organization ID",
+                        "name": "oid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Event ID",
+                        "name": "eid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Event"
+                        }
+                    }
+                }
+            }
+        },
+        "/organization/{oid}": {
+            "get": {
+                "description": "Get the information of a specific organization",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Organization"
+                ],
+                "summary": "Get information of organization",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Organization ID",
+                        "name": "oid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Organization"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "model.Brief": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Event": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "endTime": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "organization": {
+                    "description": "FOREIGN KEY (OrganizationID) REFERENCES Organization(OrganizationID)",
+                    "$ref": "#/definitions/model.Organization"
+                },
+                "organizationID": {
+                    "type": "integer"
+                },
+                "otherInfo": {
+                    "type": "string"
+                },
+                "startTime": {
+                    "type": "string"
+                },
+                "status": {
+                    "description": "0 disabled, 1 testing, 2 running",
+                    "type": "integer"
+                },
+                "updatedTime": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Interview": {
+            "type": "object",
+            "properties": {
+                "departmentID": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "endTime": {
+                    "type": "string"
+                },
+                "event": {
+                    "description": "FOREIGN KEY (EventID) REFERENCES Event(EventID)",
+                    "$ref": "#/definitions/model.Event"
+                },
+                "eventID": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "location": {
+                    "type": "string"
+                },
+                "maxInterviewee": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "otherInfo": {
+                    "type": "string"
+                },
+                "startTime": {
+                    "type": "string"
+                },
+                "updatedTime": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Organization": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updateTime": {
+                    "type": "string"
+                }
             }
         }
     }

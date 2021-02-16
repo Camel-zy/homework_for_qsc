@@ -9,6 +9,14 @@ import (
 	"net/http"
 )
 
+// @tags Event
+// @summary Get interview in event
+// @description Get information of an interview in a specific event
+// @router /event/interview/{eid}{iid} [get]
+// @param eid query uint true "Event ID"
+// @param iid query uint true "Interview ID"
+// @produce json
+// @success 200 {object} model.Interview
 func getInterviewInEvent(c echo.Context) error {
 	eid, errEid := utils.IsUnsignedInteger(c.QueryParam("eid"))
 	iid, errIid := utils.IsUnsignedInteger(c.QueryParam("iid"))
@@ -30,6 +38,13 @@ func getInterviewInEvent(c echo.Context) error {
 	return c.JSON(http.StatusOK, &utils.Error{Code: "SUCCESS", Data: &interview})
 }
 
+// @tags Event
+// @summary Get all interviews in event
+// @description Get all interviews in a specific event
+// @router /event/interview/all/{eid} [get]
+// @param eid query uint true "Event ID"
+// @produce json
+// @success 200 {array} model.Brief
 func getAllInterviewInEvent(c echo.Context) error {
 	eid, typeErr := utils.IsUnsignedInteger(c.QueryParam("eid"))
 	if typeErr != nil {

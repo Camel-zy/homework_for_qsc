@@ -18,7 +18,7 @@ func addRoutes(e *echo.Echo) {
 	e.GET("/api", getApiVersion)
 
 	api := e.Group("/api")
-	api.GET("/swagger/*", echoSwagger.WrapHandler)
+	api.GET("/doc/*", echoSwagger.WrapHandler)
 
 	if !testController {
 		api.Use(middleware.Auth)
