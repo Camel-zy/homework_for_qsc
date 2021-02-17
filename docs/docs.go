@@ -150,6 +150,127 @@ var doc = `{
                 }
             }
         },
+        "/message/template": {
+            "put": {
+                "description": "Add a message template",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "MessageTemplate"
+                ],
+                "summary": "Add a message template",
+                "parameters": [
+                    {
+                        "description": "Message Template Infomation",
+                        "name": "tid",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.MessageTemplateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.MessageTemplateApi"
+                        }
+                    }
+                }
+            }
+        },
+        "/message/template/all/{oid}": {
+            "get": {
+                "description": "Get information of all message templates of a specific organization",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "MessageTemplate"
+                ],
+                "summary": "Get all message templates",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Organization ID",
+                        "name": "oid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.AllMessageTemplateApi"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/message/template/{tid}": {
+            "get": {
+                "description": "Get information of a specific message template",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "MessageTemplate"
+                ],
+                "summary": "Get a message template",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Message Template ID",
+                        "name": "tid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.MessageTemplateApi"
+                        }
+                    }
+                }
+            }
+        },
+        "/message/{mid}": {
+            "get": {
+                "description": "Get information of a specific message",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Message"
+                ],
+                "summary": "Get a message",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Message ID",
+                        "name": "mid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.MessageApi"
+                        }
+                    }
+                }
+            }
+        },
         "/organization/all": {
             "get": {
                 "description": "Get brief information of all organizations",
@@ -273,6 +394,66 @@ var doc = `{
                 }
             }
         },
+        "/organization/event/{oid}": {
+            "put": {
+                "description": "Create an events in a specific organization",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Event"
+                ],
+                "summary": "Create event in organization",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Organization ID",
+                        "name": "oid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Event name",
+                        "name": "Name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Event description",
+                        "name": "Description",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "0 disabled (default), 1 testing, 2 running",
+                        "name": "Status",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Other information about the event",
+                        "name": "OtherInfo",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Must be in RFC 3339 format",
+                        "name": "StartTime",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Must be in RFC 3339 format",
+                        "name": "EndTime",
+                        "in": "formData",
+                        "required": true
+                    }
+                ]
+            }
+        },
         "/organization/event/{oid}{eid}": {
             "get": {
                 "description": "Get information of an event in a specific organization",
@@ -307,6 +488,71 @@ var doc = `{
                         }
                     }
                 }
+            },
+            "post": {
+                "description": "Update an events in a specific organization",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Event"
+                ],
+                "summary": "Update event in organization",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Organization ID",
+                        "name": "oid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Event ID",
+                        "name": "eid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Event name",
+                        "name": "Name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Event description",
+                        "name": "Description",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "0 disabled (default), 1 testing, 2 running",
+                        "name": "Status",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Other information about the event",
+                        "name": "OtherInfo",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Must be in RFC 3339 format",
+                        "name": "StartTime",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Must be in RFC 3339 format",
+                        "name": "EndTime",
+                        "in": "formData",
+                        "required": true
+                    }
+                ]
             }
         },
         "/organization/{oid}": {
@@ -340,6 +586,20 @@ var doc = `{
         }
     },
     "definitions": {
+        "model.AllMessageTemplateApi": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
         "model.Brief": {
             "type": "object",
             "properties": {
@@ -429,6 +689,65 @@ var doc = `{
                     "type": "string"
                 },
                 "startTime": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.MessageApi": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "receiverID": {
+                    "type": "integer"
+                },
+                "reply": {
+                    "type": "string"
+                },
+                "senderID": {
+                    "type": "integer"
+                },
+                "text": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.MessageTemplateApi": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "organizationID": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "text": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.MessageTemplateRequest": {
+            "type": "object",
+            "required": [
+                "Description",
+                "Text"
+            ],
+            "properties": {
+                "Description": {
+                    "type": "string"
+                },
+                "OrganizationID": {
+                    "description": "not required because it might be 0",
+                    "type": "integer"
+                },
+                "Text": {
                     "type": "string"
                 }
             }

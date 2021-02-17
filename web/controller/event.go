@@ -2,84 +2,75 @@ package controller
 
 import (
 	"errors"
-	"net/http"
-
 	"git.zjuqsc.com/rop/rop-back-neo/model"
 	"git.zjuqsc.com/rop/rop-back-neo/utils"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
+	"net/http"
 )
 
-func addEvent(c echo.Context) error {
-	eid, typeErr := utils.IsUnsignedInteger(c.QueryParam("eid"))
-	if typeErr != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "eid need to be an unsigned integer",
-		})
-	}
+// @tags Event
+// @summary Create event in organization
+// @description Create an events in a specific organization
+// @router /organization/event/{oid} [put]
+// @param oid query uint true "Organization ID"
+// @param Name formData string true "Event name"
+// @param Description formData string false "Event description"
+// @param Status formData uint false "0 disabled (default), 1 testing, 2 running"
+// @param OtherInfo formData string false "Other information about the event"
+// @param StartTime formData string true "Must be in RFC 3339 format"
+// @param EndTime formData string true "Must be in RFC 3339 format"
+// @produce json
+func createEventInOrganization(c echo.Context) error {
+	event := c.Get("event").(model.Event) // this is set by middleware
 
-	_, evtErr := model.QueryEventByID(eid)
-	if !errors.Is(evtErr, gorm.ErrRecordNotFound) {
-		return c.JSON(http.StatusNotFound, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "event has existed",
-		})
-	}
-
-	req := &model.EventCreateRequest{}
-	c.Bind(req)
-
-	event := &model.Event{
-		ID:             eid,
-		Name:           req.Name,
-		Description:    req.Description,
-		OrganizationID: req.OrganizationID,
-		Organization:   req.Organization,
-		Status:         req.Status,
-		OtherInfo:      req.OtherInfo,
-		StartTime:      req.StartTime,
-		EndTime:        req.EndTime,
-		UpdatedTime:    req.UpdatedTime,
-	}
-
-	if CrtEvtErr := model.CreateEvent(event); CrtEvtErr != nil {
+	if err := model.CreateEvent(&event); err != nil {
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "INTERNAL_SERVER_ERR",
-			Data: "add event fail",
+			Data: "create event fail",
 		})
 	}
 
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
-		Data: "add event success",
+		Data: "create event success",
 	})
 }
 
-func setEvent(c echo.Context) error {
-	eid, typeErr := utils.IsUnsignedInteger(c.QueryParam("eid"))
-	if typeErr != nil {
+// @tags Event
+// @summary Update event in organization
+// @description Update an events in a specific organization
+// @router /organization/event/{oid}{eid} [post]
+// @param oid query uint true "Organization ID"
+// @param eid query uint true "Event ID"
+// @param Name formData string true "Event name"
+// @param Description formData string false "Event description"
+// @param Status formData uint false "0 disabled (default), 1 testing, 2 running"
+// @param OtherInfo formData string false "Other information about the event"
+// @param StartTime formData string true "Must be in RFC 3339 format"
+// @param EndTime formData string true "Must be in RFC 3339 format"
+// @produce json
+func updateEventInOrganization(c echo.Context) error {
+	event := c.Get("event").(model.Event) // this is set by middleware
+	eid, err := utils.IsUnsignedInteger(c.QueryParam("eid"))
+	if err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
 			Data: "eid need to be an unsigned integer",
 		})
 	}
-
-	event := model.Event{}
-	c.Bind(&event)
-
 	event.ID = eid
 
-	if UpdEvtErr := model.UpdateEventByID(&event); UpdEvtErr != nil {
+	if err = model.UpdateEventByID(&event); err != nil {
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "INTERNAL_SERVER_ERR",
-			Data: "set event fail",
+			Data: "update event fail",
 		})
 	}
 
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
-		Data: "set event success",
+		Data: "update event success",
 	})
 }
 
