@@ -12,18 +12,30 @@ import (
 func getUser(c echo.Context) error {
 	uid, typeErr := utils.IsUnsignedInteger(c.QueryParam("uid"))
 	if typeErr != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{Code: "BAD_REQUEST", Data: "uid need to be an unsigned integer"})
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "uid need to be an unsigned integer",
+		})
 	}
 
 	user, usrErr := model.QueryUserById(uid);
 	if  errors.Is(usrErr, gorm.ErrRecordNotFound) {
-		return c.JSON(http.StatusNotFound, &utils.Error{Code: "USR_NOT_FOUND", Data: "user not found"})
+		return c.JSON(http.StatusNotFound, &utils.Error{
+			Code: "NOT_FOUND",
+			Data: "user not found",
+		})
 	}
 
-	return c.JSON(http.StatusOK, &utils.Error{Code: "SUCCESS", Data: &user})
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: &user,
+	})
 }
 
 func getAllUser(c echo.Context) error {
 	users, _ := model.QueryAllUser()
-	return c.JSON(http.StatusOK, &utils.Error{Code: "SUCCESS", Data: &users})
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: &users,
+	})
 }

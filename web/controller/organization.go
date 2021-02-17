@@ -19,15 +19,24 @@ import (
 func getOrganization(c echo.Context) error {
 	oid, typeErr := utils.IsUnsignedInteger(c.QueryParam("oid"))
 	if typeErr != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{Code: "BAD_REQUEST", Data: "oid need to be an unsigned integer"})
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "oid need to be an unsigned integer"},
+			)
 	}
 
 	organization, orgErr := model.QueryOrganizationById(oid)
 	if errors.Is(orgErr, gorm.ErrRecordNotFound) {
-		return c.JSON(http.StatusNotFound, &utils.Error{Code: "ORG_NOT_FOUND", Data: "organization not found"})
+		return c.JSON(http.StatusNotFound, &utils.Error{
+			Code: "NOT_FOUND",
+			Data: "organization not found",
+		})
 	}
 
-	return c.JSON(http.StatusOK, &utils.Error{Code: "SUCCESS", Data: &organization})
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: &organization,
+	})
 }
 
 // @tags Organization
@@ -38,5 +47,8 @@ func getOrganization(c echo.Context) error {
 // @success 200 {array} model.Brief
 func getAllOrganization(c echo.Context) error {
 	organizations, _ := model.QueryAllOrganization(c.Get("uid").(uint))
-	return c.JSON(http.StatusOK, &utils.Error{Code: "SUCCESS", Data: &organizations})
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: &organizations,
+	})
 }

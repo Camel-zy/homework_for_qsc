@@ -21,15 +21,24 @@ import (
 func getInterview(c echo.Context) error {
 	iid, typeErr := utils.IsUnsignedInteger(c.QueryParam("iid"))
 	if typeErr != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{Code: "BAD_REQUEST", Data: "iid need to be an unsigned integer"})
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "iid need to be an unsigned integer",
+		})
 	}
 
 	interview, itvErr := model.QueryInterviewByID(iid)
 	if errors.Is(itvErr, gorm.ErrRecordNotFound) {
-		return c.JSON(http.StatusNotFound, &utils.Error{Code: "ITV_NOT_FOUND", Data: "interview not found"})
+		return c.JSON(http.StatusNotFound, &utils.Error{
+			Code: "NOT_FOUND",
+			Data: "interview not found",
+		})
 	}
 
-	return c.JSON(http.StatusOK, &utils.Error{Code: "SUCCESS", Data: &interview})
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: &interview,
+	})
 }
 
 // @tags Interview
@@ -45,20 +54,31 @@ func getInterviewInEvent(c echo.Context) error {
 	iid, errIid := utils.IsUnsignedInteger(c.QueryParam("iid"))
 
 	if errEid != nil || errIid != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{Code: "BAD_REQUEST", Data: "eid and iid need to be an unsigned integer"})
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "eid and iid need to be an unsigned integer",
+		})
 	}
 
 	_, evtErr := model.QueryEventByID(eid)
 	if errors.Is(evtErr, gorm.ErrRecordNotFound) {
-		return c.JSON(http.StatusNotFound, &utils.Error{Code: "EVT_NOT_FOUND", Data: "event not found"})
+		return c.JSON(http.StatusNotFound, &utils.Error{
+			Code: "NOT_FOUND",
+			Data: "event not found",
+		})
 	}
 
 	interview, itvErr := model.QueryInterviewByIDInEvent(eid, iid)
 	if errors.Is(itvErr, gorm.ErrRecordNotFound) {
-		return c.JSON(http.StatusNotFound, &utils.Error{Code: "ITV_NOT_FOUND", Data: "interview not found"})
+		return c.JSON(http.StatusNotFound, &utils.Error{
+			Code: "NOT_FOUND",
+			Data: "interview not found",})
 	}
 
-	return c.JSON(http.StatusOK, &utils.Error{Code: "SUCCESS", Data: &interview})
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: &interview,
+	})
 }
 
 // @tags Interview
@@ -71,13 +91,22 @@ func getInterviewInEvent(c echo.Context) error {
 func getAllInterviewInEvent(c echo.Context) error {
 	eid, typeErr := utils.IsUnsignedInteger(c.QueryParam("eid"))
 	if typeErr != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{Code: "BAD_REQUEST", Data: "eid need to be an unsigned integer"})
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "eid need to be an unsigned integer",
+		})
 	}
 
 	interviews, itvErr := model.QueryAllInterviewInEvent(eid)
 	if errors.Is(itvErr, gorm.ErrRecordNotFound) {
-		return c.JSON(http.StatusNotFound, &utils.Error{Code: "EVT_NOT_FOUND", Data: "event not found"})
+		return c.JSON(http.StatusNotFound, &utils.Error{
+			Code: "NOT_FOUND",
+			Data: "event not found",
+		})
 	}
 
-	return c.JSON(http.StatusOK, &utils.Error{Code: "SUCCESS", Data: &interviews})
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: &interviews,
+	})
 }

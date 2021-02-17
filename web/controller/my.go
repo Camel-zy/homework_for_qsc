@@ -19,5 +19,8 @@ func getMyCalendar(c echo.Context) error {
 		interviews, _ := model.QueryAllInterviewInEvent(event.ID)
 		allInterviews = append(allInterviews, *interviews...)
 	}
-	return c.JSON(http.StatusOK, &utils.Error{Code: "SUCCESS", Data: &allInterviews})
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: &allInterviews,
+	})
 }

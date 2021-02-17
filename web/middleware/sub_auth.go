@@ -24,7 +24,7 @@ func AuthOrganization(next echo.HandlerFunc) echo.HandlerFunc {
 		if !model.UserIsInOrganization(uid, oid) {
 			return c.JSON(http.StatusUnauthorized, &utils.Error{
 				Code: "NO_PRIVILEGE",
-				Data: "you have no privilege to access the information in this organization",
+				Data: "no privilege to access the information in this organization",
 			})
 		}
 		return next(c)
@@ -44,7 +44,7 @@ func SetEventOrganization(next echo.HandlerFunc) echo.HandlerFunc {
 		if err != nil {
 			return c.JSON(http.StatusUnauthorized, &utils.Error{
 				Code: "NO_PRIVILEGE",
-				Data: "you have no privilege to access the information in this organization",
+				Data: "no privilege to access the information in this organization",
 			})
 		}
 		c.Set("oid", event.OrganizationID)

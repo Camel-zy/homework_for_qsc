@@ -27,7 +27,7 @@ func setImage(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
-			Data: "The image hasn't been set in the valid field",
+			Data: "image hasn't been set in the valid field",
 		})
 	}
 
@@ -37,7 +37,7 @@ func setImage(c echo.Context) error {
 		logrus.Error(err)
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "ERROR_READ_FILE",
-			Data: "Error occurs while opening the uploaded file",
+			Data: "error occurs while opening the uploaded file",
 		})
 	}
 	defer file.Close()
@@ -46,7 +46,7 @@ func setImage(c echo.Context) error {
 	if mimeType[:5] != "image" {
 		return c.JSON(http.StatusUnsupportedMediaType, &utils.Error{
 			Code: "INVALID_FILE_TYPE",
-			Data: "The type of uploaded file is not a valid MIME image type",
+			Data: "type of the uploaded file is not a valid MIME image type",
 		})
 	}
 
@@ -78,7 +78,7 @@ func setImage(c echo.Context) error {
 		logrus.Error(err)
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "ERROR_STORE_IMAGE",
-			Data: "Internal error comes from SQL server",
+			Data: "internal error comes from SQL server",
 		})
 	}
 
@@ -86,8 +86,8 @@ func setImage(c echo.Context) error {
 	if err != nil {
 		logrus.Error(err)
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
-			Code: "ERROR_STORE_MAGE",
-			Data: "Internal error comes from object storage server",
+			Code: "ERROR_STORE_IMAGE",
+			Data: "internal error comes from object storage server",
 		})
 	}
 
@@ -104,14 +104,14 @@ func getImage(c echo.Context) error {
 	err := image.GetByUid()  // get data from SQL
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, &utils.Error{
-			Code: "IMAGE_NOT_FOUND",
-			Data: "Image not found",
+			Code: "NOT_FOUND",
+			Data: "image not found",
 		})
 	} else if err != nil {
 		logrus.Error(err)
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "ERROR_GET_FILE",
-			Data: "Error occurs when retrieving data from SQL",
+			Data: "error occurs when retrieving data from SQL",
 		})
 	}
 
@@ -120,7 +120,7 @@ func getImage(c echo.Context) error {
 		logrus.Error(err)
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "ERROR_GET_FILE",
-			Data: "Error occurs when retrieving data from object storage",
+			Data: "error occurs when retrieving data from object storage",
 		})
 	}
 
@@ -129,14 +129,14 @@ func getImage(c echo.Context) error {
 	if t, ok := err.(minio.ErrorResponse); ok {
 		if t.StatusCode == http.StatusNotFound {
 			return c.JSON(http.StatusNotFound, &utils.Error{
-				Code: "IMAGE_NOT_FOUND",
-				Data: "Image not found",
+				Code: "NOT_FOUND",
+				Data: "image not found",
 			})
 		} else {
 			logrus.Error(err)
 			return c.JSON(http.StatusInternalServerError, &utils.Error{
 				Code: "ERROR_GET_FILE",
-				Data: "Error occurs when retrieving data from object storage",
+				Data: "error occurs when retrieving data from object storage",
 			})
 		}
 	}
@@ -146,7 +146,7 @@ func getImage(c echo.Context) error {
 		logrus.Error(err)
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "ERROR_READ_FILE",
-			Data: "Error occurs when trying to read the retrieved file",
+			Data: "error occurs when trying to read the retrieved file",
 		})
 	}
 

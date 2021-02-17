@@ -61,7 +61,7 @@ func Auth(next echo.HandlerFunc) echo.HandlerFunc {
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, &utils.Error{
 				Code: "JWT_GEN_FAILED",
-				Data: "Error occurs when generating ROP JWT",
+				Data: "error occurs when generating ROP JWT",
 			})
 			return err
 		}
@@ -123,7 +123,7 @@ func authByQscPassport(c echo.Context) (*auth, error) {
 		logrus.Error(getErr)
 		c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "AUTH_SERVICE_ERROR",
-			Data: "Error occurs after sending request to QSC Passport, no response from QSC Passport",
+			Data: "error occurs after sending request to QSC Passport, no response from QSC Passport",
 		})
 		return nil, errors.New("AUTH_SERVICE_ERROR")
 	}
@@ -135,7 +135,7 @@ func authByQscPassport(c echo.Context) (*auth, error) {
 		logrus.Error(readErr)
 		c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "AUTH_SERVICE_ERROR",
-			Data: "Cannot read the response from QSC Passport",
+			Data: "cannot read the response from QSC Passport",
 		})
 		return nil, readErr
 	}
@@ -147,7 +147,7 @@ func authByQscPassport(c echo.Context) (*auth, error) {
 		logrus.Error(jsonErr)
 		c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "AUTH_SERVICE_ERROR",
-			Data: "Cannot unmarshal JSON from QSC Passport response",
+			Data: "cannot unmarshal JSON from QSC Passport response",
 		})
 		return nil, jsonErr
 	}
@@ -156,7 +156,7 @@ func authByQscPassport(c echo.Context) (*auth, error) {
 	if authResult.Err != 0 {
 		c.JSON(http.StatusUnauthorized, &utils.Error{
 			Code: "AUTH_FAILED",
-			Data: "Auth failed according to the response of QSC Passport auth service",
+			Data: "auth failed according to the response of QSC Passport auth service",
 		})
 		return nil, errors.New("AUTH_FAILED")
 	}
