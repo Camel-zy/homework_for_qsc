@@ -48,13 +48,13 @@ func addInterview(c echo.Context) error {
 	if CrtItvErr := model.CreateInterview(interview); CrtItvErr != nil {
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "INTERNAL_SERVER_ERR",
-			Data: "interview not found",
+			Data: "add interview fail",
 		})
 	}
 
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
-		Data: "add success",
+		Data: "add interview success",
 	})
 }
 
@@ -75,13 +75,13 @@ func setInterview(c echo.Context) error {
 	if UpdItvErr := model.UpdateInterviewByID(&interview); UpdItvErr != nil {
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "INTERNAL_SERVER_ERR",
-			Data: "interview not found",
+			Data: "set interview fail",
 		})
 	}
 
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
-		Data: "set success",
+		Data: "set interview success",
 	})
 }
 

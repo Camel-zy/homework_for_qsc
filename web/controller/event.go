@@ -46,13 +46,13 @@ func addEvent(c echo.Context) error {
 	if CrtEvtErr := model.CreateEvent(event); CrtEvtErr != nil {
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "INTERNAL_SERVER_ERR",
-			Data: "event not found",
+			Data: "add event fail",
 		})
 	}
 
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
-		Data: "add success",
+		Data: "add event success",
 	})
 }
 
@@ -73,13 +73,13 @@ func setEvent(c echo.Context) error {
 	if UpdEvtErr := model.UpdateEventByID(&event); UpdEvtErr != nil {
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "INTERNAL_SERVER_ERR",
-			Data: "event not found",
+			Data: "set event fail",
 		})
 	}
 
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
-		Data: "set success",
+		Data: "set event success",
 	})
 }
 
