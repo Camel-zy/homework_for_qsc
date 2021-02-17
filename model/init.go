@@ -2,6 +2,7 @@ package model
 
 import (
 	"context"
+	"errors"
 
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
@@ -15,6 +16,9 @@ type Brief struct {
 	Name            string
 	Description     string
 }
+
+var ErrNoRowsAffected = errors.New("no rows affected")
+var ErrInternalError = errors.New("internal error")
 
 var gormDb *gorm.DB
 var minioClient *minio.Client

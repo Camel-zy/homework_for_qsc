@@ -150,6 +150,203 @@ var doc = `{
                 }
             }
         },
+        "/message": {
+            "put": {
+                "description": "send a message",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Message"
+                ],
+                "summary": "Send a message",
+                "parameters": [
+                    {
+                        "description": "Message Infomation",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.MessageRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.MessageAPI"
+                        }
+                    }
+                }
+            }
+        },
+        "/message/template": {
+            "put": {
+                "description": "Add a message template",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "MessageTemplate"
+                ],
+                "summary": "Add a message template",
+                "parameters": [
+                    {
+                        "description": "Message Template Infomation",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.MessageTemplateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.MessageTemplateAPI"
+                        }
+                    }
+                }
+            }
+        },
+        "/message/template/all/{oid}": {
+            "get": {
+                "description": "Get information of all message templates of a specific organization",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "MessageTemplate"
+                ],
+                "summary": "Get all message templates",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Organization ID",
+                        "name": "oid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.AllMessageTemplateAPI"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/message/template/{tid}": {
+            "get": {
+                "description": "Get information of a specific message template",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "MessageTemplate"
+                ],
+                "summary": "Get a message template",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Message Template ID",
+                        "name": "tid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.MessageTemplateAPI"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Update a message template",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "MessageTemplate"
+                ],
+                "summary": "Update a message template",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Message Template ID",
+                        "name": "tid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "description": "Message Template Infomation",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.MessageTemplateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.MessageTemplateAPI"
+                        }
+                    }
+                }
+            }
+        },
+        "/message/{mid}": {
+            "get": {
+                "description": "Get information of a specific message",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Message"
+                ],
+                "summary": "Get a message",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Message ID",
+                        "name": "mid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.MessageAPI"
+                        }
+                    }
+                }
+            }
+        },
         "/organization/all": {
             "get": {
                 "description": "Get brief information of all organizations",
@@ -340,6 +537,20 @@ var doc = `{
         }
     },
     "definitions": {
+        "model.AllMessageTemplateAPI": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
         "model.Brief": {
             "type": "object",
             "properties": {
@@ -429,6 +640,91 @@ var doc = `{
                     "type": "string"
                 },
                 "startTime": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.MessageAPI": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "receiverID": {
+                    "type": "integer"
+                },
+                "reply": {
+                    "type": "string"
+                },
+                "senderID": {
+                    "type": "integer"
+                },
+                "text": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.MessageRequest": {
+            "type": "object",
+            "required": [
+                "MessageTemplateID",
+                "ReceiverID",
+                "SenderID"
+            ],
+            "properties": {
+                "FormID": {
+                    "description": "TODO(TO/GA): wait for model.form",
+                    "type": "integer"
+                },
+                "JoinedInterviewID": {
+                    "type": "integer"
+                },
+                "MessageTemplateID": {
+                    "type": "integer"
+                },
+                "ReceiverID": {
+                    "type": "integer"
+                },
+                "SenderID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.MessageTemplateAPI": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "organizationID": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "text": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.MessageTemplateRequest": {
+            "type": "object",
+            "required": [
+                "Description",
+                "Text"
+            ],
+            "properties": {
+                "Description": {
+                    "type": "string"
+                },
+                "OrganizationID": {
+                    "description": "not required because it might be 0",
+                    "type": "integer"
+                },
+                "Text": {
                     "type": "string"
                 }
             }

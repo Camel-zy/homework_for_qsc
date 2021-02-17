@@ -16,9 +16,8 @@ func addRoutes(e *echo.Echo) {
 		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
 	}))
 
-	e.GET("/api", getApiVersion)
-
 	api := e.Group("/api")
+	api.GET("/version", getApiVersion);
 	api.GET("/doc/*", echoSwagger.WrapHandler)
 
 	if !testController {

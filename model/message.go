@@ -11,18 +11,20 @@ type Message struct {
 	ReceiverID     uint      `gorm:"not null"`
 	Text           string    `gorm:"size:1023"`
 	Reply          string    `gorm:"size:1023"`
-	CreatedAt      time.Time `gorm:"autoCreateTime:nano"`
+	CreateTime     time.Time `gorm:"autoCreateTime"`
 }
 
+// TODO(TO/GA): wait for model.form and logic
 type MessageRequest struct {
 	SenderID          uint `json:"SenderID" validate:"required"`
 	ReceiverID        uint `json:"ReceiverID" validate:"required"`
 	MessageTemplateID uint `json:"MessageTemplateID" validate:"required"`
-	JoinedInterviewID uint `json:"JoinedInterviewID"`
-	FormID            uint `json:"FormID"` // TODO(TO/GA): wait for model.form
+	InterviewID       uint `json:"InterviewID"`
+	CrossInterviewID  uint `json:"CrossInterviewID"` // TODO(TO/GA): wait for logic
+	FormID            uint `json:"FormID"`
 }
 
-type MessageApi struct {
+type MessageAPI struct {
 	ID         uint
 	SenderID   uint
 	ReceiverID uint
@@ -31,13 +33,13 @@ type MessageApi struct {
 }
 
 type MessageTemplate struct {
-	ID             uint   `gorm:"not null;autoIncrement;primaryKey"`
-	IDInSMSService uint   `gorm:"not null"`
-	Description    string `gorm:"size:255"`
-	Text           string `gorm:"size:1023"`
-	OrganizationID uint   `gorm:"not null"`
-	Status         uint   `gorm:"default:0"`
-	UpdatedAt      time.Time
+	ID             uint      `gorm:"not null;autoIncrement;primaryKey"`
+	IDInSMSService uint      `gorm:"not null"`
+	Description    string    `gorm:"size:255"`
+	Text           string    `gorm:"size:1023"`
+	OrganizationID uint      `gorm:"not null"`
+	Status         uint      `gorm:"default:0"`
+	UpdatedTime    time.Time `gorm:"autoUpdateTime"`
 }
 
 type MessageTemplateRequest struct {
@@ -46,7 +48,7 @@ type MessageTemplateRequest struct {
 	OrganizationID uint   `json:"OrganizationID"` // not required because it might be 0
 }
 
-type MessageTemplateApi struct {
+type MessageTemplateAPI struct {
 	ID             uint
 	Description    string
 	Text           string
@@ -54,7 +56,7 @@ type MessageTemplateApi struct {
 	Status         uint
 }
 
-type AllMessageTemplateApi struct {
+type AllMessageTemplateAPI struct {
 	ID          uint
 	Description string
 	Status      uint
@@ -65,14 +67,17 @@ func CreateMessage(requestMessage *Message) error {
 	return result.Error
 }
 
-func QueryMessageById(id uint) (*MessageApi, error) {
-	var dbMessage MessageApi
+func QueryMessageById(id uint) (*MessageAPI, error) {
+	var dbMessage MessageAPI
 	result := gormDb.Model(&Message{}).First(&dbMessage, id)
 	return &dbMessage, result.Error
 }
 
 func UpdateMessageById(requestMessage *Message) error {
 	result := gormDb.Model(&Message{ID: requestMessage.ID}).Updates(requestMessage)
+	if result.RowsAffected == 0 && result.Error == nil {
+		return ErrNoRowsAffected
+	}
 	return result.Error
 }
 
@@ -81,14 +86,14 @@ func CreateMessageTemplate(requestMessageTemplate *MessageTemplate) error {
 	return result.Error
 }
 
-func QueryMessageTemplateById(id uint) (*MessageTemplateApi, error) {
-	var dbMessageTemplate MessageTemplateApi
+func QueryMessageTemplateById(id uint) (*MessageTemplateAPI, error) {
+	var dbMessageTemplate MessageTemplateAPI
 	result := gormDb.Model(&MessageTemplate{}).First(&dbMessageTemplate, id)
 	return &dbMessageTemplate, result.Error
 }
 
-func QueryAllMessageTemplateInOrganization(oid uint) (*[]AllMessageTemplateApi, error) {
-	var dbMessageTemplate []AllMessageTemplateApi
+func QueryAllMessageTemplateInOrganization(oid uint) (*[]AllMessageTemplateAPI, error) {
+	var dbMessageTemplate []AllMessageTemplateAPI
 	if findOrganizationError := gormDb.First(&Organization{}, oid).Error; findOrganizationError != nil {
 		return nil, findOrganizationError
 	}
@@ -98,5 +103,8 @@ func QueryAllMessageTemplateInOrganization(oid uint) (*[]AllMessageTemplateApi, 
 
 func UpdateMessageTemplateById(requestMessageTemplate *MessageTemplate) error {
 	result := gormDb.Model(&MessageTemplate{ID: requestMessageTemplate.ID}).Updates(requestMessageTemplate)
+	if result.RowsAffected == 0 && result.Error == nil {
+		return ErrNoRowsAffected
+	}
 	return result.Error
 }
