@@ -22,7 +22,7 @@ import (
 // @param EndTime formData string true "Must be in RFC 3339 format"
 // @produce json
 func createEventInOrganization(c echo.Context) error {
-	event := c.Get("event").(model.Event) // this is set by middleware
+	event := c.Get("event").(model.EventApi) // this is set by middleware
 
 	if err := model.CreateEvent(&event); err != nil {
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
@@ -43,15 +43,15 @@ func createEventInOrganization(c echo.Context) error {
 // @router /organization/event/{oid}{eid} [post]
 // @param oid query uint true "Organization ID"
 // @param eid query uint true "Event ID"
-// @param Name formData string true "Event name"
+// @param Name formData string false "Event name"
 // @param Description formData string false "Event description"
 // @param Status formData uint false "0 disabled (default), 1 testing, 2 running"
 // @param OtherInfo formData string false "Other information about the event"
-// @param StartTime formData string true "Must be in RFC 3339 format"
-// @param EndTime formData string true "Must be in RFC 3339 format"
+// @param StartTime formData string false "Must be in RFC 3339 format"
+// @param EndTime formData string false "Must be in RFC 3339 format"
 // @produce json
 func updateEventInOrganization(c echo.Context) error {
-	event := c.Get("event").(model.Event) // this is set by middleware
+	event := c.Get("event").(model.EventApi) // this is set by middleware
 	eid, err := utils.IsUnsignedInteger(c.QueryParam("eid"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{

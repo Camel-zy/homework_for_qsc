@@ -40,8 +40,8 @@ func addRoutes(e *echo.Echo) {
 	organization.GET("/department", getDepartmentInOrganization)
 	organization.GET("/department/all", getAllDepartmentInOrganization)
 	organization.GET("/event", getEventInOrganization)
-	organization.PUT("/event", createEventInOrganization, middleware.SetEventStruct)
-	organization.POST("/event", updateEventInOrganization, middleware.SetEventStruct)
+	organization.PUT("/event", createEventInOrganization,middleware.CheckSetEventValid , middleware.SetEvent)
+	organization.POST("/event", updateEventInOrganization, middleware.SetEvent)
 	organization.GET("/event/all", getAllEventInOrganization)
 
 	event := api.Group("/event", middleware.SetEventOrganization, middleware.AuthOrganization)

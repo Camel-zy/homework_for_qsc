@@ -492,8 +492,7 @@ var doc = `{
                         "type": "string",
                         "description": "Event name",
                         "name": "Name",
-                        "in": "formData",
-                        "required": true
+                        "in": "formData"
                     },
                     {
                         "type": "string",
@@ -517,15 +516,13 @@ var doc = `{
                         "type": "string",
                         "description": "Must be in RFC 3339 format",
                         "name": "StartTime",
-                        "in": "formData",
-                        "required": true
+                        "in": "formData"
                     },
                     {
                         "type": "string",
                         "description": "Must be in RFC 3339 format",
                         "name": "EndTime",
-                        "in": "formData",
-                        "required": true
+                        "in": "formData"
                     }
                 ]
             }
@@ -732,7 +729,6 @@ var doc = `{
                     "type": "string"
                 },
                 "status": {
-                    "description": "0 disabled, 1 testing, 2 running",
                     "type": "integer"
                 }
             }

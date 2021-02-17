@@ -1,6 +1,7 @@
 package model
 
 import (
+	"github.com/jinzhu/copier"
 	"time"
 )
 
@@ -21,19 +22,21 @@ type EventApi struct {
 	ID             uint
 	Name           string
 	Description    string
-	OrganizationID uint
-	Status         uint // 0 disabled, 1 testing, 2 running
+	OrganizationID uint      `query:"oid"`
+	Status         uint
 	OtherInfo      string
-	StartTime      time.Time
-	EndTime        time.Time
+	StartTime      time.Time `form:"StartTime"`
+	EndTime        time.Time `form:"EndTime"`
 }
 
-func CreateEvent(requestEvent *Event) error {
-	result := gormDb.Create(requestEvent)
+func CreateEvent(requestEvent *EventApi) error {
+	dbEvent := Event{}
+	copier.Copy(&dbEvent, requestEvent)
+	result := gormDb.Create(&dbEvent)
 	return result.Error
 }
 
-func UpdateEventByID(requestEvent *Event) error {
+func UpdateEventByID(requestEvent *EventApi) error {
 	result := gormDb.Model(&Event{ID: requestEvent.ID}).Updates(requestEvent)
 	return result.Error
 }
