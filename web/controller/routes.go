@@ -54,7 +54,7 @@ func addRoutes(e *echo.Echo) {
 	interview.POST("", setInterview)
 	interview.GET("", getInterview)
 
-	message := api.Group("/message") // TODO(TO/GA): auth middleware
+	message := api.Group("/message") // TODO(TO/GA): auth middleware & test
 	message.PUT("", addMessage)
 	message.GET("", getMessage)
 	// message.GET("/all", getAllMessage) TODO(TO/GA): wait until we know the logic

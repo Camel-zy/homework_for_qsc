@@ -672,11 +672,14 @@ var doc = `{
                 "SenderID"
             ],
             "properties": {
-                "FormID": {
-                    "description": "TODO(TO/GA): wait for model.form",
+                "CrossInterviewID": {
+                    "description": "TODO(TO/GA): wait for logic",
                     "type": "integer"
                 },
-                "JoinedInterviewID": {
+                "FormID": {
+                    "type": "integer"
+                },
+                "InterviewID": {
                     "type": "integer"
                 },
                 "MessageTemplateID": {
