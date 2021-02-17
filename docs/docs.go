@@ -26,7 +26,7 @@ var doc = `{
     "paths": {
         "/event/interview/all/{eid}": {
             "get": {
-                "description": "Get all interviews in a specific event",
+                "description": "Get brief information of all interviews in a specific event",
                 "produces": [
                     "application/json"
                 ],
@@ -86,7 +86,65 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.Interview"
+                            "$ref": "#/definitions/model.InterviewApi"
+                        }
+                    }
+                }
+            }
+        },
+        "/event/{eid}": {
+            "get": {
+                "description": "Get information of an event",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Event"
+                ],
+                "summary": "Get event",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Event ID",
+                        "name": "eid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.EventApi"
+                        }
+                    }
+                }
+            }
+        },
+        "/interview/{iid}": {
+            "get": {
+                "description": "Get information of an interview",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Interview"
+                ],
+                "summary": "Get interview",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Interview ID",
+                        "name": "iid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.InterviewApi"
                         }
                     }
                 }
@@ -115,9 +173,77 @@ var doc = `{
                 }
             }
         },
+        "/organization/department/all/{oid}": {
+            "get": {
+                "description": "Get brief information of all departments in a specific organization",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Department"
+                ],
+                "summary": "Get all departments in organization",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Organization ID",
+                        "name": "oid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Brief"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/organization/department/{oid}{did}": {
+            "get": {
+                "description": "Get information of a department in a specific organization",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Department"
+                ],
+                "summary": "Get department in organization",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Organization ID",
+                        "name": "oid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Department ID",
+                        "name": "did",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.DepartmentApi"
+                        }
+                    }
+                }
+            }
+        },
         "/organization/event/all/{oid}": {
             "get": {
-                "description": "Get all events in a specific organization",
+                "description": "Get brief information of all events in a specific organization",
                 "produces": [
                     "application/json"
                 ],
@@ -177,7 +303,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.Event"
+                            "$ref": "#/definitions/model.EventApi"
                         }
                     }
                 }
@@ -185,7 +311,7 @@ var doc = `{
         },
         "/organization/{oid}": {
             "get": {
-                "description": "Get the information of a specific organization",
+                "description": "Get information of a specific organization",
                 "produces": [
                     "application/json"
                 ],
@@ -206,7 +332,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.Organization"
+                            "$ref": "#/definitions/model.OrganizationApi"
                         }
                     }
                 }
@@ -228,7 +354,24 @@ var doc = `{
                 }
             }
         },
-        "model.Event": {
+        "model.DepartmentApi": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "organizationID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.EventApi": {
             "type": "object",
             "properties": {
                 "description": {
@@ -243,10 +386,6 @@ var doc = `{
                 "name": {
                     "type": "string"
                 },
-                "organization": {
-                    "description": "FOREIGN KEY (OrganizationID) REFERENCES Organization(OrganizationID)",
-                    "$ref": "#/definitions/model.Organization"
-                },
                 "organizationID": {
                     "type": "integer"
                 },
@@ -259,13 +398,10 @@ var doc = `{
                 "status": {
                     "description": "0 disabled, 1 testing, 2 running",
                     "type": "integer"
-                },
-                "updatedTime": {
-                    "type": "string"
                 }
             }
         },
-        "model.Interview": {
+        "model.InterviewApi": {
             "type": "object",
             "properties": {
                 "departmentID": {
@@ -276,13 +412,6 @@ var doc = `{
                 },
                 "endTime": {
                     "type": "string"
-                },
-                "event": {
-                    "description": "FOREIGN KEY (EventID) REFERENCES Event(EventID)",
-                    "$ref": "#/definitions/model.Event"
-                },
-                "eventID": {
-                    "type": "integer"
                 },
                 "id": {
                     "type": "integer"
@@ -301,13 +430,10 @@ var doc = `{
                 },
                 "startTime": {
                     "type": "string"
-                },
-                "updatedTime": {
-                    "type": "string"
                 }
             }
         },
-        "model.Organization": {
+        "model.OrganizationApi": {
             "type": "object",
             "properties": {
                 "description": {
@@ -317,9 +443,6 @@ var doc = `{
                     "type": "integer"
                 },
                 "name": {
-                    "type": "string"
-                },
-                "updateTime": {
                     "type": "string"
                 }
             }

@@ -18,6 +18,13 @@ import (
 
 // }
 
+// @tags Event
+// @summary Get event
+// @description Get information of an event
+// @router /event/{eid} [get]
+// @param eid query uint true "Event ID"
+// @produce json
+// @success 200 {object} model.EventApi
 func getEvent(c echo.Context) error {
 	eid, typeErr := utils.IsUnsignedInteger(c.QueryParam("eid"))
 	if typeErr != nil {
@@ -48,7 +55,7 @@ func getEvent(c echo.Context) error {
 // @param oid query uint true "Organization ID"
 // @param eid query uint true "Event ID"
 // @produce json
-// @success 200 {object} model.Event
+// @success 200 {object} model.EventApi
 func getEventInOrganization(c echo.Context) error {
 	oid, errOid := utils.IsUnsignedInteger(c.QueryParam("oid"))
 	eid, errEid := utils.IsUnsignedInteger(c.QueryParam("eid"))
@@ -84,7 +91,7 @@ func getEventInOrganization(c echo.Context) error {
 
 // @tags Event
 // @summary Get all events in organization
-// @description Get all events in a specific organization
+// @description Get brief information of all events in a specific organization
 // @router /organization/event/all/{oid} [get]
 // @param oid query uint true "Organization ID"
 // @produce json

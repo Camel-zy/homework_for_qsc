@@ -1,26 +1,32 @@
 package model
 
 import (
-	"gorm.io/gorm/clause"
 	"time"
 )
 
 type Department struct {
-	ID              uint          `gorm:"not null;autoIncrement;primaryKey"`
-	Name            string        `gorm:"size:40;not null"`
-	OrganizationID  uint          `gorm:"not null"`
-	Organization    Organization  // FOREIGN KEY (OrganizationID) REFERENCES Organization(OrganizationID)
-	Description     string        `gorm:"size:200"`
-	UpdateTime      time.Time     `gorm:"not null"`
+	ID             uint         `gorm:"not null;autoIncrement;primaryKey"`
+	Name           string       `gorm:"size:40;not null"`
+	OrganizationID uint         `gorm:"not null"`
+	Organization   Organization // FOREIGN KEY (OrganizationID) REFERENCES Organization(OrganizationID)
+	Description    string       `gorm:"size:200"`
+	UpdateTime     time.Time    `gorm:"not null"`
+}
+
+type DepartmentApi struct {
+	ID             uint
+	Name           string
+	OrganizationID uint
+	Description    string
 }
 
 type JoinedDepartment struct {
-	ID            uint       `gorm:"not null;autoIncrement;primaryKey"`
-	UserID        uint       `gorm:"not null"`
-	DepartmentID  uint       `gorm:"not null"`
-	Privilege     uint       `gorm:"default:2"`
-	JoinedTime    time.Time  `gorm:"not null"`
-	UpdateTime    time.Time  `gorm:"not null"`
+	ID           uint      `gorm:"not null;autoIncrement;primaryKey"`
+	UserID       uint      `gorm:"not null"`
+	DepartmentID uint      `gorm:"not null"`
+	Privilege    uint      `gorm:"default:2"`
+	JoinedTime   time.Time `gorm:"not null"`
+	UpdateTime   time.Time `gorm:"not null"`
 }
 
 func CreateDepartment(requestDepartment *Department) error {
@@ -46,14 +52,14 @@ func QueryAllDepartment() (*[]Department, error) {
 	return &dbDepartment, result.Error
 }
 
-func QueryDepartmentByIdUnderOrganization(oid uint, did uint) (*Department, error) {
-	var dbDepartment Department
-	result := gormDb.Preload(clause.Associations).Where(&Department{ID: did, OrganizationID: oid}).First(&dbDepartment)
+func QueryDepartmentByIdUnderOrganization(oid uint, did uint) (*DepartmentApi, error) {
+	var dbDepartment DepartmentApi
+	result := gormDb.Model(&Department{}).Where(&Department{ID: did, OrganizationID: oid}).First(&dbDepartment)
 	return &dbDepartment, result.Error
 }
 
-func QueryAllDepartmentInOrganization(oid uint) (*[]Department, error) {
-	var dbDepartment []Department
+func QueryAllDepartmentInOrganization(oid uint) (*[]Brief, error) {
+	var dbDepartment []Brief
 
 	/* we need to tell the user whether the organization can be found */
 	if findOrganizationError := gormDb.First(&Organization{}, oid).Error; findOrganizationError != nil {
@@ -61,6 +67,6 @@ func QueryAllDepartmentInOrganization(oid uint) (*[]Department, error) {
 	}
 
 	/* then, the organization exists */
-	result := gormDb.Preload(clause.Associations).Where(&Department{OrganizationID: oid}).Find(&dbDepartment)
+	result := gormDb.Model(&Department{}).Where(&Department{OrganizationID: oid}).Find(&dbDepartment)
 	return &dbDepartment, result.Error
 }

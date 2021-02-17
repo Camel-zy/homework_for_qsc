@@ -9,6 +9,14 @@ import (
 	"net/http"
 )
 
+// @tags Department
+// @summary Get department in organization
+// @description Get information of a department in a specific organization
+// @router /organization/department/{oid}{did} [get]
+// @param oid query uint true "Organization ID"
+// @param did query uint true "Department ID"
+// @produce json
+// @success 200 {object} model.DepartmentApi
 func getDepartmentInOrganization(c echo.Context) error {
 	oid, errOid := utils.IsUnsignedInteger(c.QueryParam("oid"))
 	did, errDid := utils.IsUnsignedInteger(c.QueryParam("did"))
@@ -42,6 +50,13 @@ func getDepartmentInOrganization(c echo.Context) error {
 	})
 }
 
+// @tags Department
+// @summary Get all departments in organization
+// @description Get brief information of all departments in a specific organization
+// @router /organization/department/all/{oid} [get]
+// @param oid query uint true "Organization ID"
+// @produce json
+// @success 200 {array} model.Brief
 func getAllDepartmentInOrganization(c echo.Context) error {
 	oid, typeErr := utils.IsUnsignedInteger(c.QueryParam("oid"))
 	if typeErr != nil {
@@ -59,5 +74,8 @@ func getAllDepartmentInOrganization(c echo.Context) error {
 		})
 	}
 
-	return c.JSON(http.StatusOK, &utils.Error{Code: "SUCCESS", Data: &departments})
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: &departments,
+	})
 }

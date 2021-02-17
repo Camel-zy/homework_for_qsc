@@ -11,11 +11,11 @@ import (
 
 // @tags Organization
 // @summary Get information of organization
-// @description Get the information of a specific organization
+// @description Get information of a specific organization
 // @router /organization/{oid} [get]
 // @param oid query uint true "Organization ID"
 // @produce json
-// @success 200 {object} model.Organization
+// @success 200 {object} model.OrganizationApi
 func getOrganization(c echo.Context) error {
 	oid, typeErr := utils.IsUnsignedInteger(c.QueryParam("oid"))
 	if typeErr != nil {

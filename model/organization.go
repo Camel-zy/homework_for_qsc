@@ -14,6 +14,12 @@ type Organization struct {
 	UpdateTime  time.Time `gorm:"not null"`
 }
 
+type OrganizationApi struct {
+	ID          uint
+	Name        string
+	Description string
+}
+
 /*
 This model is still under discussion
 */
@@ -31,8 +37,8 @@ func CreateOrganization(requestOrganization *Organization) error {
 	return result.Error
 }
 
-func QueryOrganizationById(id uint) (*Organization, error) {
-	var dbOrganization Organization
+func QueryOrganizationById(id uint) (*OrganizationApi, error) {
+	var dbOrganization OrganizationApi
 	result := gormDb.Model(&Organization{}).First(&dbOrganization, id)
 	return &dbOrganization, result.Error
 }

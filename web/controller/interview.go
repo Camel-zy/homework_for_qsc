@@ -18,6 +18,13 @@ import (
 
 // }
 
+// @tags Interview
+// @summary Get interview
+// @description Get information of an interview
+// @router /interview/{iid} [get]
+// @param iid query uint true "Interview ID"
+// @produce json
+// @success 200 {object} model.InterviewApi
 func getInterview(c echo.Context) error {
 	iid, typeErr := utils.IsUnsignedInteger(c.QueryParam("iid"))
 	if typeErr != nil {
@@ -48,7 +55,7 @@ func getInterview(c echo.Context) error {
 // @param eid query uint true "Event ID"
 // @param iid query uint true "Interview ID"
 // @produce json
-// @success 200 {object} model.Interview
+// @success 200 {object} model.InterviewApi
 func getInterviewInEvent(c echo.Context) error {
 	eid, errEid := utils.IsUnsignedInteger(c.QueryParam("eid"))
 	iid, errIid := utils.IsUnsignedInteger(c.QueryParam("iid"))
@@ -83,7 +90,7 @@ func getInterviewInEvent(c echo.Context) error {
 
 // @tags Interview
 // @summary Get all interviews in event
-// @description Get all interviews in a specific event
+// @description Get brief information of all interviews in a specific event
 // @router /event/interview/all/{eid} [get]
 // @param eid query uint true "Event ID"
 // @produce json

@@ -2,8 +2,6 @@ package model
 
 import (
 	"time"
-
-	"gorm.io/gorm/clause"
 )
 
 type Interview struct {
@@ -19,6 +17,18 @@ type Interview struct {
 	StartTime      time.Time `gorm:"not null"`
 	EndTime        time.Time `gorm:"not null"`
 	UpdatedTime    time.Time `gorm:"not null"`
+}
+
+type InterviewApi struct {
+	ID             uint
+	Name           string
+	Description    string
+	DepartmentID   uint
+	OtherInfo      string
+	Location       string
+	MaxInterviewee uint
+	StartTime      time.Time
+	EndTime        time.Time
 }
 
 type JoinedInterview struct {
@@ -46,16 +56,15 @@ func UpdateInterviewByID(requestInterview *Interview) error {
 	return result.Error
 }
 
-func QueryInterviewByID(id uint) (*Interview, error) {
-	var dbInterview Interview
-	result := gormDb.First(&dbInterview, id)
+func QueryInterviewByID(id uint) (*InterviewApi, error) {
+	var dbInterview InterviewApi
+	result := gormDb.Model(&Interview{}).First(&dbInterview, id)
 	return &dbInterview, result.Error
 }
 
-// SELECT * FROM Interview;
-func QueryInterviewByIDInEvent(eid uint, iid uint) (*Interview, error) {
-	var dbInterview Interview
-	result := gormDb.Preload(clause.Associations).Where(&Interview{ID: iid, EventID: eid}).First(&dbInterview)
+func QueryInterviewByIDInEvent(eid uint, iid uint) (*InterviewApi, error) {
+	var dbInterview InterviewApi
+	result := gormDb.Model(&Interview{}).Where(&Interview{ID: iid, EventID: eid}).First(&dbInterview)
 	return &dbInterview, result.Error
 }
 

@@ -2,8 +2,6 @@ package model
 
 import (
 	"time"
-
-	"gorm.io/gorm/clause"
 )
 
 type Event struct {
@@ -19,6 +17,17 @@ type Event struct {
 	UpdatedTime    time.Time    `gorm:"not null"`
 }
 
+type EventApi struct {
+	ID             uint
+	Name           string
+	Description    string
+	OrganizationID uint
+	Status         uint // 0 disabled, 1 testing, 2 running
+	OtherInfo      string
+	StartTime      time.Time
+	EndTime        time.Time
+}
+
 func CreateEvent(requestEvent *Event) error {
 	result := gormDb.Create(requestEvent)
 	return result.Error
@@ -29,15 +38,15 @@ func UpdateEventByID(requestEvent *Event) error {
 	return result.Error
 }
 
-func QueryEventByID(id uint) (*Event, error) {
-	var dbEvent Event
-	result := gormDb.First(&dbEvent, id)
+func QueryEventByID(id uint) (*EventApi, error) {
+	var dbEvent EventApi
+	result := gormDb.Model(&Event{}).First(&dbEvent, id)
 	return &dbEvent, result.Error
 }
 
-func QueryEventByIDInOrganization(oid uint, eid uint) (*Event, error) {
-	var dbEvent Event
-	result := gormDb.Preload(clause.Associations).Where(&Event{ID: eid, OrganizationID: oid}).First(&dbEvent)
+func QueryEventByIDInOrganization(oid uint, eid uint) (*EventApi, error) {
+	var dbEvent EventApi
+	result := gormDb.Model(&Event{}).Where(&Event{ID: eid, OrganizationID: oid}).First(&dbEvent)
 	return &dbEvent, result.Error
 }
 
