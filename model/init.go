@@ -2,6 +2,7 @@ package model
 
 import (
 	"context"
+
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 	"github.com/sirupsen/logrus"
@@ -46,6 +47,7 @@ func CreateTables() {
 		&Interview{},
 		&JoinedInterview{},
 		&Message{},
+		&MessageTemplate{},
 		&Image{})
 	if err != nil {
 		logrus.Fatal(err)

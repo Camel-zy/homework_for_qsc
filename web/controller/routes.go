@@ -55,6 +55,16 @@ func addRoutes(e *echo.Echo) {
 	interview.POST("", setInterview)
 	interview.GET("", getInterview)
 
+	message := api.Group("/message") // TODO(TO/GA): auth middleware
+	message.PUT("", addMessage)
+	message.GET("", getMessage)
+	// message.GET("/all", getAllMessage) TODO(TO/GA): wait until we know the logic
+	template := message.Group("/template")
+	template.PUT("", addMessageTemplate)
+	template.POST("", setMessageTemplate)
+	template.GET("", getMessageTemplate)
+	template.GET("/all", getAllMessageTemplate)
+
 	/*
 		CAUTIOUS: These routers are created only for demo
 		This will be fixed
