@@ -17,6 +17,19 @@ type Event struct {
 	UpdatedTime    time.Time    `gorm:"not null"`
 }
 
+type EventCreateRequest struct {
+	//ID             uint         `gorm:"not null;autoIncrement;primaryKey"`
+	Name           string       `gorm:"size:40;not null"`
+	Description    string       `gorm:"size:200"`
+	OrganizationID uint         `gorm:"not null"`
+	Organization   Organization // FOREIGN KEY (OrganizationID) REFERENCES Organization(OrganizationID)
+	Status         uint         `gorm:"default:0"` // 0 disabled, 1 testing, 2 running
+	OtherInfo      string       `gorm:"size:200"`
+	StartTime      time.Time    `gorm:"size:30;not null"`
+	EndTime        time.Time    `gorm:"size:30;not null"`
+	UpdatedTime    time.Time    `gorm:"not null"`
+}
+
 type EventApi struct {
 	ID             uint
 	Name           string

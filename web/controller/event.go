@@ -10,13 +10,78 @@ import (
 	"gorm.io/gorm"
 )
 
-// func addEvent(c echo.Context) error {
+func addEvent(c echo.Context) error {
+	eid, typeErr := utils.IsUnsignedInteger(c.QueryParam("eid"))
+	if typeErr != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "eid need to be an unsigned integer",
+		})
+	}
 
-// }
+	_, evtErr := model.QueryEventByID(eid)
+	if !errors.Is(evtErr, gorm.ErrRecordNotFound) {
+		return c.JSON(http.StatusNotFound, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "event has existed",
+		})
+	}
 
-// func setEvent(c echo.Context) error {
+	req := &model.EventCreateRequest{}
+	c.Bind(req)
 
-// }
+	event := &model.Event{
+		ID:             eid,
+		Name:           req.Name,
+		Description:    req.Description,
+		OrganizationID: req.OrganizationID,
+		Organization:   req.Organization,
+		Status:         req.Status,
+		OtherInfo:      req.OtherInfo,
+		StartTime:      req.StartTime,
+		EndTime:        req.EndTime,
+		UpdatedTime:    req.UpdatedTime,
+	}
+
+	if CrtEvtErr := model.CreateEvent(event); CrtEvtErr != nil {
+		return c.JSON(http.StatusInternalServerError, &utils.Error{
+			Code: "INTERNAL_SERVER_ERR",
+			Data: "event not found",
+		})
+	}
+
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: "add success",
+	})
+}
+
+func setEvent(c echo.Context) error {
+	eid, typeErr := utils.IsUnsignedInteger(c.QueryParam("eid"))
+	if typeErr != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "eid need to be an unsigned integer",
+		})
+	}
+
+	event := model.Event{}
+	c.Bind(&event)
+
+	event.ID = eid
+
+	if UpdEvtErr := model.UpdateEventByID(&event); UpdEvtErr != nil {
+		return c.JSON(http.StatusInternalServerError, &utils.Error{
+			Code: "INTERNAL_SERVER_ERR",
+			Data: "event not found",
+		})
+	}
+
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: "set success",
+	})
+}
 
 // @tags Event
 // @summary Get event

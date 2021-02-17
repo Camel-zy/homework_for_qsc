@@ -7,7 +7,7 @@ import (
 	"github.com/labstack/echo/v4"
 	echoMiddleware "github.com/labstack/echo/v4/middleware"
 	"github.com/spf13/viper"
-	"github.com/swaggo/echo-swagger"
+	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
 func addRoutes(e *echo.Echo) {
@@ -44,15 +44,15 @@ func addRoutes(e *echo.Echo) {
 	organization.GET("/event/all", getAllEventInOrganization)
 
 	event := api.Group("/event", middleware.SetEventOrganization, middleware.AuthOrganization)
-	// event.PUT("", addEvent)
-	// event.POST("", setEvent)
+	event.PUT("", addEvent)
+	event.POST("", setEvent)
 	event.GET("", getEvent)
 	event.GET("/interview", getInterviewInEvent)
 	event.GET("/interview/all", getAllInterviewInEvent)
 
 	interview := api.Group("/interview")
-	// interview.PUT("", addInterview)
-	// interview.POST("", setInterview)
+	interview.PUT("", addInterview)
+	interview.POST("", setInterview)
 	interview.GET("", getInterview)
 
 	/*

@@ -19,6 +19,21 @@ type Interview struct {
 	UpdatedTime    time.Time `gorm:"not null"`
 }
 
+type InterviewCreateRequest struct {
+	//ID             uint      `gorm:"not null;autoIncrement;primaryKey"`
+	Name           string    `gorm:"size:40;not null"`
+	Description    string    `gorm:"size:200"`
+	EventID        uint      `gorm:"not null"`
+	Event          Event     // FOREIGN KEY (EventID) REFERENCES Event(EventID)
+	DepartmentID   uint      `gorm:"not null"`
+	OtherInfo      string    `gorm:"size:200"`
+	Location       string    `gorm:"size:200"`
+	MaxInterviewee uint      `gorm:"default:6"`
+	StartTime      time.Time `gorm:"not null"`
+	EndTime        time.Time `gorm:"not null"`
+	UpdatedTime    time.Time `gorm:"not null"`
+}
+
 type InterviewApi struct {
 	ID             uint
 	Name           string

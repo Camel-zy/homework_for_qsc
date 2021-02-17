@@ -10,13 +10,80 @@ import (
 	"gorm.io/gorm"
 )
 
-// func addInterview(c echo.Context) error {
+func addInterview(c echo.Context) error {
+	iid, typeErr := utils.IsUnsignedInteger(c.QueryParam("iid"))
+	if typeErr != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "iid need to be an unsigned integer",
+		})
+	}
 
-// }
+	_, itvErr := model.QueryInterviewByID(iid)
+	if !errors.Is(itvErr, gorm.ErrRecordNotFound) {
+		return c.JSON(http.StatusNotFound, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "interview has existed",
+		})
+	}
 
-// func setInterview(c echo.Context) error {
+	req := &model.InterviewCreateRequest{}
+	c.Bind(req)
 
-// }
+	interview := &model.Interview{
+		ID:             iid,
+		Name:           req.Name,
+		Description:    req.Description,
+		EventID:        req.EventID,
+		Event:          req.Event,
+		DepartmentID:   req.DepartmentID,
+		OtherInfo:      req.OtherInfo,
+		Location:       req.Location,
+		MaxInterviewee: req.MaxInterviewee,
+		StartTime:      req.StartTime,
+		EndTime:        req.EndTime,
+		UpdatedTime:    req.UpdatedTime,
+	}
+
+	if CrtItvErr := model.CreateInterview(interview); CrtItvErr != nil {
+		return c.JSON(http.StatusInternalServerError, &utils.Error{
+			Code: "INTERNAL_SERVER_ERR",
+			Data: "interview not found",
+		})
+	}
+
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: "add success",
+	})
+}
+
+func setInterview(c echo.Context) error {
+	iid, typeErr := utils.IsUnsignedInteger(c.QueryParam("iid"))
+	if typeErr != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "iid need to be an unsigned integer",
+		})
+	}
+
+	interview := model.Interview{}
+	c.Bind(&interview)
+
+	interview.ID = iid
+
+	if UpdItvErr := model.UpdateInterviewByID(&interview); UpdItvErr != nil {
+		return c.JSON(http.StatusInternalServerError, &utils.Error{
+			Code: "INTERNAL_SERVER_ERR",
+			Data: "interview not found",
+		})
+	}
+
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: "set success",
+	})
+}
 
 // @tags Interview
 // @summary Get interview
@@ -79,7 +146,7 @@ func getInterviewInEvent(c echo.Context) error {
 	if errors.Is(itvErr, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, &utils.Error{
 			Code: "NOT_FOUND",
-			Data: "interview not found",})
+			Data: "interview not found"})
 	}
 
 	return c.JSON(http.StatusOK, &utils.Error{
