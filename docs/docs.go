@@ -150,9 +150,46 @@ var doc = `{
                 }
             }
         },
+        "/message": {
+            "put": {
+                "description": "send a message",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Message"
+                ],
+                "summary": "Send a message",
+                "parameters": [
+                    {
+                        "description": "Message Infomation",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.MessageRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.MessageAPI"
+                        }
+                    }
+                }
+            }
+        },
         "/message/template": {
             "put": {
                 "description": "Add a message template",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -163,7 +200,7 @@ var doc = `{
                 "parameters": [
                     {
                         "description": "Message Template Infomation",
-                        "name": "tid",
+                        "name": "data",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -175,7 +212,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.MessageTemplateApi"
+                            "$ref": "#/definitions/model.MessageTemplateAPI"
                         }
                     }
                 }
@@ -206,7 +243,7 @@ var doc = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/model.AllMessageTemplateApi"
+                                "$ref": "#/definitions/model.AllMessageTemplateAPI"
                             }
                         }
                     }
@@ -236,7 +273,46 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.MessageTemplateApi"
+                            "$ref": "#/definitions/model.MessageTemplateAPI"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Update a message template",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "MessageTemplate"
+                ],
+                "summary": "Update a message template",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Message Template ID",
+                        "name": "tid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "description": "Message Template Infomation",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.MessageTemplateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.MessageTemplateAPI"
                         }
                     }
                 }
@@ -265,7 +341,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.MessageApi"
+                            "$ref": "#/definitions/model.MessageAPI"
                         }
                     }
                 }
@@ -586,7 +662,7 @@ var doc = `{
         }
     },
     "definitions": {
-        "model.AllMessageTemplateApi": {
+        "model.AllMessageTemplateAPI": {
             "type": "object",
             "properties": {
                 "description": {
@@ -693,7 +769,7 @@ var doc = `{
                 }
             }
         },
-        "model.MessageApi": {
+        "model.MessageAPI": {
             "type": "object",
             "properties": {
                 "id": {
@@ -713,7 +789,36 @@ var doc = `{
                 }
             }
         },
-        "model.MessageTemplateApi": {
+        "model.MessageRequest": {
+            "type": "object",
+            "required": [
+                "MessageTemplateID",
+                "ReceiverID",
+                "SenderID"
+            ],
+            "properties": {
+                "CrossInterviewID": {
+                    "description": "TODO(TO/GA): wait for logic",
+                    "type": "integer"
+                },
+                "FormID": {
+                    "type": "integer"
+                },
+                "InterviewID": {
+                    "type": "integer"
+                },
+                "MessageTemplateID": {
+                    "type": "integer"
+                },
+                "ReceiverID": {
+                    "type": "integer"
+                },
+                "SenderID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.MessageTemplateAPI": {
             "type": "object",
             "properties": {
                 "description": {
