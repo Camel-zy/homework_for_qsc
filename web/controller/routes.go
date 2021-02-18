@@ -40,19 +40,18 @@ func addRoutes(e *echo.Echo) {
 	organization.GET("/department", getDepartmentInOrganization)
 	organization.GET("/department/all", getAllDepartmentInOrganization)
 	organization.GET("/event", getEventInOrganization)
-	organization.PUT("/event", createEventInOrganization, middleware.CheckRequiredField, middleware.SetEvent)
 	organization.GET("/event/all", getAllEventInOrganization)
 
-	event := api.Group("/event", middleware.SetEventOrganization, middleware.AuthOrganization)
-	event.POST("", updateEvent, middleware.SetEvent)
+	event := api.Group("/event") // TODO(RalXYZ): add auth middleware
+	event.POST("", updateEvent)
+	event.PUT("", createEvent)
 	event.GET("", getEvent)
 	event.GET("/interview", getInterviewInEvent)
-	event.PUT("/interview", addInterviewInEvent,
-		middleware.CheckDepartmentInOrganization, middleware.CheckRequiredField, middleware.SetInterview)
 	event.GET("/interview/all", getAllInterviewInEvent)
 
 	interview := api.Group("/interview") // TODO(RalXYZ): add auth middleware
-	interview.POST("", updateInterview, middleware.SetInterview)
+	interview.PUT("", createInterview)
+	interview.POST("", updateInterview)
 	interview.GET("", getInterview)
 
 	message := api.Group("/message") // TODO(TO/GA): auth middleware & test

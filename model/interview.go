@@ -22,15 +22,15 @@ type Interview struct {
 
 type InterviewApi struct {
 	ID             uint
-	Name           string
-	Description    string
-	EventID        uint      `query:"eid"`
-	DepartmentID   uint      `query:"did"`
-	OtherInfo      string
-	Location       string
-	MaxInterviewee uint
-	StartTime      time.Time `form:"StartTime"`
-	EndTime        time.Time `form:"EndTime"`
+	Name           string    `json:"Name" validate:"required"`
+	Description    string    `json:"Description"`
+	EventID        uint      `json:"EventID" validate:"required"`
+	DepartmentID   uint      `json:"DepartmentID" validate:"required"`
+	OtherInfo      string    `json:"OtherInfo"`
+	Location       string    `json:"Location"`
+	MaxInterviewee uint      `json:"MaxInterviewee"`  // default 6
+	StartTime      time.Time `json:"StartTime" validate:"required"` // request string must be in RFC 3339 format
+	EndTime        time.Time `json:"EndTime" validate:"required"` // request string must be in RFC 3339 format
 }
 
 type JoinedInterview struct {

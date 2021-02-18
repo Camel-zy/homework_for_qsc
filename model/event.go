@@ -20,13 +20,13 @@ type Event struct {
 
 type EventApi struct {
 	ID             uint
-	Name           string
-	Description    string
-	OrganizationID uint      `query:"oid"`
-	Status         uint
-	OtherInfo      string
-	StartTime      time.Time `form:"StartTime"`
-	EndTime        time.Time `form:"EndTime"`
+	Name           string    `json:"Name" validate:"required"`
+	Description    string    `json:"Description"`
+	OrganizationID uint      `json:"OrganizationID" validate:"required"`
+	Status         uint      `json:"Status"` // 0 disabled (default), 1 testing, 2 running
+	OtherInfo      string    `json:"OtherInfo"`
+	StartTime      time.Time `json:"StartTime" validate:"required"` // request string must be in RFC 3339 format
+	EndTime        time.Time `json:"EndTime" validate:"required"` // request string must be in RFC 3339 format
 }
 
 func CreateEvent(requestEvent *EventApi) error {

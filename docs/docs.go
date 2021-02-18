@@ -24,6 +24,32 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/event": {
+            "put": {
+                "description": "Create an event in a specific organization",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Event"
+                ],
+                "summary": "Create event in organization",
+                "parameters": [
+                    {
+                        "description": "Event Information",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.EventApi"
+                        }
+                    }
+                ]
+            }
+        },
         "/event/interview/all/{eid}": {
             "get": {
                 "description": "Get brief information of all interviews in a specific event",
@@ -54,79 +80,6 @@ var doc = `{
                         }
                     }
                 }
-            }
-        },
-        "/event/interview/{eid}{did}": {
-            "put": {
-                "description": "Create an events in a specific organization",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Interview"
-                ],
-                "summary": "Create interview in event",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Event ID",
-                        "name": "eid",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Department ID",
-                        "name": "did",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Interview name",
-                        "name": "Name",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Interview description",
-                        "name": "Description",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Other information about the interview",
-                        "name": "OtherInfo",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Location of the interview",
-                        "name": "Location",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Default: 6",
-                        "name": "MaxInterviewee",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Must be in RFC 3339 format",
-                        "name": "StartTime",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Must be in RFC 3339 format",
-                        "name": "EndTime",
-                        "in": "formData",
-                        "required": true
-                    }
-                ]
             }
         },
         "/event/interview/{eid}{iid}": {
@@ -195,6 +148,9 @@ var doc = `{
             },
             "post": {
                 "description": "Update an event",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -211,40 +167,38 @@ var doc = `{
                         "required": true
                     },
                     {
-                        "type": "string",
-                        "description": "Event name",
-                        "name": "Name",
-                        "in": "formData"
-                    },
+                        "description": "Event Information",
+                        "name": "data",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/model.EventApi"
+                        }
+                    }
+                ]
+            }
+        },
+        "/interview": {
+            "put": {
+                "description": "Create an events in a specific organization",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Interview"
+                ],
+                "summary": "Create interview in event",
+                "parameters": [
                     {
-                        "type": "string",
-                        "description": "Event description",
-                        "name": "Description",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "0 disabled (default), 1 testing, 2 running",
-                        "name": "Status",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Other information about the event",
-                        "name": "OtherInfo",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Must be in RFC 3339 format",
-                        "name": "StartTime",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Must be in RFC 3339 format",
-                        "name": "EndTime",
-                        "in": "formData"
+                        "description": "Interview Information",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.InterviewApi"
+                        }
                     }
                 ]
             }
@@ -279,6 +233,9 @@ var doc = `{
             },
             "post": {
                 "description": "Update an interview",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -295,52 +252,12 @@ var doc = `{
                         "required": true
                     },
                     {
-                        "type": "string",
-                        "description": "Interview name",
-                        "name": "Name",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Interview description",
-                        "name": "Description",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Department ID",
-                        "name": "DepartmentID",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Other information about the interview",
-                        "name": "OtherInfo",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Location of the interview",
-                        "name": "Location",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Default: 6",
-                        "name": "MaxInterviewee",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Must be in RFC 3339 format",
-                        "name": "StartTime",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Must be in RFC 3339 format",
-                        "name": "EndTime",
-                        "in": "formData"
+                        "description": "Interview Information",
+                        "name": "data",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/model.InterviewApi"
+                        }
                     }
                 ]
             }
@@ -360,7 +277,7 @@ var doc = `{
                 "summary": "Send a message",
                 "parameters": [
                     {
-                        "description": "Message Infomation",
+                        "description": "Message Information",
                         "name": "data",
                         "in": "body",
                         "required": true,
@@ -665,66 +582,6 @@ var doc = `{
                 }
             }
         },
-        "/organization/event/{oid}": {
-            "put": {
-                "description": "Create an event in a specific organization",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Event"
-                ],
-                "summary": "Create event in organization",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Organization ID",
-                        "name": "oid",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Event name",
-                        "name": "Name",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Event description",
-                        "name": "Description",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "0 disabled (default), 1 testing, 2 running",
-                        "name": "Status",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Other information about the event",
-                        "name": "OtherInfo",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Must be in RFC 3339 format",
-                        "name": "StartTime",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Must be in RFC 3339 format",
-                        "name": "EndTime",
-                        "in": "formData",
-                        "required": true
-                    }
-                ]
-            }
-        },
         "/organization/event/{oid}{eid}": {
             "get": {
                 "description": "Get information of an event in a specific organization",
@@ -839,65 +696,84 @@ var doc = `{
         },
         "model.EventApi": {
             "type": "object",
+            "required": [
+                "EndTime",
+                "Name",
+                "OrganizationID",
+                "StartTime"
+            ],
             "properties": {
-                "description": {
+                "Description": {
                     "type": "string"
                 },
-                "endTime": {
+                "EndTime": {
+                    "description": "request string must be in RFC 3339 format",
                     "type": "string"
+                },
+                "Name": {
+                    "type": "string"
+                },
+                "OrganizationID": {
+                    "type": "integer"
+                },
+                "OtherInfo": {
+                    "type": "string"
+                },
+                "StartTime": {
+                    "description": "request string must be in RFC 3339 format",
+                    "type": "string"
+                },
+                "Status": {
+                    "description": "0 disabled (default), 1 testing, 2 running",
+                    "type": "integer"
                 },
                 "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "organizationID": {
-                    "type": "integer"
-                },
-                "otherInfo": {
-                    "type": "string"
-                },
-                "startTime": {
-                    "type": "string"
-                },
-                "status": {
                     "type": "integer"
                 }
             }
         },
         "model.InterviewApi": {
             "type": "object",
+            "required": [
+                "DepartmentID",
+                "EndTime",
+                "EventID",
+                "Name",
+                "StartTime"
+            ],
             "properties": {
-                "departmentID": {
+                "DepartmentID": {
                     "type": "integer"
                 },
-                "description": {
+                "Description": {
                     "type": "string"
                 },
-                "endTime": {
+                "EndTime": {
+                    "description": "request string must be in RFC 3339 format",
                     "type": "string"
                 },
-                "eventID": {
+                "EventID": {
                     "type": "integer"
+                },
+                "Location": {
+                    "type": "string"
+                },
+                "MaxInterviewee": {
+                    "description": "default 6",
+                    "type": "integer"
+                },
+                "Name": {
+                    "type": "string"
+                },
+                "OtherInfo": {
+                    "type": "string"
+                },
+                "StartTime": {
+                    "description": "request string must be in RFC 3339 format",
+                    "type": "string"
                 },
                 "id": {
                     "type": "integer"
-                },
-                "location": {
-                    "type": "string"
-                },
-                "maxInterviewee": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "otherInfo": {
-                    "type": "string"
-                },
-                "startTime": {
-                    "type": "string"
                 }
             }
         },

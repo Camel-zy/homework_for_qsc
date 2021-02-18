@@ -17,8 +17,8 @@ import (
 // @summary Send a message
 // @description send a message
 // @router /message [put]
-// @accept  json
-// @param data body model.MessageRequest true "Message Infomation"
+// @accept json
+// @param data body model.MessageRequest true "Message Information"
 // @produce json
 // @success 200 {object} model.MessageAPI
 func addMessage(c echo.Context) error {

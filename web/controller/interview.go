@@ -13,30 +13,35 @@ import (
 // @tags Interview
 // @summary Create interview in event
 // @description Create an events in a specific organization
-// @router /event/interview/{eid}{did} [put]
-// @param eid query uint true "Event ID"
-// @param did query uint true "Department ID"
-// @param Name formData string true "Interview name"
-// @param Description formData string false "Interview description"
-// @param OtherInfo formData string false "Other information about the interview"
-// @param Location formData string false "Location of the interview"
-// @param MaxInterviewee formData uint false "Default: 6"
-// @param StartTime formData string true "Must be in RFC 3339 format"
-// @param EndTime formData string true "Must be in RFC 3339 format"
+// @router /interview [put]
+// @accept json
+// @param data body model.InterviewApi true "Interview Information"
 // @produce json
-func addInterviewInEvent(c echo.Context) error {
-	interview := c.Get("interview").(model.InterviewApi) // this is set by middleware
+func createInterview(c echo.Context) error {
+	interviewRequest := model.InterviewApi{}
+	if err := c.Bind(&interviewRequest); err != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: err.Error(),
+		})
+	}
+	if err := c.Validate(&interviewRequest); err != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: err.Error(),
+		})
+	}
 
-	if err := model.CreateInterview(&interview); err != nil {
+	if err := model.CreateInterview(&interviewRequest); err != nil {
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "INTERNAL_SERVER_ERR",
-			Data: "add interview fail",
+			Data: "create interview fail",
 		})
 	}
 
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
-		Data: "add interview success",
+		Data: "create interview success",
 	})
 }
 
@@ -45,30 +50,37 @@ func addInterviewInEvent(c echo.Context) error {
 // @description Update an interview
 // @router /interview/{iid} [post]
 // @param iid query uint true "Interview ID"
-// @param Name formData string false "Interview name"
-// @param Description formData string false "Interview description"
-// @param DepartmentID formData uint false "Department ID"
-// @param OtherInfo formData string false "Other information about the interview"
-// @param Location formData string false "Location of the interview"
-// @param MaxInterviewee formData uint false "Default: 6"
-// @param StartTime formData string false "Must be in RFC 3339 format"
-// @param EndTime formData string false "Must be in RFC 3339 format"
+// @accept json
+// @param data body model.InterviewApi false "Interview Information"
 // @produce json
 func updateInterview(c echo.Context) error {
-	interview := c.Get("interview").(model.InterviewApi) // this is set by middleware
-	iid, _ := utils.IsUnsignedInteger(c.QueryParam("iid"))
-	interview.ID = iid
+	interviewRequest := model.InterviewApi{}
+	err := c.Bind(&interviewRequest)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: err.Error(),
+		})
+	}
+	iid, err := utils.IsUnsignedInteger(c.QueryParam("iid"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "iid needs to be specified correctly",
+		})
+	}
+	interviewRequest.ID = iid
 
-	if UpdItvErr := model.UpdateInterviewByID(&interview); UpdItvErr != nil {
+	if err := model.UpdateInterviewByID(&interviewRequest); err != nil {
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "INTERNAL_SERVER_ERR",
-			Data: "set interview fail",
+			Data: "update interview fail",
 		})
 	}
 
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
-		Data: "set interview success",
+		Data: "update interview success",
 	})
 }
 

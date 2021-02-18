@@ -12,19 +12,32 @@ import (
 // @tags Event
 // @summary Create event in organization
 // @description Create an event in a specific organization
-// @router /organization/event/{oid} [put]
-// @param oid query uint true "Organization ID"
-// @param Name formData string true "Event name"
-// @param Description formData string false "Event description"
-// @param Status formData uint false "0 disabled (default), 1 testing, 2 running"
-// @param OtherInfo formData string false "Other information about the event"
-// @param StartTime formData string true "Must be in RFC 3339 format"
-// @param EndTime formData string true "Must be in RFC 3339 format"
+// @router /event [put]
+// @accept json
+// @param data body model.EventApi true "Event Information"
 // @produce json
-func createEventInOrganization(c echo.Context) error {
-	event := c.Get("event").(model.EventApi) // this is set by middleware
+func createEvent(c echo.Context) error {
+	eventRequest := model.EventApi{}
+	if err := c.Bind(&eventRequest); err != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: err.Error(),
+		})
+	}
+	if err := c.Validate(&eventRequest); err != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: err.Error(),
+		})
+	}
+	if eventRequest.Status > 2 {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "the value in status field is illegal",
+		})
+	}
 
-	if err := model.CreateEvent(&event); err != nil {
+	if err := model.CreateEvent(&eventRequest); err != nil {
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "INTERNAL_SERVER_ERR",
 			Data: "create event fail",
@@ -42,19 +55,35 @@ func createEventInOrganization(c echo.Context) error {
 // @description Update an event
 // @router /event/{eid} [post]
 // @param eid query uint true "Event ID"
-// @param Name formData string false "Event name"
-// @param Description formData string false "Event description"
-// @param Status formData uint false "0 disabled (default), 1 testing, 2 running"
-// @param OtherInfo formData string false "Other information about the event"
-// @param StartTime formData string false "Must be in RFC 3339 format"
-// @param EndTime formData string false "Must be in RFC 3339 format"
+// @accept json
+// @param data body model.EventApi false "Event Information"
 // @produce json
 func updateEvent(c echo.Context) error {
-	event := c.Get("event").(model.EventApi) // this is set by middleware
-	eid, _ := utils.IsUnsignedInteger(c.QueryParam("eid"))
-	event.ID = eid
+	eventRequest := model.EventApi{}
+	err := c.Bind(&eventRequest)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: err.Error(),
+		})
+	}
+	if eventRequest.Status > 2 {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "the value in status field is illegal",
+		})
+	}
 
-	if err := model.UpdateEventByID(&event); err != nil {
+	eid, err := utils.IsUnsignedInteger(c.QueryParam("eid"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "eid needs to be specified correctly",
+		})
+	}
+	eventRequest.ID = eid
+
+	if err = model.UpdateEventByID(&eventRequest); err != nil {
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "INTERNAL_SERVER_ERR",
 			Data: "update event fail",
