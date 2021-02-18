@@ -43,9 +43,8 @@ type MessageTemplate struct {
 }
 
 type MessageTemplateRequest struct {
-	Description    string `json:"Description" validate:"required"`
-	Text           string `json:"Text" validate:"required"`
-	OrganizationID uint   `json:"OrganizationID"` // not required because it might be 0
+	Description string `json:"Description" validate:"required"`
+	Text        string `json:"Text" validate:"required"`
 }
 
 type MessageTemplateAPI struct {
@@ -67,7 +66,13 @@ func CreateMessage(requestMessage *Message) error {
 	return result.Error
 }
 
-func QueryMessageById(id uint) (*MessageAPI, error) {
+func QueryMessageById(id uint) (*Message, error) {
+	var dbMessage Message
+	result := gormDb.First(&dbMessage, id)
+	return &dbMessage, result.Error
+}
+
+func QueryMessageAPIById(id uint) (*MessageAPI, error) {
 	var dbMessage MessageAPI
 	result := gormDb.Model(&Message{}).First(&dbMessage, id)
 	return &dbMessage, result.Error
@@ -86,13 +91,28 @@ func CreateMessageTemplate(requestMessageTemplate *MessageTemplate) error {
 	return result.Error
 }
 
-func QueryMessageTemplateById(id uint) (*MessageTemplateAPI, error) {
+func QueryMessageTemplateById(id uint) (*MessageTemplate, error) {
+	var dbMessageTemplate MessageTemplate
+	result := gormDb.First(&dbMessageTemplate, id)
+	return &dbMessageTemplate, result.Error
+}
+
+func QueryMessageTemplateAPIById(id uint) (*MessageTemplateAPI, error) {
 	var dbMessageTemplate MessageTemplateAPI
 	result := gormDb.Model(&MessageTemplate{}).First(&dbMessageTemplate, id)
 	return &dbMessageTemplate, result.Error
 }
 
-func QueryAllMessageTemplateInOrganization(oid uint) (*[]AllMessageTemplateAPI, error) {
+func QueryAllMessageTemplateInOrganization(oid uint) (*[]MessageTemplate, error) {
+	var dbMessageTemplate []MessageTemplate
+	if findOrganizationError := gormDb.First(&Organization{}, oid).Error; findOrganizationError != nil {
+		return nil, findOrganizationError
+	}
+	result := gormDb.Where(&MessageTemplate{OrganizationID: oid}).Find(&dbMessageTemplate)
+	return &dbMessageTemplate, result.Error
+}
+
+func QueryAllMessageTemplateAPIInOrganization(oid uint) (*[]AllMessageTemplateAPI, error) {
 	var dbMessageTemplate []AllMessageTemplateAPI
 	if findOrganizationError := gormDb.First(&Organization{}, oid).Error; findOrganizationError != nil {
 		return nil, findOrganizationError

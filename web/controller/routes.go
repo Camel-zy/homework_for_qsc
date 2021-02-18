@@ -17,7 +17,7 @@ func addRoutes(e *echo.Echo) {
 	}))
 
 	api := e.Group("/api")
-	api.GET("/version", getApiVersion);
+	api.GET("/version", getApiVersion)
 	api.GET("/doc/*", echoSwagger.WrapHandler)
 
 	if !testController {
@@ -57,11 +57,12 @@ func addRoutes(e *echo.Echo) {
 	message := api.Group("/message") // TODO(TO/GA): auth middleware & test
 	message.PUT("", addMessage)
 	message.GET("", getMessage)
-	// message.GET("/all", getAllMessage) TODO(TO/GA): wait until we know the logic
-	template := message.Group("/template")
+	// message.GET("/all", getAllMessage) // TODO(TO/GA): wait until we know the logic
+
+	template := api.Group("/messageTemplate", middleware.AuthOrganization) // TODO(TO/GA): test
 	template.PUT("", addMessageTemplate)
-	template.POST("", setMessageTemplate)
-	template.GET("", getMessageTemplate)
+	template.POST("", setMessageTemplate, middleware.AuthMessageTemplate)
+	template.GET("", getMessageTemplate, middleware.AuthMessageTemplate)
 	template.GET("/all", getAllMessageTemplate)
 
 	/*

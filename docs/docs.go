@@ -296,41 +296,7 @@ var doc = `{
                 }
             }
         },
-        "/message/template": {
-            "put": {
-                "description": "Add a message template",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "MessageTemplate"
-                ],
-                "summary": "Add a message template",
-                "parameters": [
-                    {
-                        "description": "Message Template Infomation",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.MessageTemplateRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.MessageTemplateAPI"
-                        }
-                    }
-                }
-            }
-        },
-        "/message/template/all/{oid}": {
+        "/messageTemplate/all{oid}": {
             "get": {
                 "description": "Get information of all message templates of a specific organization",
                 "produces": [
@@ -362,7 +328,48 @@ var doc = `{
                 }
             }
         },
-        "/message/template/{tid}": {
+        "/messageTemplate{oid}": {
+            "put": {
+                "description": "Add a message template",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "MessageTemplate"
+                ],
+                "summary": "Add a message template",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Organization ID",
+                        "name": "oid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "description": "Message Template Infomation",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.MessageTemplateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.MessageTemplateAPI"
+                        }
+                    }
+                }
+            }
+        },
+        "/messageTemplate{oid}{tid}": {
             "get": {
                 "description": "Get information of a specific message template",
                 "produces": [
@@ -373,6 +380,13 @@ var doc = `{
                 ],
                 "summary": "Get a message template",
                 "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Organization ID",
+                        "name": "oid",
+                        "in": "query",
+                        "required": true
+                    },
                     {
                         "type": "integer",
                         "description": "Message Template ID",
@@ -405,6 +419,13 @@ var doc = `{
                 "parameters": [
                     {
                         "type": "integer",
+                        "description": "Organization ID",
+                        "name": "oid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
                         "description": "Message Template ID",
                         "name": "tid",
                         "in": "query",
@@ -430,7 +451,7 @@ var doc = `{
                 }
             }
         },
-        "/message/{mid}": {
+        "/message{mid}": {
             "get": {
                 "description": "Get information of a specific message",
                 "produces": [
@@ -855,10 +876,6 @@ var doc = `{
             "properties": {
                 "Description": {
                     "type": "string"
-                },
-                "OrganizationID": {
-                    "description": "not required because it might be 0",
-                    "type": "integer"
                 },
                 "Text": {
                     "type": "string"

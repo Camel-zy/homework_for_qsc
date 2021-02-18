@@ -3,15 +3,16 @@ package middleware
 import (
 	"encoding/json"
 	"errors"
+	"io/ioutil"
+	"net/http"
+	"net/url"
+	"time"
+
 	"git.zjuqsc.com/rop/rop-back-neo/utils"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"io/ioutil"
-	"net/http"
-	"net/url"
-	"time"
 )
 
 const jwtName = "qsc_rop_jwt"

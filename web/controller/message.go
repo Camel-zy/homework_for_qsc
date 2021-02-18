@@ -61,7 +61,7 @@ func addMessage(c echo.Context) error {
 // @tags Message
 // @summary Get a message
 // @description Get information of a specific message
-// @router /message/{mid} [get]
+// @router /message{mid} [get]
 // @param mid query uint true "Message ID"
 // @produce json
 // @success 200 {object} model.MessageAPI
@@ -74,7 +74,7 @@ func getMessage(c echo.Context) error {
 		)
 	}
 
-	message, msgErr := model.QueryMessageById(mid)
+	message, msgErr := model.QueryMessageAPIById(mid)
 	if msgErr != nil {
 		if errors.Is(msgErr, gorm.ErrRecordNotFound) {
 			return c.JSON(http.StatusNotFound, &utils.Error{
@@ -139,7 +139,8 @@ func modifyMessageTemplate(modifyDB func(model.MessageTemplateRequest) (*model.M
 // @tags MessageTemplate
 // @summary Add a message template
 // @description Add a message template
-// @router /message/template [put]
+// @router /messageTemplate{oid} [put]
+// @param oid query uint true "Organization ID"
 // @accept  json
 // @param data body model.MessageTemplateRequest true "Message Template Infomation"
 // @produce json
@@ -149,7 +150,7 @@ func addMessageTemplate(c echo.Context) error {
 		messageTemplate := &model.MessageTemplate{
 			Description:    messageTemplateRequest.Description,
 			Text:           messageTemplateRequest.Text,
-			OrganizationID: messageTemplateRequest.OrganizationID,
+			OrganizationID: c.Get("oid").(uint),
 		}
 		model.CreateMessageTemplate(messageTemplate)
 		return messageTemplate, nil
@@ -159,7 +160,8 @@ func addMessageTemplate(c echo.Context) error {
 // @tags MessageTemplate
 // @summary Update a message template
 // @description Update a message template
-// @router /message/template/{tid} [post]
+// @router /messageTemplate{oid}{tid} [post]
+// @param oid query uint true "Organization ID"
 // @param tid query uint true "Message Template ID"
 // @accept  json
 // @param data body model.MessageTemplateRequest true "Message Template Infomation"
@@ -167,21 +169,17 @@ func addMessageTemplate(c echo.Context) error {
 // @success 200 {object} model.MessageTemplateAPI
 func setMessageTemplate(c echo.Context) error {
 	return modifyMessageTemplate(func(messageTemplateRequest model.MessageTemplateRequest) (*model.MessageTemplate, error) {
-		tid, typeErr := utils.IsUnsignedInteger(c.QueryParam("tid"))
-		if typeErr != nil {
-			return nil, errors.New("tid need to be an unsigned integer")
-		}
-
 		messageTemplate := &model.MessageTemplate{
-			ID:             tid,
-			Description:    messageTemplateRequest.Description,
-			Text:           messageTemplateRequest.Text,
-			OrganizationID: messageTemplateRequest.OrganizationID,
-			Status:         0,
+			ID:          c.Get("tid").(uint),
+			Description: messageTemplateRequest.Description,
+			Text:        messageTemplateRequest.Text,
+			Status:      0,
 		}
 		updateErr := model.UpdateMessageTemplateById(messageTemplate)
 		if updateErr != nil {
 			if updateErr == model.ErrNoRowsAffected {
+				// there might be a person delete this template after
+				// this controller fetch the template, so keep it
 				return nil, errors.New("message template not found")
 			}
 			return nil, model.ErrInternalError
@@ -193,63 +191,30 @@ func setMessageTemplate(c echo.Context) error {
 // @tags MessageTemplate
 // @summary Get a message template
 // @description Get information of a specific message template
-// @router /message/template/{tid} [get]
+// @router /messageTemplate{oid}{tid} [get]
+// @param oid query uint true "Organization ID"
 // @param tid query uint true "Message Template ID"
 // @produce json
 // @success 200 {object} model.MessageTemplateAPI
 func getMessageTemplate(c echo.Context) error {
-	tid, typeErr := utils.IsUnsignedInteger(c.QueryParam("tid"))
-	if typeErr != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "tid need to be an unsigned integer",
-		})
-	}
-
-	messageTemplate, msgTplErr := model.QueryMessageTemplateById(tid)
-	if msgTplErr != nil {
-		if errors.Is(msgTplErr, gorm.ErrRecordNotFound) {
-			return c.JSON(http.StatusNotFound, &utils.Error{
-				Code: "NOT_FOUND",
-				Data: "message template not found",
-			})
-		}
-		return c.JSON(http.StatusInternalServerError, &utils.Error{
-			Code: "INTERNAL_SERVER_ERR",
-			Data: "get message template fail",
-		})
-	}
-
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
-		Data: &messageTemplate,
+		Data: c.Get("&messageTemplate").(*model.MessageTemplate),
 	})
 }
 
 // @tags MessageTemplate
 // @summary Get all message templates
 // @description Get information of all message templates of a specific organization
-// @router /message/template/all/{oid} [get]
+// @router /messageTemplate/all{oid} [get]
 // @param oid query uint true "Organization ID"
 // @produce json
 // @success 200 {object} []model.AllMessageTemplateAPI
 func getAllMessageTemplate(c echo.Context) error {
-	oid, typeErr := utils.IsUnsignedInteger(c.QueryParam("oid"))
-	if typeErr != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "eid need to be an unsigned integer",
-		})
-	}
+	oid := c.Get("oid").(uint)
 
-	messageTemplates, msgTplsErr := model.QueryAllMessageTemplateInOrganization(oid)
-	if msgTplsErr != nil {
-		if errors.Is(msgTplsErr, gorm.ErrRecordNotFound) {
-			return c.JSON(http.StatusNotFound, &utils.Error{
-				Code: "NOT_FOUND",
-				Data: "organization not found",
-			})
-		}
+	messageTemplates, msgTplsErr := model.QueryAllMessageTemplateAPIInOrganization(oid)
+	if msgTplsErr != nil && !errors.Is(msgTplsErr, gorm.ErrRecordNotFound) { // TODO(TO/GA): can front handle not found?
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "INTERNAL_SERVER_ERR",
 			Data: "get all message templates fail",
