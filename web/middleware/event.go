@@ -28,7 +28,7 @@ func SetEventOrganization(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-func CheckSetEventValid(next echo.HandlerFunc) echo.HandlerFunc {
+func CheckRequiredField(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		if c.FormValue("Name") == "" ||
 			c.FormValue("StartTime") == "" ||

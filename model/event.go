@@ -37,7 +37,9 @@ func CreateEvent(requestEvent *EventApi) error {
 }
 
 func UpdateEventByID(requestEvent *EventApi) error {
-	result := gormDb.Model(&Event{ID: requestEvent.ID}).Updates(requestEvent)
+	dbEvent := Event{}
+	copier.Copy(&dbEvent, requestEvent)
+	result := gormDb.Model(&Event{ID: requestEvent.ID}).Updates(&dbEvent)
 	return result.Error
 }
 

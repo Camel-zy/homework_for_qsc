@@ -1,6 +1,7 @@
 package model
 
 import (
+	"github.com/jinzhu/copier"
 	"time"
 )
 
@@ -16,34 +17,20 @@ type Interview struct {
 	MaxInterviewee uint      `gorm:"default:6"`
 	StartTime      time.Time `gorm:"not null"`
 	EndTime        time.Time `gorm:"not null"`
-	UpdatedTime    time.Time `gorm:"not null"`
-}
-
-type InterviewCreateRequest struct {
-	//ID             uint      `gorm:"not null;autoIncrement;primaryKey"`
-	Name           string    `gorm:"size:40;not null"`
-	Description    string    `gorm:"size:200"`
-	EventID        uint      `gorm:"not null"`
-	Event          Event     // FOREIGN KEY (EventID) REFERENCES Event(EventID)
-	DepartmentID   uint      `gorm:"not null"`
-	OtherInfo      string    `gorm:"size:200"`
-	Location       string    `gorm:"size:200"`
-	MaxInterviewee uint      `gorm:"default:6"`
-	StartTime      time.Time `gorm:"not null"`
-	EndTime        time.Time `gorm:"not null"`
-	UpdatedTime    time.Time `gorm:"not null"`
+	UpdatedTime    time.Time `gorm:"autoUpdateTime"`
 }
 
 type InterviewApi struct {
 	ID             uint
 	Name           string
 	Description    string
-	DepartmentID   uint
+	EventID        uint      `query:"eid"`
+	DepartmentID   uint      `query:"did"`
 	OtherInfo      string
 	Location       string
 	MaxInterviewee uint
-	StartTime      time.Time
-	EndTime        time.Time
+	StartTime      time.Time `form:"StartTime"`
+	EndTime        time.Time `form:"EndTime"`
 }
 
 type JoinedInterview struct {
@@ -61,13 +48,17 @@ type CrossInterview struct {
 	UpdatedTime    time.Time `gorm:"not null"`
 }
 
-func CreateInterview(requestInterview *Interview) error {
-	result := gormDb.Create(requestInterview)
+func CreateInterview(requestInterview *InterviewApi) error {
+	dbInterview := Interview{}
+	copier.Copy(&dbInterview, requestInterview)
+	result := gormDb.Create(&dbInterview)
 	return result.Error
 }
 
-func UpdateInterviewByID(requestInterview *Interview) error {
-	result := gormDb.Model(&Interview{ID: requestInterview.ID}).Updates(requestInterview)
+func UpdateInterviewByID(requestInterview *InterviewApi) error {
+	dbInterview := Interview{}
+	copier.Copy(&dbInterview, requestInterview)
+	result := gormDb.Model(&Interview{ID: requestInterview.ID}).Updates(&dbInterview)
 	return result.Error
 }
 

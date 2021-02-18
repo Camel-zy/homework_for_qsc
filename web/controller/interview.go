@@ -10,42 +10,24 @@ import (
 	"gorm.io/gorm"
 )
 
-func addInterview(c echo.Context) error {
-	iid, typeErr := utils.IsUnsignedInteger(c.QueryParam("iid"))
-	if typeErr != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "iid need to be an unsigned integer",
-		})
-	}
+// @tags Interview
+// @summary Create interview in event
+// @description Create an events in a specific organization
+// @router /event/interview/{eid}{did} [put]
+// @param eid query uint true "Event ID"
+// @param did query uint true "Department ID"
+// @param Name formData string true "Interview name"
+// @param Description formData string false "Interview description"
+// @param OtherInfo formData string false "Other information about the interview"
+// @param Location formData string false "Location of the interview"
+// @param MaxInterviewee formData uint false "Default: 6"
+// @param StartTime formData string true "Must be in RFC 3339 format"
+// @param EndTime formData string true "Must be in RFC 3339 format"
+// @produce json
+func addInterviewInEvent(c echo.Context) error {
+	interview := c.Get("interview").(model.InterviewApi) // this is set by middleware
 
-	_, itvErr := model.QueryInterviewByID(iid)
-	if !errors.Is(itvErr, gorm.ErrRecordNotFound) {
-		return c.JSON(http.StatusNotFound, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "interview has existed",
-		})
-	}
-
-	req := &model.InterviewCreateRequest{}
-	c.Bind(req)
-
-	interview := &model.Interview{
-		ID:             iid,
-		Name:           req.Name,
-		Description:    req.Description,
-		EventID:        req.EventID,
-		Event:          req.Event,
-		DepartmentID:   req.DepartmentID,
-		OtherInfo:      req.OtherInfo,
-		Location:       req.Location,
-		MaxInterviewee: req.MaxInterviewee,
-		StartTime:      req.StartTime,
-		EndTime:        req.EndTime,
-		UpdatedTime:    req.UpdatedTime,
-	}
-
-	if CrtItvErr := model.CreateInterview(interview); CrtItvErr != nil {
+	if err := model.CreateInterview(&interview); err != nil {
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "INTERNAL_SERVER_ERR",
 			Data: "add interview fail",
@@ -58,18 +40,23 @@ func addInterview(c echo.Context) error {
 	})
 }
 
-func setInterview(c echo.Context) error {
-	iid, typeErr := utils.IsUnsignedInteger(c.QueryParam("iid"))
-	if typeErr != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "iid need to be an unsigned integer",
-		})
-	}
-
-	interview := model.Interview{}
-	c.Bind(&interview)
-
+// @tags Interview
+// @summary Update interview
+// @description Update an interview
+// @router /interview/{iid} [post]
+// @param iid query uint true "Interview ID"
+// @param Name formData string false "Interview name"
+// @param Description formData string false "Interview description"
+// @param DepartmentID formData uint false "Department ID"
+// @param OtherInfo formData string false "Other information about the interview"
+// @param Location formData string false "Location of the interview"
+// @param MaxInterviewee formData uint false "Default: 6"
+// @param StartTime formData string false "Must be in RFC 3339 format"
+// @param EndTime formData string false "Must be in RFC 3339 format"
+// @produce json
+func updateInterview(c echo.Context) error {
+	interview := c.Get("interview").(model.InterviewApi) // this is set by middleware
+	iid, _ := utils.IsUnsignedInteger(c.QueryParam("iid"))
 	interview.ID = iid
 
 	if UpdItvErr := model.UpdateInterviewByID(&interview); UpdItvErr != nil {

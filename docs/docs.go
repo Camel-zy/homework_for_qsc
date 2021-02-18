@@ -56,6 +56,79 @@ var doc = `{
                 }
             }
         },
+        "/event/interview/{eid}{did}": {
+            "put": {
+                "description": "Create an events in a specific organization",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Interview"
+                ],
+                "summary": "Create interview in event",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Event ID",
+                        "name": "eid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Department ID",
+                        "name": "did",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Interview name",
+                        "name": "Name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Interview description",
+                        "name": "Description",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Other information about the interview",
+                        "name": "OtherInfo",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Location of the interview",
+                        "name": "Location",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Default: 6",
+                        "name": "MaxInterviewee",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Must be in RFC 3339 format",
+                        "name": "StartTime",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Must be in RFC 3339 format",
+                        "name": "EndTime",
+                        "in": "formData",
+                        "required": true
+                    }
+                ]
+            }
+        },
         "/event/interview/{eid}{iid}": {
             "get": {
                 "description": "Get information of an interview in a specific event",
@@ -119,6 +192,61 @@ var doc = `{
                         }
                     }
                 }
+            },
+            "post": {
+                "description": "Update an event",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Event"
+                ],
+                "summary": "Update event",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Event ID",
+                        "name": "eid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Event name",
+                        "name": "Name",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Event description",
+                        "name": "Description",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "0 disabled (default), 1 testing, 2 running",
+                        "name": "Status",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Other information about the event",
+                        "name": "OtherInfo",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Must be in RFC 3339 format",
+                        "name": "StartTime",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Must be in RFC 3339 format",
+                        "name": "EndTime",
+                        "in": "formData"
+                    }
+                ]
             }
         },
         "/interview/{iid}": {
@@ -148,6 +276,73 @@ var doc = `{
                         }
                     }
                 }
+            },
+            "post": {
+                "description": "Update an interview",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Interview"
+                ],
+                "summary": "Update interview",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Interview ID",
+                        "name": "iid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Interview name",
+                        "name": "Name",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Interview description",
+                        "name": "Description",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Department ID",
+                        "name": "DepartmentID",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Other information about the interview",
+                        "name": "OtherInfo",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Location of the interview",
+                        "name": "Location",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Default: 6",
+                        "name": "MaxInterviewee",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Must be in RFC 3339 format",
+                        "name": "StartTime",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Must be in RFC 3339 format",
+                        "name": "EndTime",
+                        "in": "formData"
+                    }
+                ]
             }
         },
         "/message": {
@@ -472,7 +667,7 @@ var doc = `{
         },
         "/organization/event/{oid}": {
             "put": {
-                "description": "Create an events in a specific organization",
+                "description": "Create an event in a specific organization",
                 "produces": [
                     "application/json"
                 ],
@@ -492,7 +687,8 @@ var doc = `{
                         "type": "string",
                         "description": "Event name",
                         "name": "Name",
-                        "in": "formData"
+                        "in": "formData",
+                        "required": true
                     },
                     {
                         "type": "string",
@@ -516,13 +712,15 @@ var doc = `{
                         "type": "string",
                         "description": "Must be in RFC 3339 format",
                         "name": "StartTime",
-                        "in": "formData"
+                        "in": "formData",
+                        "required": true
                     },
                     {
                         "type": "string",
                         "description": "Must be in RFC 3339 format",
                         "name": "EndTime",
-                        "in": "formData"
+                        "in": "formData",
+                        "required": true
                     }
                 ]
             }
@@ -561,71 +759,6 @@ var doc = `{
                         }
                     }
                 }
-            },
-            "post": {
-                "description": "Update an events in a specific organization",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Event"
-                ],
-                "summary": "Update event in organization",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Organization ID",
-                        "name": "oid",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Event ID",
-                        "name": "eid",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Event name",
-                        "name": "Name",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Event description",
-                        "name": "Description",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "0 disabled (default), 1 testing, 2 running",
-                        "name": "Status",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Other information about the event",
-                        "name": "OtherInfo",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Must be in RFC 3339 format",
-                        "name": "StartTime",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Must be in RFC 3339 format",
-                        "name": "EndTime",
-                        "in": "formData",
-                        "required": true
-                    }
-                ]
             }
         },
         "/organization/{oid}": {
@@ -744,6 +877,9 @@ var doc = `{
                 },
                 "endTime": {
                     "type": "string"
+                },
+                "eventID": {
+                    "type": "integer"
                 },
                 "id": {
                     "type": "integer"
