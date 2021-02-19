@@ -28,7 +28,7 @@ func MockPassport(mockQscPassportFunction func(c echo.Context) error) {
 
 /* A mocked QSC Passport service for go test */
 func mockQscPassportService(c echo.Context) error {
-	success := &auth{Err: 0, Uid: 0}
+	success := &auth{Err: 0, Uid: 1}
 	failed := &auth{Err: 1}
 	if v := c.QueryParam("token"); v != "" {
 		if v == qp2glSesstokValid {
@@ -50,7 +50,7 @@ func mockQscPassportService(c echo.Context) error {
 The authentication will 100% pass
 */
 func MockQscPassportServiceWillPass(c echo.Context) error {
-	return c.JSON(http.StatusOK, &auth{Err: 0, Uid: 0})
+	return c.JSON(http.StatusOK, &auth{Err: 0, Uid: 1})
 }
 
 /* configurations for mocking a QSC Passport service */
