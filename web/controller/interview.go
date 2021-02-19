@@ -12,7 +12,7 @@ import (
 
 // @tags Interview
 // @summary Create interview in event
-// @description Create an events in a specific organization
+// @description Create an interview in a specific event
 // @router /interview [put]
 // @accept json
 // @param data body model.InterviewApi true "Interview Information"

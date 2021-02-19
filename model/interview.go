@@ -1,8 +1,9 @@
 package model
 
 import (
-	"github.com/jinzhu/copier"
 	"time"
+
+	"github.com/jinzhu/copier"
 )
 
 type Interview struct {
@@ -28,9 +29,9 @@ type InterviewApi struct {
 	DepartmentID   uint      `json:"DepartmentID" validate:"required"`
 	OtherInfo      string    `json:"OtherInfo"`
 	Location       string    `json:"Location"`
-	MaxInterviewee uint      `json:"MaxInterviewee"`  // default 6
+	MaxInterviewee uint      `json:"MaxInterviewee"`                // default 6
 	StartTime      time.Time `json:"StartTime" validate:"required"` // request string must be in RFC 3339 format
-	EndTime        time.Time `json:"EndTime" validate:"required"` // request string must be in RFC 3339 format
+	EndTime        time.Time `json:"EndTime" validate:"required"`   // request string must be in RFC 3339 format
 }
 
 type JoinedInterview struct {
@@ -41,6 +42,7 @@ type JoinedInterview struct {
 	UpdatedTime time.Time `gorm:"not null"`
 }
 
+// TODO(OE.Heart): change this model to fit the logic
 type CrossInterview struct {
 	ID             uint      `gorm:"not null;autoIncrement;primaryKey"`
 	OrganizationID uint      `gorm:"not null"`
