@@ -18,49 +18,20 @@ func SetEventOrganization(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 		event, err := model.QueryEventByID(eid)
 		if err != nil {
-			return c.JSON(http.StatusUnauthorized, &utils.Error{
+			return c.JSON(http.StatusForbidden, &utils.Error{
 				Code: "NO_PRIVILEGE",
 				Data: "no privilege to access the information in this organization",
 			})
 		}
 		c.Set("oid", event.OrganizationID)
+		c.Set("getOrganizationIdFunc", getOrganizationIdFromContext)
 		return next(c)
 	}
 }
 
-func CheckRequiredField(next echo.HandlerFunc) echo.HandlerFunc {
+func SetReadOrganizationIdFromForm(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		if c.FormValue("Name") == "" ||
-			c.FormValue("StartTime") == "" ||
-			c.FormValue("EndTime") == "" {
-			return c.JSON(http.StatusBadRequest, &utils.Error{
-				Code: "BAD_REQUEST",
-				Data: "some required fields are not set",
-			})
-		}
-		return next(c)
-	}
-}
-
-func SetEvent(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		var eventReq model.EventApi
-
-		err := c.Bind(&eventReq)
-		if err != nil {
-			return c.JSON(http.StatusBadRequest, &utils.Error{
-				Code: "BAD_REQUEST",
-				Data: "unknown bad request",
-			})
-		}
-		if eventReq.Status > 2 {
-			return c.JSON(http.StatusBadRequest, &utils.Error{
-				Code: "BAD_REQUEST",
-				Data: "the value in status field is illegal",
-			})
-		}
-
-		c.Set("event", eventReq)
+		c.Set("getOrganizationIdFunc", getOrganizationIdFromForm)
 		return next(c)
 	}
 }

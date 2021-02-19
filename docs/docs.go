@@ -179,7 +179,7 @@ var doc = `{
         },
         "/interview": {
             "put": {
-                "description": "Create an events in a specific organization",
+                "description": "Create an interview in a specific event",
                 "consumes": [
                     "application/json"
                 ],
