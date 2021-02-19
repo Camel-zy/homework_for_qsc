@@ -16,6 +16,7 @@ func SetEventOrganization(next echo.HandlerFunc) echo.HandlerFunc {
 				Data: "eid need to be an unsigned integer",
 			})
 		}
+		c.Set("eid", eid)
 		event, err := model.QueryEventByID(eid)
 		if err != nil {
 			return c.JSON(http.StatusForbidden, &utils.Error{
@@ -24,14 +25,6 @@ func SetEventOrganization(next echo.HandlerFunc) echo.HandlerFunc {
 			})
 		}
 		c.Set("oid", event.OrganizationID)
-		c.Set("getOrganizationIdFunc", getOrganizationIdFromContext)
-		return next(c)
-	}
-}
-
-func SetReadOrganizationIdFromForm(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		c.Set("getOrganizationIdFunc", getOrganizationIdFromForm)
 		return next(c)
 	}
 }

@@ -12,7 +12,7 @@ import (
 // @tags Department
 // @summary Get department in organization
 // @description Get information of a department in a specific organization
-// @router /organization/department/{oid}{did} [get]
+// @router /organization/department{oid}{did} [get]
 // @param oid query uint true "Organization ID"
 // @param did query uint true "Department ID"
 // @produce json
@@ -53,7 +53,7 @@ func getDepartmentInOrganization(c echo.Context) error {
 // @tags Department
 // @summary Get all departments in organization
 // @description Get brief information of all departments in a specific organization
-// @router /organization/department/all/{oid} [get]
+// @router /organization/department/all{oid} [get]
 // @param oid query uint true "Organization ID"
 // @produce json
 // @success 200 {array} model.Brief

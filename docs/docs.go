@@ -24,33 +24,7 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/event": {
-            "put": {
-                "description": "Create an event in a specific organization",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Event"
-                ],
-                "summary": "Create event in organization",
-                "parameters": [
-                    {
-                        "description": "Event Information",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.EventApi"
-                        }
-                    }
-                ]
-            }
-        },
-        "/event/interview/all/{eid}": {
+        "/event/interview/all{eid}": {
             "get": {
                 "description": "Get brief information of all interviews in a specific event",
                 "produces": [
@@ -82,7 +56,7 @@ var doc = `{
                 }
             }
         },
-        "/event/interview/{eid}{iid}": {
+        "/event/interview{eid}{iid}": {
             "get": {
                 "description": "Get information of an interview in a specific event",
                 "produces": [
@@ -118,7 +92,7 @@ var doc = `{
                 }
             }
         },
-        "/event/{eid}": {
+        "/event{eid}": {
             "get": {
                 "description": "Get information of an event",
                 "produces": [
@@ -177,6 +151,32 @@ var doc = `{
                 ]
             }
         },
+        "/event{oid}": {
+            "put": {
+                "description": "Create an event in a specific organization",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Event"
+                ],
+                "summary": "Create event in organization",
+                "parameters": [
+                    {
+                        "description": "Event Information",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.EventApi"
+                        }
+                    }
+                ]
+            }
+        },
         "/interview": {
             "put": {
                 "description": "Create an interview in a specific event",
@@ -203,7 +203,7 @@ var doc = `{
                 ]
             }
         },
-        "/interview/{iid}": {
+        "/interview{iid}": {
             "get": {
                 "description": "Get information of an interview",
                 "produces": [
@@ -503,7 +503,7 @@ var doc = `{
                 }
             }
         },
-        "/organization/department/all/{oid}": {
+        "/organization/department/all{oid}": {
             "get": {
                 "description": "Get brief information of all departments in a specific organization",
                 "produces": [
@@ -535,7 +535,7 @@ var doc = `{
                 }
             }
         },
-        "/organization/department/{oid}{did}": {
+        "/organization/department{oid}{did}": {
             "get": {
                 "description": "Get information of a department in a specific organization",
                 "produces": [
@@ -571,7 +571,7 @@ var doc = `{
                 }
             }
         },
-        "/organization/event/all/{oid}": {
+        "/organization/event/all{oid}": {
             "get": {
                 "description": "Get brief information of all events in a specific organization",
                 "produces": [
@@ -603,7 +603,7 @@ var doc = `{
                 }
             }
         },
-        "/organization/event/{oid}{eid}": {
+        "/organization/event{oid}{eid}": {
             "get": {
                 "description": "Get information of an event in a specific organization",
                 "produces": [
@@ -639,7 +639,7 @@ var doc = `{
                 }
             }
         },
-        "/organization/{oid}": {
+        "/organization{oid}": {
             "get": {
                 "description": "Get information of a specific organization",
                 "produces": [

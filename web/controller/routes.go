@@ -34,7 +34,7 @@ func addRoutes(e *echo.Echo) {
 	my := api.Group("/my") // mainly for frontend rendering shortcut
 	my.GET("/calendar", getMyCalendar)
 
-	organization := api.Group("/organization", middleware.AuthOrganization)
+	organization := api.Group("/organization", middleware.GetOrganizationIdFromParam, middleware.AuthOrganization)
 	organization.GET("", getOrganization)
 	organization.GET("/department", getDepartmentInOrganization)
 	organization.GET("/department/all", getAllDepartmentInOrganization)
@@ -47,7 +47,7 @@ func addRoutes(e *echo.Echo) {
 	event.GET("", getEvent)
 	event.GET("/interview", getInterviewInEvent)
 	event.GET("/interview/all", getAllInterviewInEvent)
-	api.PUT("/event", createEvent, middleware.SetReadOrganizationIdFromForm, middleware.AuthOrganization)
+	api.PUT("/event", createEvent, middleware.GetOrganizationIdFromParam, middleware.AuthOrganization)
 
 	interview := api.Group("/interview") // TODO(RalXYZ): add auth middleware
 	interview.PUT("", createInterview)
@@ -59,7 +59,7 @@ func addRoutes(e *echo.Echo) {
 	message.GET("", getMessage)
 	// message.GET("/all", getAllMessage) // TODO(TO/GA): wait until we know the logic
 
-	template := api.Group("/messageTemplate", middleware.AuthOrganization) // TODO(TO/GA): test
+	template := api.Group("/messageTemplate", middleware.GetOrganizationIdFromParam, middleware.AuthOrganization) // TODO(TO/GA): test
 	template.PUT("", addMessageTemplate)
 	template.POST("", setMessageTemplate, middleware.AuthMessageTemplate)
 	template.GET("", getMessageTemplate, middleware.AuthMessageTemplate)

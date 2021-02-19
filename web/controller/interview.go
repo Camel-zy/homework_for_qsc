@@ -48,7 +48,7 @@ func createInterview(c echo.Context) error {
 // @tags Interview
 // @summary Update interview
 // @description Update an interview
-// @router /interview/{iid} [post]
+// @router /interview{iid} [post]
 // @param iid query uint true "Interview ID"
 // @accept json
 // @param data body model.InterviewApi false "Interview Information"
@@ -87,7 +87,7 @@ func updateInterview(c echo.Context) error {
 // @tags Interview
 // @summary Get interview
 // @description Get information of an interview
-// @router /interview/{iid} [get]
+// @router /interview{iid} [get]
 // @param iid query uint true "Interview ID"
 // @produce json
 // @success 200 {object} model.InterviewApi
@@ -117,7 +117,7 @@ func getInterview(c echo.Context) error {
 // @tags Interview
 // @summary Get interview in event
 // @description Get information of an interview in a specific event
-// @router /event/interview/{eid}{iid} [get]
+// @router /event/interview{eid}{iid} [get]
 // @param eid query uint true "Event ID"
 // @param iid query uint true "Interview ID"
 // @produce json
@@ -157,7 +157,7 @@ func getInterviewInEvent(c echo.Context) error {
 // @tags Interview
 // @summary Get all interviews in event
 // @description Get brief information of all interviews in a specific event
-// @router /event/interview/all/{eid} [get]
+// @router /event/interview/all{eid} [get]
 // @param eid query uint true "Event ID"
 // @produce json
 // @success 200 {array} model.Brief

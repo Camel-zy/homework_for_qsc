@@ -12,7 +12,7 @@ import (
 // @tags Organization
 // @summary Get information of organization
 // @description Get information of a specific organization
-// @router /organization/{oid} [get]
+// @router /organization{oid} [get]
 // @param oid query uint true "Organization ID"
 // @produce json
 // @success 200 {object} model.OrganizationApi
