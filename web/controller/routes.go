@@ -54,6 +54,11 @@ func addRoutes(e *echo.Echo) {
 	interview.POST("", updateInterview)
 	interview.GET("", getInterview)
 
+	form := api.Group("/form") //
+	form.PUT("", createForm)
+	form.POST("", updateForm)
+	form.GET("", getForm)
+
 	message := api.Group("/message") // TODO(TO/GA): auth middleware & test
 	message.PUT("", addMessage)
 	message.GET("", getMessage)

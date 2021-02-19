@@ -12,9 +12,9 @@ import (
 )
 
 type Brief struct {
-	ID              uint
-	Name            string
-	Description     string
+	ID          uint
+	Name        string
+	Description string
 }
 
 var ErrNoRowsAffected = errors.New("no rows affected")
@@ -49,6 +49,7 @@ func CreateTables() {
 		&JoinedDepartment{},
 		&Event{},
 		&Interview{},
+		&Form{},
 		&JoinedInterview{},
 		&Message{},
 		&MessageTemplate{},
@@ -71,7 +72,7 @@ func ConnectObjectStorage() {
 
 	var err error
 	minioClient, err = minio.New(viper.GetString("minio.endpoint"), &minio.Options{
-		Creds: credentials.NewStaticV4(viper.GetString("minio.id"), viper.GetString("minio.secret"), ""),
+		Creds:  credentials.NewStaticV4(viper.GetString("minio.id"), viper.GetString("minio.secret"), ""),
 		Secure: viper.GetBool("minio.secure"),
 	})
 	if err != nil {
