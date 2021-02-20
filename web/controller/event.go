@@ -12,7 +12,7 @@ import (
 // @tags Event
 // @summary Create event in organization
 // @description Create an event in a specific organization
-// @router /event [put]
+// @router /organization/event [put]
 // @param oid query uint true "Organization ID"
 // @accept json
 // @param data body model.EventRequest true "Event Information"

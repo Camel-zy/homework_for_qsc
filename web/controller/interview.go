@@ -12,7 +12,7 @@ import (
 // @tags Interview
 // @summary Create interview in event
 // @description Create an interview in a specific event
-// @router /interview [put]
+// @router /event/interview [put]
 // @param eid query uint true "Event ID"
 // @param did query uint true "Department ID"
 // @accept json

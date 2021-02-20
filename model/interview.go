@@ -1,6 +1,7 @@
 package model
 
 import (
+	"gorm.io/gorm/clause"
 	"time"
 
 	"github.com/jinzhu/copier"
@@ -79,6 +80,12 @@ func UpdateInterviewByID(requestInterview *InterviewRequest, iid uint) error {
 func QueryInterviewByID(id uint) (*InterviewResponse, error) {
 	var dbInterview InterviewResponse
 	result := gormDb.Model(&Interview{}).First(&dbInterview, id)
+	return &dbInterview, result.Error
+}
+
+func QueryInterviewByIDWithPreload(id uint) (*Interview, error) {
+	var dbInterview Interview
+	result := gormDb.Preload(clause.Associations).Model(&Interview{}).First(&dbInterview, id)
 	return &dbInterview, result.Error
 }
 

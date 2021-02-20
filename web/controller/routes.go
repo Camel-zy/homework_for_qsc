@@ -28,23 +28,24 @@ func addRoutes(e *echo.Echo) {
 	my := api.Group("/my") // mainly for frontend rendering shortcut
 	my.GET("/calendar", getMyCalendar)
 
+	api.GET("/organization/all", getAllOrganization)
+
 	organization := api.Group("/organization", middleware.GetOrganizationIdFromParam, middleware.AuthOrganization)
 	organization.GET("", getOrganization)
 	organization.GET("/department", getDepartmentInOrganization)
 	organization.GET("/department/all", getAllDepartmentInOrganization)
 	organization.GET("/event", getEventInOrganization)
 	organization.GET("/event/all", getAllEventInOrganization)
-	api.GET("/organization/all", getAllOrganization)
+	organization.PUT("/event", createEvent)
 
 	event := api.Group("/event", middleware.SetEventOrganization, middleware.AuthOrganization)
 	event.POST("", updateEvent)
 	event.GET("", getEvent)
 	event.GET("/interview", getInterviewInEvent)
 	event.GET("/interview/all", getAllInterviewInEvent)
-	api.PUT("/event", createEvent, middleware.GetOrganizationIdFromParam, middleware.AuthOrganization)
+	event.PUT("/interview", createInterview, middleware.CheckDepartmentInOrganization)
 
-	interview := api.Group("/interview") // TODO(RalXYZ): add auth middleware
-	interview.PUT("", createInterview)
+	interview := api.Group("/interview", middleware.SetInterviewOrganization, middleware.AuthOrganization)
 	interview.POST("", updateInterview)
 	interview.GET("", getInterview)
 

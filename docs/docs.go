@@ -52,37 +52,6 @@ var doc = `{
                     }
                 }
             },
-            "put": {
-                "description": "Create an event in a specific organization",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Event"
-                ],
-                "summary": "Create event in organization",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Organization ID",
-                        "name": "oid",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "description": "Event Information",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.EventRequest"
-                        }
-                    }
-                ]
-            },
             "post": {
                 "description": "Update an event",
                 "consumes": [
@@ -148,6 +117,44 @@ var doc = `{
                         }
                     }
                 }
+            },
+            "put": {
+                "description": "Create an interview in a specific event",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Interview"
+                ],
+                "summary": "Create interview in event",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Event ID",
+                        "name": "eid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Department ID",
+                        "name": "did",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "description": "Interview Information",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.InterviewRequest"
+                        }
+                    }
+                ]
             }
         },
         "/event/interview/all": {
@@ -209,44 +216,6 @@ var doc = `{
                         }
                     }
                 }
-            },
-            "put": {
-                "description": "Create an interview in a specific event",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Interview"
-                ],
-                "summary": "Create interview in event",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Event ID",
-                        "name": "eid",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Department ID",
-                        "name": "did",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "description": "Interview Information",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.InterviewRequest"
-                        }
-                    }
-                ]
             },
             "post": {
                 "description": "Update an interview",
@@ -647,6 +616,37 @@ var doc = `{
                         }
                     }
                 }
+            },
+            "put": {
+                "description": "Create an event in a specific organization",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Event"
+                ],
+                "summary": "Create event in organization",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Organization ID",
+                        "name": "oid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "description": "Event Information",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.EventRequest"
+                        }
+                    }
+                ]
             }
         },
         "/organization/event/all": {

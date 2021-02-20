@@ -21,7 +21,7 @@ func SetEventOrganization(next echo.HandlerFunc) echo.HandlerFunc {
 		if err != nil {
 			return c.JSON(http.StatusForbidden, &utils.Error{
 				Code: "NO_PRIVILEGE",
-				Data: "no privilege to access the information in this organization",
+				Data: "no privilege to access the information in this event",
 			})
 		}
 		c.Set("oid", event.OrganizationID)
