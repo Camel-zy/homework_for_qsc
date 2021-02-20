@@ -10,13 +10,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// @tags Interview
-// @summary Create interview in event
-// @description Create an interview in a specific event
-// @router /interview [put]
-// @accept json
-// @param data body model.InterviewApi true "Interview Information"
-// @produce json
 func createInterview(c echo.Context) error {
 	interviewRequest := model.InterviewApi{}
 	if err := c.Bind(&interviewRequest); err != nil {
@@ -45,14 +38,6 @@ func createInterview(c echo.Context) error {
 	})
 }
 
-// @tags Interview
-// @summary Update interview
-// @description Update an interview
-// @router /interview [post]
-// @param iid query uint true "Interview ID"
-// @accept json
-// @param data body model.InterviewApi false "Interview Information"
-// @produce json
 func updateInterview(c echo.Context) error {
 	interviewRequest := model.InterviewApi{}
 	err := c.Bind(&interviewRequest)

@@ -13,11 +13,20 @@ import (
 // @summary Create event in organization
 // @description Create an event in a specific organization
 // @router /event [put]
+// @param oid query uint true "Organization ID"
 // @accept json
-// @param data body model.EventApi true "Event Information"
+// @param data body model.EventRequest true "Event Information"
 // @produce json
 func createEvent(c echo.Context) error {
-	eventRequest := model.EventApi{}
+	oid, typeErr := utils.IsUnsignedInteger(c.QueryParam("oid"))
+	if typeErr != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "oid need to be an unsigned integer",
+		})
+	}
+
+	eventRequest := model.EventRequest{}
 	if err := c.Bind(&eventRequest); err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
@@ -37,19 +46,17 @@ func createEvent(c echo.Context) error {
 		})
 	}
 
-	eventRequest.OrganizationID = c.Get("oid").(uint)
-
-	if err := model.CreateEvent(&eventRequest); err != nil {
+	if eid, err := model.CreateEvent(&eventRequest, oid); err != nil {
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "INTERNAL_SERVER_ERR",
 			Data: "create event fail",
 		})
+	} else {
+		return c.JSON(http.StatusOK, &utils.Error{
+			Code: "SUCCESS",
+			Data: eid,
+		})
 	}
-
-	return c.JSON(http.StatusOK, &utils.Error{
-		Code: "SUCCESS",
-		Data: eventRequest.ID,
-	})
 }
 
 // @tags Event
@@ -58,10 +65,18 @@ func createEvent(c echo.Context) error {
 // @router /event [post]
 // @param eid query uint true "Event ID"
 // @accept json
-// @param data body model.EventApi false "Event Information"
+// @param data body model.EventRequest false "Event Information"
 // @produce json
 func updateEvent(c echo.Context) error {
-	eventRequest := model.EventApi{}
+	eid, typeErr := utils.IsUnsignedInteger(c.QueryParam("eid"))
+	if typeErr != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "eid need to be an unsigned integer",
+		})
+	}
+
+	eventRequest := model.EventRequest{}
 	err := c.Bind(&eventRequest)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
@@ -76,16 +91,7 @@ func updateEvent(c echo.Context) error {
 		})
 	}
 
-	eid, err := utils.IsUnsignedInteger(c.QueryParam("eid"))
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "eid needs to be specified correctly",
-		})
-	}
-	eventRequest.ID = eid
-
-	if err = model.UpdateEventByID(&eventRequest); err != nil {
+	if err = model.UpdateEventByID(&eventRequest, eid); err != nil {
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "INTERNAL_SERVER_ERR",
 			Data: "update event fail",
@@ -104,7 +110,7 @@ func updateEvent(c echo.Context) error {
 // @router /event [get]
 // @param eid query uint true "Event ID"
 // @produce json
-// @success 200 {object} model.EventApi
+// @success 200 {object} model.EventResponse
 func getEvent(c echo.Context) error {
 	eid, typeErr := utils.IsUnsignedInteger(c.QueryParam("eid"))
 	if typeErr != nil {
@@ -135,7 +141,7 @@ func getEvent(c echo.Context) error {
 // @param oid query uint true "Organization ID"
 // @param eid query uint true "Event ID"
 // @produce json
-// @success 200 {object} model.EventApi
+// @success 200 {object} model.EventResponse
 func getEventInOrganization(c echo.Context) error {
 	oid, errOid := utils.IsUnsignedInteger(c.QueryParam("oid"))
 	eid, errEid := utils.IsUnsignedInteger(c.QueryParam("eid"))

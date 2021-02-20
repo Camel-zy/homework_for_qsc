@@ -18,40 +18,49 @@ type Event struct {
 	UpdatedTime    time.Time    `gorm:"autoUpdateTime"`
 }
 
-type EventApi struct {
+type EventRequest struct {
+	Name        string    `json:"Name" validate:"required"`
+	Description string    `json:"Description"`
+	Status      uint      `json:"Status"` // 0 disabled (default), 1 testing, 2 running
+	OtherInfo   string    `json:"OtherInfo"`
+	StartTime   time.Time `json:"StartTime" validate:"required"` // request string must be in RFC 3339 format
+	EndTime     time.Time `json:"EndTime" validate:"required"`   // request string must be in RFC 3339 format
+}
+
+type EventResponse struct {
 	ID             uint
-	Name           string    `json:"Name" validate:"required"`
-	Description    string    `json:"Description"`
-	OrganizationID uint      `json:"OrganizationID" validate:"required"`
-	Status         uint      `json:"Status"` // 0 disabled (default), 1 testing, 2 running
-	OtherInfo      string    `json:"OtherInfo"`
-	StartTime      time.Time `json:"StartTime" validate:"required"` // request string must be in RFC 3339 format
-	EndTime        time.Time `json:"EndTime" validate:"required"` // request string must be in RFC 3339 format
+	Name           string
+	Description    string
+	OrganizationID uint
+	Status         uint // 0 disabled (default), 1 testing, 2 running
+	OtherInfo      string
+	StartTime      time.Time
+	EndTime        time.Time
 }
 
-func CreateEvent(requestEvent *EventApi) error {
+func CreateEvent(eventRequest *EventRequest, oid uint) (uint, error) {
 	dbEvent := Event{}
-	copier.Copy(&dbEvent, requestEvent)
+	copier.Copy(&dbEvent, eventRequest)
+	dbEvent.OrganizationID = oid
 	result := gormDb.Create(&dbEvent)
-	requestEvent.ID = dbEvent.ID
-	return result.Error
+	return dbEvent.ID, result.Error
 }
 
-func UpdateEventByID(requestEvent *EventApi) error {
+func UpdateEventByID(eventRequest *EventRequest, eid uint) error {
 	dbEvent := Event{}
-	copier.Copy(&dbEvent, requestEvent)
-	result := gormDb.Model(&Event{ID: requestEvent.ID}).Updates(&dbEvent)
+	copier.Copy(&dbEvent, eventRequest)
+	result := gormDb.Model(&Event{ID: eid}).Updates(&dbEvent)
 	return result.Error
 }
 
-func QueryEventByID(id uint) (*EventApi, error) {
-	var dbEvent EventApi
+func QueryEventByID(id uint) (*EventResponse, error) {
+	var dbEvent EventResponse
 	result := gormDb.Model(&Event{}).First(&dbEvent, id)
 	return &dbEvent, result.Error
 }
 
-func QueryEventByIDInOrganization(oid uint, eid uint) (*EventApi, error) {
-	var dbEvent EventApi
+func QueryEventByIDInOrganization(oid uint, eid uint) (*EventResponse, error) {
+	var dbEvent EventResponse
 	result := gormDb.Model(&Event{}).Where(&Event{ID: eid, OrganizationID: oid}).First(&dbEvent)
 	return &dbEvent, result.Error
 }

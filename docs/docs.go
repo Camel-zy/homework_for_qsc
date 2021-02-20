@@ -47,7 +47,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.EventApi"
+                            "$ref": "#/definitions/model.EventResponse"
                         }
                     }
                 }
@@ -66,12 +66,19 @@ var doc = `{
                 "summary": "Create event in organization",
                 "parameters": [
                     {
+                        "type": "integer",
+                        "description": "Organization ID",
+                        "name": "oid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
                         "description": "Event Information",
                         "name": "data",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.EventApi"
+                            "$ref": "#/definitions/model.EventRequest"
                         }
                     }
                 ]
@@ -101,7 +108,7 @@ var doc = `{
                         "name": "data",
                         "in": "body",
                         "schema": {
-                            "$ref": "#/definitions/model.EventApi"
+                            "$ref": "#/definitions/model.EventRequest"
                         }
                     }
                 ]
@@ -202,60 +209,6 @@ var doc = `{
                         }
                     }
                 }
-            },
-            "put": {
-                "description": "Create an interview in a specific event",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Interview"
-                ],
-                "summary": "Create interview in event",
-                "parameters": [
-                    {
-                        "description": "Interview Information",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.InterviewApi"
-                        }
-                    }
-                ]
-            },
-            "post": {
-                "description": "Update an interview",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Interview"
-                ],
-                "summary": "Update interview",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Interview ID",
-                        "name": "iid",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "description": "Interview Information",
-                        "name": "data",
-                        "in": "body",
-                        "schema": {
-                            "$ref": "#/definitions/model.InterviewApi"
-                        }
-                    }
-                ]
             }
         },
         "/message": {
@@ -622,7 +575,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.EventApi"
+                            "$ref": "#/definitions/model.EventResponse"
                         }
                     }
                 }
@@ -707,12 +660,11 @@ var doc = `{
                 }
             }
         },
-        "model.EventApi": {
+        "model.EventRequest": {
             "type": "object",
             "required": [
                 "EndTime",
                 "Name",
-                "OrganizationID",
                 "StartTime"
             ],
             "properties": {
@@ -726,9 +678,6 @@ var doc = `{
                 "Name": {
                     "type": "string"
                 },
-                "OrganizationID": {
-                    "type": "integer"
-                },
                 "OtherInfo": {
                     "type": "string"
                 },
@@ -739,8 +688,35 @@ var doc = `{
                 "Status": {
                     "description": "0 disabled (default), 1 testing, 2 running",
                     "type": "integer"
+                }
+            }
+        },
+        "model.EventResponse": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "endTime": {
+                    "type": "string"
                 },
                 "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "organizationID": {
+                    "type": "integer"
+                },
+                "otherInfo": {
+                    "type": "string"
+                },
+                "startTime": {
+                    "type": "string"
+                },
+                "status": {
+                    "description": "0 disabled (default), 1 testing, 2 running",
                     "type": "integer"
                 }
             }
