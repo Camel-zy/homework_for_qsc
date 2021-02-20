@@ -903,7 +903,7 @@ type swaggerInfo struct {
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = swaggerInfo{
 	Version:     "0.1",
-	Host:        "localhost:1323",
+	Host:        "rop-neo-staging.zjuqsc.com",
 	BasePath:    "/api",
 	Schemes:     []string{},
 	Title:       "Recruit Open Platform API",

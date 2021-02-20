@@ -54,6 +54,7 @@ func CreateInterview(requestInterview *InterviewApi) error {
 	dbInterview := Interview{}
 	copier.Copy(&dbInterview, requestInterview)
 	result := gormDb.Create(&dbInterview)
+	requestInterview.ID = dbInterview.ID
 	return result.Error
 }
 

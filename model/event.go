@@ -33,6 +33,7 @@ func CreateEvent(requestEvent *EventApi) error {
 	dbEvent := Event{}
 	copier.Copy(&dbEvent, requestEvent)
 	result := gormDb.Create(&dbEvent)
+	requestEvent.ID = dbEvent.ID
 	return result.Error
 }
 
