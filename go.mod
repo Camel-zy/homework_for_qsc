@@ -17,6 +17,7 @@ require (
 	github.com/swaggo/echo-swagger v1.1.0
 	github.com/swaggo/swag v1.7.0
 	golang.org/x/crypto v0.0.0-20201217014255-9d1352758620 // indirect
+	gorm.io/datatypes v1.0.0
 	gorm.io/driver/postgres v1.0.5
 	gorm.io/driver/sqlite v1.1.4
 	gorm.io/gorm v1.20.8
