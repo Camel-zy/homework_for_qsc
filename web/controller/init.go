@@ -7,7 +7,6 @@ import (
 )
 
 var e *echo.Echo
-var testController = false
 
 func InitWebFramework() {
 	e = echo.New()

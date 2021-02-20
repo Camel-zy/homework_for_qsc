@@ -12,7 +12,7 @@ import (
 // @tags Event
 // @summary Create event in organization
 // @description Create an event in a specific organization
-// @router /event{oid} [put]
+// @router /event [put]
 // @accept json
 // @param data body model.EventApi true "Event Information"
 // @produce json
@@ -55,7 +55,7 @@ func createEvent(c echo.Context) error {
 // @tags Event
 // @summary Update event
 // @description Update an event
-// @router /event{eid} [post]
+// @router /event [post]
 // @param eid query uint true "Event ID"
 // @accept json
 // @param data body model.EventApi false "Event Information"
@@ -101,7 +101,7 @@ func updateEvent(c echo.Context) error {
 // @tags Event
 // @summary Get event
 // @description Get information of an event
-// @router /event{eid} [get]
+// @router /event [get]
 // @param eid query uint true "Event ID"
 // @produce json
 // @success 200 {object} model.EventApi
@@ -131,7 +131,7 @@ func getEvent(c echo.Context) error {
 // @tags Event
 // @summary Get event in organization
 // @description Get information of an event in a specific organization
-// @router /organization/event{oid}{eid} [get]
+// @router /organization/event [get]
 // @param oid query uint true "Organization ID"
 // @param eid query uint true "Event ID"
 // @produce json
@@ -172,7 +172,7 @@ func getEventInOrganization(c echo.Context) error {
 // @tags Event
 // @summary Get all events in organization
 // @description Get brief information of all events in a specific organization
-// @router /organization/event/all{oid} [get]
+// @router /organization/event/all [get]
 // @param oid query uint true "Organization ID"
 // @produce json
 // @success 200 {array} model.Brief

@@ -1,13 +1,13 @@
 package controller
 
 import (
+	echoSwagger "github.com/swaggo/echo-swagger"
 	"net/http"
 
 	"git.zjuqsc.com/rop/rop-back-neo/web/middleware"
 	"github.com/labstack/echo/v4"
 	echoMiddleware "github.com/labstack/echo/v4/middleware"
 	"github.com/spf13/viper"
-	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
 func addRoutes(e *echo.Echo) {
@@ -16,16 +16,10 @@ func addRoutes(e *echo.Echo) {
 		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
 	}))
 
-	api := e.Group("/api")
-	api.GET("/version", getApiVersion)
-	api.GET("/doc/*", echoSwagger.WrapHandler)
+	e.GET("/api/version", getApiVersion)
+	e.GET("/api/doc/*", echoSwagger.WrapHandler)
 
-	if !testController {
-		api.Use(middleware.Auth)
-		if !viper.GetBool("passport.enable") {
-			middleware.MockPassport(middleware.MockQscPassportServiceWillPass)
-		}
-	}
+	api := e.Group("/api", middleware.Auth)
 
 	user := api.Group("/user")
 	user.GET("", getUser)

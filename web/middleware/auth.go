@@ -20,7 +20,7 @@ const jwtName = "qsc_rop_jwt"
 const qp2glSesstokName = "qp2gl_sesstok"
 const qp2glSesstokSecureName = "qp2gl_sesstok_secure"
 
-type auth struct {
+type AuthResult struct {
 	Err  int   `json:"err"`
 	Uid  uint  `json:"uid"`
 }
@@ -51,9 +51,14 @@ func Auth(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		/* step two: request for authentication from QSC Passport service */
-		authResult, err := authByQscPassport(c)
-		if err != nil {
-			return err
+		var authResult *AuthResult
+		if viper.GetBool("passport.enable") {
+			authResult, err = authByQscPassport(c)
+			if err != nil {
+				return err
+			}
+		} else {
+			authResult = &AuthResult{Err: 0, Uid: 1}
 		}
 
 		/* step three: generate JWT and set it into cookie field */
@@ -86,7 +91,7 @@ The cookie strings and the request format are also defined by QSC Passport.
 You are strongly recommended to read the manual of QSC Passport first,
 or you may find it EXTREMELY difficult to understand this function.
  */
-func authByQscPassport(c echo.Context) (*auth, error) {
+func authByQscPassport(c echo.Context) (*AuthResult, error) {
 	/* check security mode from configuration file */
 	isSecureMode := viper.GetBool("passport.is_secure_mode")
 
@@ -118,7 +123,7 @@ func authByQscPassport(c echo.Context) (*auth, error) {
 	params.Add("appsecret", appSecret)
 	params.Add(tokenUrlParamName, cookie.Value)
 
-	resp, getErr := requestToQscPassport(apiName, &params)
+	resp, getErr := RequestToQscPassport(apiName, &params)
 
 	if getErr != nil{
 		logrus.Error(getErr)
@@ -142,7 +147,7 @@ func authByQscPassport(c echo.Context) (*auth, error) {
 	}
 
 	/* get the value of key "err" from the JSON response */
-	authResult := auth{}
+	authResult := AuthResult{}
 	jsonErr := json.Unmarshal(body, &authResult)
 	if jsonErr != nil {
 		logrus.Error(jsonErr)
@@ -169,7 +174,7 @@ func authByQscPassport(c echo.Context) (*auth, error) {
 This function will be mocked during unit test.
 It sends an request to QSC Passport server, and return the response.
 */
-var requestToQscPassport = func(apiName string, params *url.Values) (resp *http.Response, err error) {
+var RequestToQscPassport = func(apiName string, params *url.Values) (resp *http.Response, err error) {
 	/* create a request */
 	req, _ := http.NewRequest("GET", apiName + params.Encode(), nil)
 

@@ -26,11 +26,11 @@ const qp2glSesstokInvalid = "MockTokenInvalid"
 const qp2glSesstokSecureInvalid = "MockSecureTokenInvalid"
 
 func TestMain(m *testing.M) {
-	MockPassport(mockQscPassportService)
+	test.MockPassport(test.MockQscPassportService)
 
 	/* initialize Viper */
 	test.MockJwtConf(600)
-	mockQscPassportConf()  // although this function has been called in MockPassport(), it still need to be called again
+	test.MockQscPassportConf() // although this function has been called in MockPassport(), it still need to be called again
 
 	/* generate a valid JWT string for test */
 	rand.Seed(time.Now().Unix())
@@ -97,7 +97,7 @@ func constructTestCases() {
 		},
 		{
 			name: "PassportCookieValid",
-			cookie: fmt.Sprintf(qp2glSesstokName + "=" + qp2glSesstokValid),
+			cookie: fmt.Sprintf(qp2glSesstokName + "=" + test.Qp2glSesstokValid),
 			expectSuccess: true,
 			isSecureMode: false,
 		},
@@ -109,7 +109,7 @@ func constructTestCases() {
 		},
 		{
 			name: "PassportSecureCookieValid",
-			cookie: fmt.Sprintf(qp2glSesstokSecureName + "=" + qp2glSesstokSecureValid),
+			cookie: fmt.Sprintf(qp2glSesstokSecureName + "=" + test.Qp2glSesstokSecureValid),
 			expectSuccess: true,
 			isSecureMode: true,
 		},
@@ -121,13 +121,13 @@ func constructTestCases() {
 		},
 		{
 			name: "PassportSecureModeError",
-			cookie: fmt.Sprintf(qp2glSesstokName + "=" + qp2glSesstokValid),
+			cookie: fmt.Sprintf(qp2glSesstokName + "=" + test.Qp2glSesstokValid),
 			expectSuccess: false,
 			isSecureMode: true,
 		},
 		{
 			name: "PassportSecureModeError",
-			cookie: fmt.Sprintf(qp2glSesstokSecureName + "=" + qp2glSesstokSecureValid),
+			cookie: fmt.Sprintf(qp2glSesstokSecureName + "=" + test.Qp2glSesstokSecureValid),
 			expectSuccess: false,
 			isSecureMode: false,
 		},

@@ -24,16 +24,16 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/event/interview/all{eid}": {
+        "/event": {
             "get": {
-                "description": "Get brief information of all interviews in a specific event",
+                "description": "Get information of an event",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Interview"
+                    "Event"
                 ],
-                "summary": "Get all interviews in event",
+                "summary": "Get event",
                 "parameters": [
                     {
                         "type": "integer",
@@ -47,16 +47,67 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/model.Brief"
-                            }
+                            "$ref": "#/definitions/model.EventApi"
                         }
                     }
                 }
+            },
+            "put": {
+                "description": "Create an event in a specific organization",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Event"
+                ],
+                "summary": "Create event in organization",
+                "parameters": [
+                    {
+                        "description": "Event Information",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.EventApi"
+                        }
+                    }
+                ]
+            },
+            "post": {
+                "description": "Update an event",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Event"
+                ],
+                "summary": "Update event",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Event ID",
+                        "name": "eid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "description": "Event Information",
+                        "name": "data",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/model.EventApi"
+                        }
+                    }
+                ]
             }
         },
-        "/event/interview{eid}{iid}": {
+        "/event/interview": {
             "get": {
                 "description": "Get information of an interview in a specific event",
                 "produces": [
@@ -92,16 +143,16 @@ var doc = `{
                 }
             }
         },
-        "/event{eid}": {
+        "/event/interview/all": {
             "get": {
-                "description": "Get information of an event",
+                "description": "Get brief information of all interviews in a specific event",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Event"
+                    "Interview"
                 ],
-                "summary": "Get event",
+                "summary": "Get all interviews in event",
                 "parameters": [
                     {
                         "type": "integer",
@@ -115,95 +166,16 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.EventApi"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Brief"
+                            }
                         }
                     }
                 }
-            },
-            "post": {
-                "description": "Update an event",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Event"
-                ],
-                "summary": "Update event",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Event ID",
-                        "name": "eid",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "description": "Event Information",
-                        "name": "data",
-                        "in": "body",
-                        "schema": {
-                            "$ref": "#/definitions/model.EventApi"
-                        }
-                    }
-                ]
-            }
-        },
-        "/event{oid}": {
-            "put": {
-                "description": "Create an event in a specific organization",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Event"
-                ],
-                "summary": "Create event in organization",
-                "parameters": [
-                    {
-                        "description": "Event Information",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.EventApi"
-                        }
-                    }
-                ]
             }
         },
         "/interview": {
-            "put": {
-                "description": "Create an interview in a specific event",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Interview"
-                ],
-                "summary": "Create interview in event",
-                "parameters": [
-                    {
-                        "description": "Interview Information",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.InterviewApi"
-                        }
-                    }
-                ]
-            }
-        },
-        "/interview{iid}": {
             "get": {
                 "description": "Get information of an interview",
                 "produces": [
@@ -230,6 +202,30 @@ var doc = `{
                         }
                     }
                 }
+            },
+            "put": {
+                "description": "Create an interview in a specific event",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Interview"
+                ],
+                "summary": "Create interview in event",
+                "parameters": [
+                    {
+                        "description": "Interview Information",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.InterviewApi"
+                        }
+                    }
+                ]
             },
             "post": {
                 "description": "Update an interview",
@@ -263,6 +259,33 @@ var doc = `{
             }
         },
         "/message": {
+            "get": {
+                "description": "Get information of a specific message",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Message"
+                ],
+                "summary": "Get a message",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Message ID",
+                        "name": "mid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.MessageAPI"
+                        }
+                    }
+                }
+            },
             "put": {
                 "description": "send a message",
                 "consumes": [
@@ -296,21 +319,28 @@ var doc = `{
                 }
             }
         },
-        "/messageTemplate/all{oid}": {
+        "/messageTemplate": {
             "get": {
-                "description": "Get information of all message templates of a specific organization",
+                "description": "Get information of a specific message template",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "MessageTemplate"
                 ],
-                "summary": "Get all message templates",
+                "summary": "Get a message template",
                 "parameters": [
                     {
                         "type": "integer",
                         "description": "Organization ID",
                         "name": "oid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Message Template ID",
+                        "name": "tid",
                         "in": "query",
                         "required": true
                     }
@@ -319,16 +349,11 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/model.AllMessageTemplateAPI"
-                            }
+                            "$ref": "#/definitions/model.MessageTemplateAPI"
                         }
                     }
                 }
-            }
-        },
-        "/messageTemplate{oid}": {
+            },
             "put": {
                 "description": "Add a message template",
                 "consumes": [
@@ -357,42 +382,6 @@ var doc = `{
                         "schema": {
                             "$ref": "#/definitions/model.MessageTemplateRequest"
                         }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.MessageTemplateAPI"
-                        }
-                    }
-                }
-            }
-        },
-        "/messageTemplate{oid}{tid}": {
-            "get": {
-                "description": "Get information of a specific message template",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "MessageTemplate"
-                ],
-                "summary": "Get a message template",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Organization ID",
-                        "name": "oid",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Message Template ID",
-                        "name": "tid",
-                        "in": "query",
-                        "required": true
                     }
                 ],
                 "responses": {
@@ -451,21 +440,21 @@ var doc = `{
                 }
             }
         },
-        "/message{mid}": {
+        "/messageTemplate/all": {
             "get": {
-                "description": "Get information of a specific message",
+                "description": "Get information of all message templates of a specific organization",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Message"
+                    "MessageTemplate"
                 ],
-                "summary": "Get a message",
+                "summary": "Get all message templates",
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "Message ID",
-                        "name": "mid",
+                        "description": "Organization ID",
+                        "name": "oid",
                         "in": "query",
                         "required": true
                     }
@@ -474,7 +463,39 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.MessageAPI"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.AllMessageTemplateAPI"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/organization": {
+            "get": {
+                "description": "Get information of a specific organization",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Organization"
+                ],
+                "summary": "Get information of organization",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Organization ID",
+                        "name": "oid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.OrganizationApi"
                         }
                     }
                 }
@@ -503,39 +524,7 @@ var doc = `{
                 }
             }
         },
-        "/organization/department/all{oid}": {
-            "get": {
-                "description": "Get brief information of all departments in a specific organization",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Department"
-                ],
-                "summary": "Get all departments in organization",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Organization ID",
-                        "name": "oid",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/model.Brief"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/organization/department{oid}{did}": {
+        "/organization/department": {
             "get": {
                 "description": "Get information of a department in a specific organization",
                 "produces": [
@@ -571,16 +560,16 @@ var doc = `{
                 }
             }
         },
-        "/organization/event/all{oid}": {
+        "/organization/department/all": {
             "get": {
-                "description": "Get brief information of all events in a specific organization",
+                "description": "Get brief information of all departments in a specific organization",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Event"
+                    "Department"
                 ],
-                "summary": "Get all events in organization",
+                "summary": "Get all departments in organization",
                 "parameters": [
                     {
                         "type": "integer",
@@ -603,7 +592,7 @@ var doc = `{
                 }
             }
         },
-        "/organization/event{oid}{eid}": {
+        "/organization/event": {
             "get": {
                 "description": "Get information of an event in a specific organization",
                 "produces": [
@@ -639,16 +628,16 @@ var doc = `{
                 }
             }
         },
-        "/organization{oid}": {
+        "/organization/event/all": {
             "get": {
-                "description": "Get information of a specific organization",
+                "description": "Get brief information of all events in a specific organization",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Organization"
+                    "Event"
                 ],
-                "summary": "Get information of organization",
+                "summary": "Get all events in organization",
                 "parameters": [
                     {
                         "type": "integer",
@@ -662,7 +651,10 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.OrganizationApi"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Brief"
+                            }
                         }
                     }
                 }
@@ -911,7 +903,7 @@ type swaggerInfo struct {
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = swaggerInfo{
 	Version:     "0.1",
-	Host:        "rop-neo-staging.zjuqsc.com",
+	Host:        "localhost:1323",
 	BasePath:    "/api",
 	Schemes:     []string{},
 	Title:       "Recruit Open Platform API",

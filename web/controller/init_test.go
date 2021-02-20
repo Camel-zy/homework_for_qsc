@@ -3,6 +3,7 @@ package controller
 import (
 	"git.zjuqsc.com/rop/rop-back-neo/model"
 	"git.zjuqsc.com/rop/rop-back-neo/test"
+	"github.com/spf13/viper"
 	"gorm.io/driver/sqlite"
 	"os"
 	"testing"
@@ -31,7 +32,7 @@ func TestMain(m *testing.M) {
 	test.CreateDatabaseRows()
 
 	// set testController true to skip authentication fully
-	testController = true
+	viper.Set("passport.enable", false)
 	InitWebFramework()
 
 	// FIXME:(RalXYZ) temporarily disable unit tests

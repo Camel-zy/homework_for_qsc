@@ -15,15 +15,6 @@ type TempOrganization struct {
 // oid must be set in advance in echo context
 func AuthOrganization(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		/*
-		getOrganizationId, ok := c.Get("getOrganizationIdFunc").(func(c echo.Context) (uint, bool))
-		if !ok {
-			getOrganizationId = getOrganizationIdFromParam
-		}
-
-		oid, ok := getOrganizationId(c)
-		 */
-
 		oid, ok := c.Get("oid").(uint)
 		if !ok {
 			logrus.Error("oid hasn't been set properly in echo context")

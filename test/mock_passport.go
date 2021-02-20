@@ -1,16 +1,17 @@
-package middleware
+package test
 
 import (
 	"bytes"
 	"git.zjuqsc.com/rop/rop-back-neo/utils"
+	"git.zjuqsc.com/rop/rop-back-neo/web/middleware"
 	"github.com/labstack/echo/v4"
 	"github.com/spf13/viper"
 	"net/http"
 	"net/url"
 )
 
-const qp2glSesstokValid = "MockToken"
-const qp2glSesstokSecureValid = "MockSecureToken"
+const Qp2glSesstokValid = "MockToken"
+const Qp2glSesstokSecureValid = "MockSecureToken"
 
 var ePassport *echo.Echo
 
@@ -18,7 +19,7 @@ func MockPassport(mockQscPassportFunction func(c echo.Context) error) {
 	/* initialize mocked QSC Passport server */
 	ePassport = echo.New()
 	ePassport.GET("/passport/get_member_by_token", mockQscPassportFunction)
-	requestToQscPassport = func(apiName string, params *url.Values) (resp *http.Response, err error) {
+	middleware.RequestToQscPassport = func(apiName string, params *url.Values) (resp *http.Response, err error) {
 		req := utils.CreateRequest("GET", apiName + params.Encode(), nil)
 		resp = utils.CreateResponse(req, ePassport)
 		return
@@ -27,17 +28,17 @@ func MockPassport(mockQscPassportFunction func(c echo.Context) error) {
 }
 
 /* A mocked QSC Passport service for go test */
-func mockQscPassportService(c echo.Context) error {
-	success := &auth{Err: 0, Uid: 1}
-	failed := &auth{Err: 1}
+func MockQscPassportService(c echo.Context) error {
+	success := &middleware.AuthResult{Err: 0, Uid: 1}
+	failed := &middleware.AuthResult{Err: 1}
 	if v := c.QueryParam("token"); v != "" {
-		if v == qp2glSesstokValid {
+		if v == Qp2glSesstokValid {
 			return c.JSON(http.StatusOK, success)
 		} else {
 			return c.JSON(http.StatusUnauthorized, failed)
 		}
 	} else if v := c.QueryParam("token_secure"); v != "" {
-		if v == qp2glSesstokSecureValid {
+		if v == Qp2glSesstokSecureValid {
 			return c.JSON(http.StatusOK, success)
 		} else {
 			return c.JSON(http.StatusUnauthorized, failed)
@@ -46,15 +47,8 @@ func mockQscPassportService(c echo.Context) error {
 	return c.JSON(http.StatusUnauthorized, failed)
 }
 
-/*
-The authentication will 100% pass
-*/
-func MockQscPassportServiceWillPass(c echo.Context) error {
-	return c.JSON(http.StatusOK, &auth{Err: 0, Uid: 1})
-}
-
 /* configurations for mocking a QSC Passport service */
-func mockQscPassportConf() {
+func MockQscPassportConf() {
 	viper.SetConfigType("json")
 	var yamlExample = []byte(`
 	{

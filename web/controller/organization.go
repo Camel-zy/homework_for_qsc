@@ -12,7 +12,7 @@ import (
 // @tags Organization
 // @summary Get information of organization
 // @description Get information of a specific organization
-// @router /organization{oid} [get]
+// @router /organization [get]
 // @param oid query uint true "Organization ID"
 // @produce json
 // @success 200 {object} model.OrganizationApi
@@ -46,7 +46,14 @@ func getOrganization(c echo.Context) error {
 // @produce json
 // @success 200 {array} model.Brief
 func getAllOrganization(c echo.Context) error {
-	organizations, _ := model.QueryAllOrganization(c.Get("uid").(uint))
+	oid, ok := c.Get("uid").(uint)
+	if !ok || oid == 0 {
+		return c.JSON(http.StatusInternalServerError, &utils.Error{
+			Code: "INTERNAL_SERVER_ERR",
+			Data: "get uid error",
+		})
+	}
+	organizations, _ := model.QueryAllOrganization(oid)
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
 		Data: &organizations,

@@ -61,7 +61,7 @@ func addMessage(c echo.Context) error {
 // @tags Message
 // @summary Get a message
 // @description Get information of a specific message
-// @router /message{mid} [get]
+// @router /message [get]
 // @param mid query uint true "Message ID"
 // @produce json
 // @success 200 {object} model.MessageAPI
@@ -139,7 +139,7 @@ func modifyMessageTemplate(modifyDB func(model.MessageTemplateRequest) (*model.M
 // @tags MessageTemplate
 // @summary Add a message template
 // @description Add a message template
-// @router /messageTemplate{oid} [put]
+// @router /messageTemplate [put]
 // @param oid query uint true "Organization ID"
 // @accept  json
 // @param data body model.MessageTemplateRequest true "Message Template Infomation"
@@ -160,7 +160,7 @@ func addMessageTemplate(c echo.Context) error {
 // @tags MessageTemplate
 // @summary Update a message template
 // @description Update a message template
-// @router /messageTemplate{oid}{tid} [post]
+// @router /messageTemplate [post]
 // @param oid query uint true "Organization ID"
 // @param tid query uint true "Message Template ID"
 // @accept  json
@@ -191,7 +191,7 @@ func setMessageTemplate(c echo.Context) error {
 // @tags MessageTemplate
 // @summary Get a message template
 // @description Get information of a specific message template
-// @router /messageTemplate{oid}{tid} [get]
+// @router /messageTemplate [get]
 // @param oid query uint true "Organization ID"
 // @param tid query uint true "Message Template ID"
 // @produce json
@@ -206,7 +206,7 @@ func getMessageTemplate(c echo.Context) error {
 // @tags MessageTemplate
 // @summary Get all message templates
 // @description Get information of all message templates of a specific organization
-// @router /messageTemplate/all{oid} [get]
+// @router /messageTemplate/all [get]
 // @param oid query uint true "Organization ID"
 // @produce json
 // @success 200 {object} []model.AllMessageTemplateAPI
