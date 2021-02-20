@@ -2,16 +2,36 @@ package controller
 
 import (
 	"errors"
-	"net/http"
-
 	"git.zjuqsc.com/rop/rop-back-neo/model"
 	"git.zjuqsc.com/rop/rop-back-neo/utils"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
+	"net/http"
 )
 
+// @tags Interview
+// @summary Create interview in event
+// @description Create an interview in a specific event
+// @router /interview [put]
+// @param eid query uint true "Event ID"
+// @param did query uint true "Department ID"
+// @accept json
+// @param data body model.InterviewRequest true "Interview Information"
+// @produce json
 func createInterview(c echo.Context) error {
-	interviewRequest := model.InterviewApi{}
+	var eid, did uint
+	err := echo.QueryParamsBinder(c).
+		MustUint("eid", &eid).
+		MustUint("did", &did).
+		BindError()
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "eid and did need to be an unsigned integer",
+		})
+	}
+
+	interviewRequest := model.InterviewRequest{}
 	if err := c.Bind(&interviewRequest); err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
@@ -25,38 +45,47 @@ func createInterview(c echo.Context) error {
 		})
 	}
 
-	if err := model.CreateInterview(&interviewRequest); err != nil {
+	if iid, err := model.CreateInterview(&interviewRequest, eid, did); err != nil {
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "INTERNAL_SERVER_ERR",
 			Data: "create interview fail",
 		})
+	} else {
+		return c.JSON(http.StatusOK, &utils.Error{
+			Code: "SUCCESS",
+			Data: iid,
+		})
 	}
-
-	return c.JSON(http.StatusOK, &utils.Error{
-		Code: "SUCCESS",
-		Data: interviewRequest.ID,
-	})
 }
 
+// @tags Interview
+// @summary Update interview
+// @description Update an interview
+// @router /interview [post]
+// @param iid query uint true "Interview ID"
+// @accept json
+// @param data body model.InterviewRequest false "Interview Information"
+// @produce json
 func updateInterview(c echo.Context) error {
-	interviewRequest := model.InterviewApi{}
-	err := c.Bind(&interviewRequest)
+	var iid uint
+	err := echo.QueryParamsBinder(c).MustUint("iid", &iid).BindError()
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "iid needs to be an unsigned integer",
+		})
+	}
+
+	interviewRequest := model.InterviewRequest{}
+	err = c.Bind(&interviewRequest)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
 			Data: err.Error(),
 		})
 	}
-	iid, err := utils.IsUnsignedInteger(c.QueryParam("iid"))
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "iid needs to be specified correctly",
-		})
-	}
-	interviewRequest.ID = iid
 
-	if err := model.UpdateInterviewByID(&interviewRequest); err != nil {
+	if err := model.UpdateInterviewByID(&interviewRequest, iid); err != nil {
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "INTERNAL_SERVER_ERR",
 			Data: "update interview fail",
@@ -75,13 +104,14 @@ func updateInterview(c echo.Context) error {
 // @router /interview [get]
 // @param iid query uint true "Interview ID"
 // @produce json
-// @success 200 {object} model.InterviewApi
+// @success 200 {object} model.InterviewResponse
 func getInterview(c echo.Context) error {
-	iid, typeErr := utils.IsUnsignedInteger(c.QueryParam("iid"))
-	if typeErr != nil {
+	var iid uint
+	err := echo.QueryParamsBinder(c).MustUint("iid", &iid).BindError()
+	if err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
-			Data: "iid need to be an unsigned integer",
+			Data: "iid needs to be an unsigned integer",
 		})
 	}
 
@@ -106,12 +136,14 @@ func getInterview(c echo.Context) error {
 // @param eid query uint true "Event ID"
 // @param iid query uint true "Interview ID"
 // @produce json
-// @success 200 {object} model.InterviewApi
+// @success 200 {object} model.InterviewResponse
 func getInterviewInEvent(c echo.Context) error {
-	eid, errEid := utils.IsUnsignedInteger(c.QueryParam("eid"))
-	iid, errIid := utils.IsUnsignedInteger(c.QueryParam("iid"))
-
-	if errEid != nil || errIid != nil {
+	var eid, iid uint
+	err := echo.QueryParamsBinder(c).
+		MustUint("eid", &eid).
+		MustUint("iid", &iid).
+		BindError()
+	if err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
 			Data: "eid and iid need to be an unsigned integer",
@@ -147,11 +179,12 @@ func getInterviewInEvent(c echo.Context) error {
 // @produce json
 // @success 200 {array} model.Brief
 func getAllInterviewInEvent(c echo.Context) error {
-	eid, typeErr := utils.IsUnsignedInteger(c.QueryParam("eid"))
-	if typeErr != nil {
+	var eid uint
+	err := echo.QueryParamsBinder(c).MustUint("eid", &eid).BindError()
+	if err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
-			Data: "eid need to be an unsigned integer",
+			Data: "eid needs to be an unsigned integer",
 		})
 	}
 

@@ -21,17 +21,27 @@ type Interview struct {
 	UpdatedTime    time.Time `gorm:"autoUpdateTime"`
 }
 
-type InterviewApi struct {
-	ID             uint
+type InterviewRequest struct {
 	Name           string    `json:"Name" validate:"required"`
 	Description    string    `json:"Description"`
-	EventID        uint      `json:"EventID" validate:"required"`
-	DepartmentID   uint      `json:"DepartmentID" validate:"required"`
 	OtherInfo      string    `json:"OtherInfo"`
 	Location       string    `json:"Location"`
 	MaxInterviewee uint      `json:"MaxInterviewee"`                // default 6
 	StartTime      time.Time `json:"StartTime" validate:"required"` // request string must be in RFC 3339 format
 	EndTime        time.Time `json:"EndTime" validate:"required"`   // request string must be in RFC 3339 format
+}
+
+type InterviewResponse struct {
+	ID             uint
+	Name           string
+	Description    string
+	EventID        uint
+	DepartmentID   uint
+	OtherInfo      string
+	Location       string
+	MaxInterviewee uint // default 6
+	StartTime      time.Time
+	EndTime        time.Time
 }
 
 type JoinedInterview struct {
@@ -50,29 +60,30 @@ type CrossInterview struct {
 	UpdatedTime    time.Time `gorm:"not null"`
 }
 
-func CreateInterview(requestInterview *InterviewApi) error {
+func CreateInterview(interviewRequest *InterviewRequest, eid uint, did uint) (uint, error) {
 	dbInterview := Interview{}
-	copier.Copy(&dbInterview, requestInterview)
+	copier.Copy(&dbInterview, interviewRequest)
+	dbInterview.EventID = eid
+	dbInterview.DepartmentID = did
 	result := gormDb.Create(&dbInterview)
-	requestInterview.ID = dbInterview.ID
-	return result.Error
+	return dbInterview.ID, result.Error
 }
 
-func UpdateInterviewByID(requestInterview *InterviewApi) error {
+func UpdateInterviewByID(requestInterview *InterviewRequest, iid uint) error {
 	dbInterview := Interview{}
 	copier.Copy(&dbInterview, requestInterview)
-	result := gormDb.Model(&Interview{ID: requestInterview.ID}).Updates(&dbInterview)
+	result := gormDb.Model(&Interview{ID: iid}).Updates(&dbInterview)
 	return result.Error
 }
 
-func QueryInterviewByID(id uint) (*InterviewApi, error) {
-	var dbInterview InterviewApi
+func QueryInterviewByID(id uint) (*InterviewResponse, error) {
+	var dbInterview InterviewResponse
 	result := gormDb.Model(&Interview{}).First(&dbInterview, id)
 	return &dbInterview, result.Error
 }
 
-func QueryInterviewByIDInEvent(eid uint, iid uint) (*InterviewApi, error) {
-	var dbInterview InterviewApi
+func QueryInterviewByIDInEvent(eid uint, iid uint) (*InterviewResponse, error) {
+	var dbInterview InterviewResponse
 	result := gormDb.Model(&Interview{}).Where(&Interview{ID: iid, EventID: eid}).First(&dbInterview)
 	return &dbInterview, result.Error
 }

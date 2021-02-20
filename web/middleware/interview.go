@@ -31,7 +31,7 @@ func CheckDepartmentInOrganization(next echo.HandlerFunc) echo.HandlerFunc {
 
 func SetInterview(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		var interviewReq model.InterviewApi
+		var interviewReq model.InterviewResponse
 
 		err := c.Bind(&interviewReq)
 		if err != nil {

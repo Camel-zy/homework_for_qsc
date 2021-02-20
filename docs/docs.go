@@ -144,7 +144,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.InterviewApi"
+                            "$ref": "#/definitions/model.InterviewResponse"
                         }
                     }
                 }
@@ -205,10 +205,78 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.InterviewApi"
+                            "$ref": "#/definitions/model.InterviewResponse"
                         }
                     }
                 }
+            },
+            "put": {
+                "description": "Create an interview in a specific event",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Interview"
+                ],
+                "summary": "Create interview in event",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Event ID",
+                        "name": "eid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Department ID",
+                        "name": "did",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "description": "Interview Information",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.InterviewRequest"
+                        }
+                    }
+                ]
+            },
+            "post": {
+                "description": "Update an interview",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Interview"
+                ],
+                "summary": "Update interview",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Interview ID",
+                        "name": "iid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "description": "Interview Information",
+                        "name": "data",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/model.InterviewRequest"
+                        }
+                    }
+                ]
             }
         },
         "/message": {
@@ -721,28 +789,20 @@ var doc = `{
                 }
             }
         },
-        "model.InterviewApi": {
+        "model.InterviewRequest": {
             "type": "object",
             "required": [
-                "DepartmentID",
                 "EndTime",
-                "EventID",
                 "Name",
                 "StartTime"
             ],
             "properties": {
-                "DepartmentID": {
-                    "type": "integer"
-                },
                 "Description": {
                     "type": "string"
                 },
                 "EndTime": {
                     "description": "request string must be in RFC 3339 format",
                     "type": "string"
-                },
-                "EventID": {
-                    "type": "integer"
                 },
                 "Location": {
                     "type": "string"
@@ -760,9 +820,42 @@ var doc = `{
                 "StartTime": {
                     "description": "request string must be in RFC 3339 format",
                     "type": "string"
+                }
+            }
+        },
+        "model.InterviewResponse": {
+            "type": "object",
+            "properties": {
+                "departmentID": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "endTime": {
+                    "type": "string"
+                },
+                "eventID": {
+                    "type": "integer"
                 },
                 "id": {
                     "type": "integer"
+                },
+                "location": {
+                    "type": "string"
+                },
+                "maxInterviewee": {
+                    "description": "default 6",
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "otherInfo": {
+                    "type": "string"
+                },
+                "startTime": {
+                    "type": "string"
                 }
             }
         },

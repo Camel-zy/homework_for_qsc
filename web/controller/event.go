@@ -18,11 +18,12 @@ import (
 // @param data body model.EventRequest true "Event Information"
 // @produce json
 func createEvent(c echo.Context) error {
-	oid, typeErr := utils.IsUnsignedInteger(c.QueryParam("oid"))
-	if typeErr != nil {
+	var oid uint
+	err := echo.QueryParamsBinder(c).MustUint("oid", &oid).BindError()
+	if err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
-			Data: "oid need to be an unsigned integer",
+			Data: "oid needs to be an unsigned integer",
 		})
 	}
 
@@ -68,16 +69,17 @@ func createEvent(c echo.Context) error {
 // @param data body model.EventRequest false "Event Information"
 // @produce json
 func updateEvent(c echo.Context) error {
-	eid, typeErr := utils.IsUnsignedInteger(c.QueryParam("eid"))
-	if typeErr != nil {
+	var eid uint
+	err := echo.QueryParamsBinder(c).MustUint("eid", &eid).BindError()
+	if err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
-			Data: "eid need to be an unsigned integer",
+			Data: "eid needs to be an unsigned integer",
 		})
 	}
 
 	eventRequest := model.EventRequest{}
-	err := c.Bind(&eventRequest)
+	err = c.Bind(&eventRequest)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
@@ -112,11 +114,12 @@ func updateEvent(c echo.Context) error {
 // @produce json
 // @success 200 {object} model.EventResponse
 func getEvent(c echo.Context) error {
-	eid, typeErr := utils.IsUnsignedInteger(c.QueryParam("eid"))
-	if typeErr != nil {
+	var eid uint
+	err := echo.QueryParamsBinder(c).MustUint("eid", &eid).BindError()
+	if err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
-			Data: "eid need to be an unsigned integer",
+			Data: "eid needs to be an unsigned integer",
 		})
 	}
 
@@ -143,10 +146,12 @@ func getEvent(c echo.Context) error {
 // @produce json
 // @success 200 {object} model.EventResponse
 func getEventInOrganization(c echo.Context) error {
-	oid, errOid := utils.IsUnsignedInteger(c.QueryParam("oid"))
-	eid, errEid := utils.IsUnsignedInteger(c.QueryParam("eid"))
-
-	if errOid != nil || errEid != nil {
+	var eid, oid uint
+	err := echo.QueryParamsBinder(c).
+		MustUint("eid", &eid).
+		MustUint("oid", &oid).
+		BindError()
+	if err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
 			Data: "oid and eid need to be an unsigned integer",
@@ -183,12 +188,13 @@ func getEventInOrganization(c echo.Context) error {
 // @produce json
 // @success 200 {array} model.Brief
 func getAllEventInOrganization(c echo.Context) error {
-	oid, typeErr := utils.IsUnsignedInteger(c.QueryParam("oid"))
-	if typeErr != nil {
+	var oid uint
+	err := echo.QueryParamsBinder(c).MustUint("oid", &oid).BindError()
+	if err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
-			Data: "oid need to be an unsigned integer"},
-		)
+			Data: "oid needs to be an unsigned integer",
+		})
 	}
 
 	events, evtErr := model.QueryAllEventInOrganization(oid)
