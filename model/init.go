@@ -50,6 +50,7 @@ func CreateTables() {
 		&Event{},
 		&Interview{},
 		&Form{},
+		&Answer{},
 		&JoinedInterview{},
 		&Message{},
 		&MessageTemplate{},

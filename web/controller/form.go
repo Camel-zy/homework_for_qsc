@@ -101,3 +101,32 @@ func getForm(c echo.Context) error {
 		Data: &form,
 	})
 }
+
+func getAnswer(c echo.Context) error {
+	zjuid, typeErr := utils.IsUnsignedInteger(c.QueryParam("zjuid"))
+	if typeErr != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "zjuid need to be an unsigned integer",
+		})
+	}
+	eventid, typeErr := utils.IsUnsignedInteger(c.QueryParam("eventid"))
+	if typeErr != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "eventid need to be an unsigned integer",
+		})
+	}
+	answer, itvErr := model.QueryAnswerByZjuidAndEvent(zjuid, eventid)
+	if errors.Is(itvErr, gorm.ErrRecordNotFound) {
+		return c.JSON(http.StatusNotFound, &utils.Error{
+			Code: "NOT_FOUND",
+			Data: "answer not found",
+		})
+	}
+
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: &answer,
+	})
+}

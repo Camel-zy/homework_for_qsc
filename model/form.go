@@ -29,6 +29,21 @@ type FormApi struct {
 	Content        datatypes.JSON `json:"Content" validate:"required"`
 }
 
+type Answer struct {
+	ID      uint           `gorm:"not null;autoIncrement;primaryKey"`
+	ZJUid   string         `gorm:"column:zju_id;size:10;unique;not null"`
+	EventID uint           `gorm:"not null"`
+	Status  uint           `gorm:"not null"`
+	Content datatypes.JSON `gorm:"type:datatypes;not null"`
+}
+
+type AnswerResponse struct {
+	ID      uint
+	ZJUid   string `gorm:"column:zju_id"`
+	EventID uint
+	Content datatypes.JSON
+}
+
 func CreateForm(requestForm *FormApi) error {
 	dbForm := Form{}
 	copier.Copy(&dbForm, requestForm)
@@ -53,4 +68,10 @@ func QueryAllForm() (*[]Form, error) {
 	var dbForm []Form
 	result := gormDb.Find(&dbForm)
 	return &dbForm, result.Error
+}
+
+func QueryAnswerByZjuidAndEvent(zjuid uint, eventid uint) (*AnswerResponse, error) {
+	var dbAnswer AnswerResponse
+	result := gormDb.Model(&Answer{}).First(&dbAnswer, zjuid, eventid)
+	return &dbAnswer, result.Error
 }
