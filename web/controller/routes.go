@@ -68,12 +68,7 @@ func addRoutes(e *echo.Echo) {
 	template.GET("", getMessageTemplate, middleware.AuthMessageTemplate)
 	template.GET("/all", getAllMessageTemplate)
 
-	/*
-		CAUTIOUS: These routers are created only for demo
-		This will be fixed
-		(RalXYZ)
-	*/
-	image := api.Group("/image")
-	image.POST("", setImage)
-	image.GET("", getImage)
+	avatar := api.Group("/avatar", middleware.CheckMinioStatus)
+	avatar.POST("", setAvatar)
+	avatar.GET("", getAvatar)
 }

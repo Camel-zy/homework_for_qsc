@@ -24,6 +24,28 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/avatar": {
+            "get": {
+                "description": "If everything is fine, the Data field will be a URL, from which you can get the avatar",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Avatar"
+                ],
+                "summary": "Get a URL from which you can get the avatar"
+            },
+            "post": {
+                "description": "You will receive multiple fields in \"Data\" field if the request status is 200 OK\nOne of these fields is \"url\", you are supposed to send a request to this URL\nOther fields need to be set into the multipart/form-data of the request mentioned above\nMeanwhile, you are supposed to set \"Content-Type\" field according to the MIME type of the avatar\nFinally, set \"file\" field with the avatar you are going to upload",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Avatar"
+                ],
+                "summary": "Get the information of uploading avatar"
+            }
+        },
         "/event": {
             "get": {
                 "description": "Get information of an event",
