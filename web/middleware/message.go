@@ -42,7 +42,7 @@ func AuthMessageTemplate(next echo.HandlerFunc) echo.HandlerFunc {
 			})
 		}
 
-		c.Set("&messageTemplate", messageTemplate) // TODO(TO/GA): lifecycle?
+		c.Set("&messageTemplate", messageTemplate)
 		return next(c)
 	}
 }

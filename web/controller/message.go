@@ -2,15 +2,12 @@ package controller
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 
 	"git.zjuqsc.com/rop/rop-back-neo/model"
 	"git.zjuqsc.com/rop/rop-back-neo/utils"
 	"github.com/jinzhu/copier"
 	"github.com/labstack/echo/v4"
-	"github.com/sirupsen/logrus"
-	"gorm.io/gorm"
 )
 
 // @tags Message
@@ -37,64 +34,23 @@ func addMessage(c echo.Context) error {
 		})
 	}
 
-	mapping, mapErr := utils.GenerateMap(messageRequest)
-	if mapErr != nil {
-		if errors.Is(mapErr, gorm.ErrRecordNotFound) {
-			return c.JSON(http.StatusNotFound, &utils.Error{
-				Code: "BAD_REQUEST",
-				Data: "fill placeholders fail due to the lack of information",
+	sendErr := utils.SendMessage(messageRequest)
+	if sendErr != nil {
+		if errors.Is(sendErr, model.ErrInternalError) {
+			return c.JSON(http.StatusInternalServerError, &utils.Error{
+				Code: "INTERNAL_SERVER_ERR",
+				Data: "send message fail",
 			})
 		}
-		logrus.Errorln("fill placeholders fail", mapErr.Error())
 		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "INTERNAL_SERVER_ERR",
-			Data: "fill placeholders fail",
+			Code: "BAD_REQUEST",
+			Data: sendErr.Error(),
 		})
 	}
-
-	fmt.Println(mapping)
-	// TODO(jy): call rop-sms
-	// TODO(TO/GA): insert into db
 	return nil
 }
 
-// @tags Message
-// @summary Get a message
-// @description Get information of a specific message
-// @router /message [get]
-// @param mid query uint true "Message ID"
-// @produce json
-// @success 200 {object} model.MessageAPI
-func getMessage(c echo.Context) error {
-	mid, typeErr := utils.IsUnsignedInteger(c.QueryParam("mid"))
-	if typeErr != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "mid need to be an unsigned integer"},
-		)
-	}
-
-	message, msgErr := model.QueryMessageAPIById(mid)
-	if msgErr != nil {
-		if errors.Is(msgErr, gorm.ErrRecordNotFound) {
-			return c.JSON(http.StatusNotFound, &utils.Error{
-				Code: "NOT_FOUND",
-				Data: "message not found",
-			})
-		}
-		return c.JSON(http.StatusInternalServerError, &utils.Error{
-			Code: "INTERNAL_SERVER_ERR",
-			Data: "get message fail",
-		})
-	}
-
-	return c.JSON(http.StatusOK, &utils.Error{
-		Code: "SUCCESS",
-		Data: &message,
-	})
-}
-
-func modifyMessageTemplate(modifyDB func(model.MessageTemplateRequest) (*model.MessageTemplate, error)) func(c echo.Context) error {
+func modifyMessageTemplate(callSMSAndModifyDB func(model.MessageTemplateRequest) (*model.MessageTemplate, error)) func(c echo.Context) error {
 	return func(c echo.Context) error {
 		var messageTemplateRequest model.MessageTemplateRequest
 		if bindErr := c.Bind(&messageTemplateRequest); bindErr != nil {
@@ -111,7 +67,7 @@ func modifyMessageTemplate(modifyDB func(model.MessageTemplateRequest) (*model.M
 			})
 		}
 
-		messageTemplate, msgTplErr := modifyDB(messageTemplateRequest)
+		messageTemplate, msgTplErr := callSMSAndModifyDB(messageTemplateRequest)
 		if msgTplErr != nil {
 			if msgTplErr == model.ErrInternalError {
 				return c.JSON(http.StatusInternalServerError, &utils.Error{
@@ -143,18 +99,30 @@ func modifyMessageTemplate(modifyDB func(model.MessageTemplateRequest) (*model.M
 // @param oid query uint true "Organization ID"
 // @accept  json
 // @param data body model.MessageTemplateRequest true "Message Template Infomation"
-// @produce json
-// @success 200 {object} model.MessageTemplateAPI
+// @success 200
 func addMessageTemplate(c echo.Context) error {
-	return modifyMessageTemplate(func(messageTemplateRequest model.MessageTemplateRequest) (*model.MessageTemplate, error) {
-		messageTemplate := &model.MessageTemplate{
-			Description:    messageTemplateRequest.Description,
-			Text:           messageTemplateRequest.Text,
-			OrganizationID: c.Get("oid").(uint),
-		}
-		model.CreateMessageTemplate(messageTemplate)
-		return messageTemplate, nil
-	})(c)
+	var messageTemplateRequest model.MessageTemplateRequest
+	if bindErr := c.Bind(&messageTemplateRequest); bindErr != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: bindErr.Error(),
+		})
+	}
+
+	if validateErr := c.Validate(&messageTemplateRequest); validateErr != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: validateErr.Error(),
+		})
+	}
+
+	utils.AddMessageTemplate(c.Get("oid").(uint), &messageTemplateRequest)
+	// TODO(TO/GA): error handling
+
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: nil,
+	})
 }
 
 // @tags MessageTemplate
@@ -165,27 +133,30 @@ func addMessageTemplate(c echo.Context) error {
 // @param tid query uint true "Message Template ID"
 // @accept  json
 // @param data body model.MessageTemplateRequest true "Message Template Infomation"
-// @produce json
-// @success 200 {object} model.MessageTemplateAPI
+// @success 200
 func setMessageTemplate(c echo.Context) error {
-	return modifyMessageTemplate(func(messageTemplateRequest model.MessageTemplateRequest) (*model.MessageTemplate, error) {
-		messageTemplate := &model.MessageTemplate{
-			ID:          c.Get("tid").(uint),
-			Description: messageTemplateRequest.Description,
-			Text:        messageTemplateRequest.Text,
-			Status:      0,
-		}
-		updateErr := model.UpdateMessageTemplateById(messageTemplate)
-		if updateErr != nil {
-			if updateErr == model.ErrNoRowsAffected {
-				// there might be a person delete this template after
-				// this controller fetch the template, so keep it
-				return nil, errors.New("message template not found")
-			}
-			return nil, model.ErrInternalError
-		}
-		return messageTemplate, nil
-	})(c)
+	var messageTemplateRequest model.MessageTemplateRequest
+	if bindErr := c.Bind(&messageTemplateRequest); bindErr != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: bindErr.Error(),
+		})
+	}
+
+	if validateErr := c.Validate(&messageTemplateRequest); validateErr != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: validateErr.Error(),
+		})
+	}
+
+	utils.UpdateMessageTemplate(c.Get("tid").(uint), &messageTemplateRequest)
+	// TODO(TO/GA): error handling
+
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: nil,
+	})
 }
 
 // @tags MessageTemplate
@@ -197,9 +168,12 @@ func setMessageTemplate(c echo.Context) error {
 // @produce json
 // @success 200 {object} model.MessageTemplateAPI
 func getMessageTemplate(c echo.Context) error {
+	messageTemplate, _ := utils.GetMessageTemplate(c.Get("&messageTemplate").(*model.MessageTemplate).IDInSMSService)
+	// TODO(TO/GA): error handling
+
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
-		Data: c.Get("&messageTemplate").(*model.MessageTemplate),
+		Data: &messageTemplate,
 	})
 }
 
@@ -213,13 +187,8 @@ func getMessageTemplate(c echo.Context) error {
 func getAllMessageTemplate(c echo.Context) error {
 	oid := c.Get("oid").(uint)
 
-	messageTemplates, msgTplsErr := model.QueryAllMessageTemplateAPIInOrganization(oid)
-	if msgTplsErr != nil && !errors.Is(msgTplsErr, gorm.ErrRecordNotFound) { // TODO(TO/GA): can front handle not found?
-		return c.JSON(http.StatusInternalServerError, &utils.Error{
-			Code: "INTERNAL_SERVER_ERR",
-			Data: "get all message templates fail",
-		})
-	}
+	messageTemplates, _ := utils.GetAllMessageTemplate(oid)
+	// TODO(TO/GA): error handling
 
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",

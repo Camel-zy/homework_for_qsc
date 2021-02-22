@@ -33,7 +33,7 @@ func UpdateUserById(requestUser *User) error {
 	return result.Error
 }
 
-func QueryUserByZJUid(zjuId uint) (*User, error) {
+func QueryUserByZJUid(zjuId string) (*User, error) {
 	var dbUser User
 	result := gormDb.First(&dbUser, "zju_id = ?", zjuId)
 	return &dbUser, result.Error

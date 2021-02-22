@@ -1,8 +1,9 @@
 package controller
 
 import (
-	echoSwagger "github.com/swaggo/echo-swagger"
 	"net/http"
+
+	echoSwagger "github.com/swaggo/echo-swagger"
 
 	"git.zjuqsc.com/rop/rop-back-neo/web/middleware"
 	"github.com/labstack/echo/v4"
@@ -60,7 +61,6 @@ func addRoutes(e *echo.Echo) {
 
 	message := api.Group("/message") // TODO(TO/GA): auth middleware & test
 	message.PUT("", addMessage)
-	message.GET("", getMessage)
 	// message.GET("/all", getAllMessage) // TODO(TO/GA): wait until we know the logic
 
 	template := api.Group("/messageTemplate", middleware.GetOrganizationIdFromParam, middleware.AuthOrganization) // TODO(TO/GA): test
