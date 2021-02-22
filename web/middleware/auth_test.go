@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"bytes"
 	"fmt"
 	"git.zjuqsc.com/rop/rop-back-neo/test"
 	"git.zjuqsc.com/rop/rop-back-neo/utils"
@@ -9,6 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"math/rand"
 	"net/http"
+	"net/url"
 	"os"
 	"testing"
 	"time"
@@ -22,15 +24,19 @@ var testCases []struct{
 	expectSuccess bool
 }
 
+const qp2glSesstokValid = "MockToken"
+const qp2glSesstokSecureValid = "MockSecureToken"
+
 const qp2glSesstokInvalid = "MockTokenInvalid"
 const qp2glSesstokSecureInvalid = "MockSecureTokenInvalid"
 
 func TestMain(m *testing.M) {
-	test.MockPassport(test.MockQscPassportService)
+	viper.Set("passport.enable", true)
+	mockPassport(mockQscPassportService)
 
 	/* initialize Viper */
 	test.MockJwtConf(600)
-	test.MockQscPassportConf() // although this function has been called in MockPassport(), it still need to be called again
+	mockQscPassportConf() // although this function has been called in mockPassport(), it still need to be called again
 
 	/* generate a valid JWT string for test */
 	rand.Seed(time.Now().Unix())
@@ -68,6 +74,57 @@ func TestMiddleware(t *testing.T) {
 	}
 }
 
+var ePassport *echo.Echo
+
+func mockPassport(mockQscPassportFunction func(c echo.Context) error) {
+	/* initialize mocked QSC Passport server */
+	ePassport = echo.New()
+	ePassport.GET("/passport/get_member_by_token", mockQscPassportFunction)
+	RequestToQscPassport = func(apiName string, params *url.Values) (resp *http.Response, err error) {
+		req := utils.CreateRequest("GET", apiName+params.Encode(), nil)
+		resp = utils.CreateResponse(req, ePassport)
+		return
+	}
+	viper.Set("passport.api_name", "/passport/get_member_by_token?")
+}
+
+/* A mocked QSC Passport service for go test */
+func mockQscPassportService(c echo.Context) error {
+	success := &AuthResult{Err: 0, Uid: 1}
+	failed := &AuthResult{Err: 1}
+	if v := c.QueryParam("token"); v != "" {
+		if v == qp2glSesstokValid {
+			return c.JSON(http.StatusOK, success)
+		} else {
+			return c.JSON(http.StatusUnauthorized, failed)
+		}
+	} else if v := c.QueryParam("token_secure"); v != "" {
+		if v == qp2glSesstokSecureValid {
+			return c.JSON(http.StatusOK, success)
+		} else {
+			return c.JSON(http.StatusUnauthorized, failed)
+		}
+	}
+	return c.JSON(http.StatusUnauthorized, failed)
+}
+
+/* configurations for mocking a QSC Passport service */
+func mockQscPassportConf() {
+	viper.SetConfigType("json")
+	var yamlExample = []byte(`
+	{
+		"passport": {
+			"enable": false,
+			"is_secure_mode": true,
+			"app_id": "NotImportant", 
+			"app_secret": "StillNotImportant",
+			"api_name": "/passport/get_member_by_token?"
+		}
+	}
+	`)
+	_ = viper.ReadConfig(bytes.NewBuffer(yamlExample))
+}
+
 /*
 This constructor needs to be called
 after everything has been initialized.
@@ -97,7 +154,7 @@ func constructTestCases() {
 		},
 		{
 			name: "PassportCookieValid",
-			cookie: fmt.Sprintf(qp2glSesstokName + "=" + test.Qp2glSesstokValid),
+			cookie: fmt.Sprintf(qp2glSesstokName + "=" + qp2glSesstokValid),
 			expectSuccess: true,
 			isSecureMode: false,
 		},
@@ -109,7 +166,7 @@ func constructTestCases() {
 		},
 		{
 			name: "PassportSecureCookieValid",
-			cookie: fmt.Sprintf(qp2glSesstokSecureName + "=" + test.Qp2glSesstokSecureValid),
+			cookie: fmt.Sprintf(qp2glSesstokSecureName + "=" + qp2glSesstokSecureValid),
 			expectSuccess: true,
 			isSecureMode: true,
 		},
@@ -121,13 +178,13 @@ func constructTestCases() {
 		},
 		{
 			name: "PassportSecureModeError",
-			cookie: fmt.Sprintf(qp2glSesstokName + "=" + test.Qp2glSesstokValid),
+			cookie: fmt.Sprintf(qp2glSesstokName + "=" + qp2glSesstokValid),
 			expectSuccess: false,
 			isSecureMode: true,
 		},
 		{
 			name: "PassportSecureModeError",
-			cookie: fmt.Sprintf(qp2glSesstokSecureName + "=" + test.Qp2glSesstokSecureValid),
+			cookie: fmt.Sprintf(qp2glSesstokSecureName + "=" + qp2glSesstokSecureValid),
 			expectSuccess: false,
 			isSecureMode: false,
 		},
