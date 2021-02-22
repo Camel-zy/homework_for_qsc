@@ -35,8 +35,6 @@ func TestMain(m *testing.M) {
 	viper.Set("passport.enable", false)
 	InitWebFramework()
 
-	// FIXME:(RalXYZ) temporarily disable unit tests
-	// os.Exit(m.Run())
-	os.Exit(0)
+	os.Exit(m.Run())
 
 }

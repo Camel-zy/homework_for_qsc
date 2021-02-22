@@ -13,7 +13,7 @@ func TestGetApiVersion (t *testing.T) {
 	mockVersion := "0.1.0"
 	viper.Set("rop.api_version", mockVersion)
 
-	req := utils.CreateRequest("GET", "/api", nil)
+	req := utils.CreateRequest("GET", "/api/version", nil)
 	resp := utils.CreateResponse(req, e)
 	bodyByteArr, err := ioutil.ReadAll(resp.Body)
 	if err != nil {

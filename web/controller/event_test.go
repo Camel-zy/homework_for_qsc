@@ -39,7 +39,7 @@ var eventTestCases = []testCase{
 			urlQuery: "?eid=100",
 		},
 		resp: resp{
-			statusCode: http.StatusNotFound,
+			statusCode: http.StatusForbidden,
 		},
 	}, {
 		name: "GetOneExistingEventFromOneExistingOrganization",
@@ -57,7 +57,7 @@ var eventTestCases = []testCase{
 			urlQuery: "?oid=100&eid=1",
 		},
 		resp: resp{
-			statusCode: http.StatusNotFound,
+			statusCode: http.StatusForbidden,
 		},
 	}, {
 		name: "GetOneNonExistingEventFromOneExistingOrganization",
@@ -94,7 +94,7 @@ var eventTestCases = []testCase{
 			urlQuery: "?oid=100",
 		},
 		resp: resp{
-			statusCode: http.StatusNotFound,
+			statusCode: http.StatusForbidden,
 		},
 	}, {
 		name: "BadRequest",

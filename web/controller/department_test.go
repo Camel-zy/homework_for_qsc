@@ -38,13 +38,22 @@ var testCases = []testCase{
 			urlQuery: "?oid=2147483647&did=1",
 		},
 		resp: resp{
-			statusCode: http.StatusNotFound,
+			statusCode: http.StatusForbidden,
 		},
 	}, {
 		name: "GetOneNonExistingDepartmentFromOneExistingOrganization",
 		req: req{
 			urlPath: "/api/organization/department",
 			urlQuery: "?oid=1&did=2147483647",
+		},
+		resp: resp{
+			statusCode: http.StatusNotFound,
+		},
+	}, {
+		name: "GetOneExistingDepartmentFromOneExistingOrganizationButNotIn",
+		req: req{
+			urlPath: "/api/organization/department",
+			urlQuery: "?oid=1&did=3",
 		},
 		resp: resp{
 			statusCode: http.StatusNotFound,
@@ -75,7 +84,7 @@ var testCases = []testCase{
 			urlQuery: "?oid=2147483647",
 		},
 		resp: resp{
-			statusCode: http.StatusNotFound,
+			statusCode: http.StatusForbidden,
 		},
 	}, {
 		name: "BadRequest",

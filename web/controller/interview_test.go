@@ -39,7 +39,7 @@ var interviewTestCases = []testCase{
 			urlQuery: "?iid=100",
 		},
 		resp: resp{
-			statusCode: http.StatusNotFound,
+			statusCode: http.StatusForbidden,
 		},
 	}, {
 		name: "GetOneExistingInterviewFromOneExistingEvent",
@@ -57,7 +57,7 @@ var interviewTestCases = []testCase{
 			urlQuery: "?eid=100&iid=1",
 		},
 		resp: resp{
-			statusCode: http.StatusNotFound,
+			statusCode: http.StatusForbidden,
 		},
 	}, {
 		name: "GetOneNonExistingInterviewFromOneExistingEvent",
@@ -94,7 +94,7 @@ var interviewTestCases = []testCase{
 			urlQuery: "?eid=100",
 		},
 		resp: resp{
-			statusCode: http.StatusNotFound,
+			statusCode: http.StatusForbidden,
 		},
 	}, {
 		name: "BadRequest",

@@ -11,7 +11,7 @@ type Organization struct {
 	ID          uint      `gorm:"not null;autoIncrement;primaryKey"`
 	Name        string    `gorm:"size:40;not null"`
 	Description string    `gorm:"size:200"`
-	UpdateTime  time.Time `gorm:"not null"`
+	UpdateTime  time.Time `gorm:"autoUpdateTime"`
 }
 
 type OrganizationApi struct {
@@ -25,11 +25,11 @@ This model is still under discussion
 */
 type OrganizationHasUser struct {
 	ID             uint
-	Role           uint // 0 department admin, 1 organization admin
+	Role           uint `gorm:"default:1"` // 1 department admin, 2 organization admin
 	UserId         uint
 	OrganizationId uint
 	DepartmentId   uint
-	UpdateTime     time.Time
+	UpdateTime     time.Time `gorm:"autoUpdateTime"`
 }
 
 func CreateOrganization(requestOrganization *Organization) error {

@@ -14,7 +14,7 @@ type User struct {
 	IP           string     `gorm:"size:30"`
 	IsSuperuser  uint       `gorm:"default:0"`
 	UserAgent    string     `gorm:"size:50"`
-	UpdatedTime  time.Time  `gorm:"not null"`
+	UpdatedTime  time.Time  `gorm:"autoUpdateTime"`
 }
 
 func CreateUser(requestUser *User) error {

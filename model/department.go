@@ -10,7 +10,7 @@ type Department struct {
 	OrganizationID uint         `gorm:"not null"`
 	Organization   Organization // FOREIGN KEY (OrganizationID) REFERENCES Organization(OrganizationID)
 	Description    string       `gorm:"size:200"`
-	UpdateTime     time.Time    `gorm:"not null"`
+	UpdateTime     time.Time    `gorm:"autoUpdateTime"`
 }
 
 type DepartmentApi struct {
@@ -26,7 +26,7 @@ type JoinedDepartment struct {
 	DepartmentID uint      `gorm:"not null"`
 	Privilege    uint      `gorm:"default:2"`
 	JoinedTime   time.Time `gorm:"not null"`
-	UpdateTime   time.Time `gorm:"not null"`
+	UpdateTime   time.Time `gorm:"autoUpdateTime"`
 }
 
 func CreateDepartment(requestDepartment *Department) error {
