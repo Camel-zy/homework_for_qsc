@@ -2,15 +2,17 @@ package model
 
 import (
 	"errors"
+	"time"
+
 	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
-	"time"
 )
 
 type Organization struct {
 	ID          uint      `gorm:"not null;autoIncrement;primaryKey"`
 	Name        string    `gorm:"size:40;not null"`
 	Description string    `gorm:"size:200"`
+	MessageCost float32   `gorm:"not null;default:0"`
 	UpdateTime  time.Time `gorm:"autoUpdateTime"`
 }
 
@@ -18,6 +20,7 @@ type OrganizationApi struct {
 	ID          uint
 	Name        string
 	Description string
+	MessageCost float32
 }
 
 /*
@@ -48,15 +51,14 @@ func UpdateOrganizationById(requestOrganization *Organization) error {
 	return result.Error
 }
 
-
 func QueryAllOrganization(uid uint) (*[]Brief, error) {
 	var dbOrganizationIds []OrganizationHasUser
 	gormDb.Select("organization_id").Where(&OrganizationHasUser{UserId: uid}).Find(&dbOrganizationIds)
 
 	var organizationIds []uint
-	organizationIdsHelperMap := make(map[uint] bool)
+	organizationIdsHelperMap := make(map[uint]bool)
 
-	for _ , v := range dbOrganizationIds {
+	for _, v := range dbOrganizationIds {
 		if _, ok := organizationIdsHelperMap[v.OrganizationId]; !ok {
 			organizationIdsHelperMap[v.OrganizationId] = true
 			organizationIds = append(organizationIds, v.OrganizationId)

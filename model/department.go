@@ -10,6 +10,7 @@ type Department struct {
 	OrganizationID uint         `gorm:"not null"`
 	Organization   Organization // FOREIGN KEY (OrganizationID) REFERENCES Organization(OrganizationID)
 	Description    string       `gorm:"size:200"`
+	MessageCost    float32      `gorm:"not null;default:0"`
 	UpdateTime     time.Time    `gorm:"autoUpdateTime"`
 }
 
@@ -18,6 +19,7 @@ type DepartmentApi struct {
 	Name           string
 	OrganizationID uint
 	Description    string
+	MessageCost    float32
 }
 
 type JoinedDepartment struct {

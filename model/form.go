@@ -1,9 +1,10 @@
 package model
 
 import (
+	"time"
+
 	"github.com/jinzhu/copier"
 	"gorm.io/datatypes"
-	"time"
 )
 
 type Form struct {
@@ -65,6 +66,12 @@ func QueryAllForm() (*[]Form, error) {
 	var dbForm []Form
 	result := gormDb.Find(&dbForm)
 	return &dbForm, result.Error
+}
+
+func QueryAnswerById(id uint) (*Answer, error) {
+	var dbAnswer Answer
+	result := gormDb.First(&dbAnswer, id)
+	return &dbAnswer, result.Error
 }
 
 func QueryAnswerByZjuidAndEvent(zjuid string, eid uint) (*AnswerResponse, error) {
