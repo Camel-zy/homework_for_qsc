@@ -6,11 +6,9 @@ import (
 	"git.zjuqsc.com/rop/rop-back-neo/model"
 	"git.zjuqsc.com/rop/rop-back-neo/utils"
 	"github.com/labstack/echo/v4"
-	"gorm.io/datatypes"
 	"gorm.io/gorm"
 	"net/http"
 	"strconv"
-	"strings"
 )
 
 func createForm(c echo.Context) error {
@@ -127,13 +125,17 @@ func updateAnswer(c echo.Context) error {
 			Data: "eid need to be an unsigned integer",
 		})
 	}
-	_, itvErr := model.QueryAnswerByZjuidAndEvent(strconv.FormatUint(uint64(zjuid), 10), eid)
-	var content datatypes.JSON
-	temp := c.QueryParam("content")
-	temp = strings.Replace(temp, "\n", "", -1)
-	json.Unmarshal([]byte(temp), &content)
+	_, itvErr := model.QueryAnswer(fid, strconv.FormatUint(uint64(zjuid), 10), eid)
+	answerRequest := model.AnswerRequest{}
+	err := c.Bind(&answerRequest)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: err.Error(),
+		})
+	}
 	if errors.Is(itvErr, gorm.ErrRecordNotFound) {
-		if aid, err := model.CreateAnswer(content, fid, strconv.FormatUint(uint64(zjuid), 10), eid); err != nil {
+		if aid, err := model.CreateAnswer(&answerRequest, fid, strconv.FormatUint(uint64(zjuid), 10), eid); err != nil {
 			return c.JSON(http.StatusInternalServerError, &utils.Error{
 				Code: "INTERNAL_SERVER_ERR",
 				Data: "create answer fail",
@@ -145,7 +147,7 @@ func updateAnswer(c echo.Context) error {
 			})
 		}
 	}
-	if err := model.UpdateAnswer(content, strconv.FormatUint(uint64(zjuid), 10), eid); err != nil {
+	if err := model.UpdateAnswer(&answerRequest, fid, strconv.FormatUint(uint64(zjuid), 10), eid); err != nil {
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "INTERNAL_SERVER_ERR",
 			Data: "update Answer fail",
@@ -158,6 +160,13 @@ func updateAnswer(c echo.Context) error {
 }
 
 func getAnswer(c echo.Context) error {
+	fid, typeErr := utils.IsUnsignedInteger(c.QueryParam("fid"))
+	if typeErr != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "fid need to be an unsigned integer",
+		})
+	}
 	zjuid, typeErr := utils.IsUnsignedInteger(c.QueryParam("zjuid"))
 	if typeErr != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
@@ -172,7 +181,7 @@ func getAnswer(c echo.Context) error {
 			Data: "eid need to be an unsigned integer",
 		})
 	}
-	answer, itvErr := model.QueryAnswerByZjuidAndEvent(strconv.FormatUint(uint64(zjuid), 10), eid)
+	answer, itvErr := model.QueryAnswer(fid, strconv.FormatUint(uint64(zjuid), 10), eid)
 	if errors.Is(itvErr, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, &utils.Error{
 			Code: "NOT_FOUND",

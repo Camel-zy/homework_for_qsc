@@ -27,20 +27,34 @@ type FormApi struct {
 }
 
 type Answer struct {
-	ID      uint           `gorm:"not null;autoIncrement;primaryKey"`
-	FormID  uint           `gorm:"not null"`
-	ZJUid   string         `gorm:"column:zju_id;size:10;unique;not null"`
-	EventID uint           `gorm:"not null"`
-	Status  uint           `gorm:"not null"` // 0 abandoned, 1 used
-	Content datatypes.JSON `gorm:"type:datatypes;not null"`
+	ID        uint           `gorm:"not null;autoIncrement;primaryKey"`
+	FormID    uint           `gorm:"not null"`
+	Name      string         `gorm:"not null"`
+	ZJUid     string         `gorm:"column:zju_id;size:10;not null"`
+	Mobile    string         `gorm:"size:11;not null"`
+	Intention string         `gorm:"not null"`
+	EventID   uint           `gorm:"not null"`
+	Status    uint           `gorm:"not null"` // 0 abandoned, 1 used
+	Content   datatypes.JSON `gorm:"type:datatypes;not null"`
+}
+
+type AnswerRequest struct {
+	Name      string         `json:"Name"`
+	ZJUid     string         `json:"ZJUid"`
+	Mobile    string         `json:"Mobile"`
+	Intention string         `json:"Intention"`
+	Content   datatypes.JSON `json:"Content"`
 }
 
 type AnswerResponse struct {
-	ID      uint
-	FormID  uint
-	ZJUid   string `gorm:"column:zju_id"`
-	EventID uint
-	Content datatypes.JSON
+	ID        uint
+	FormID    uint
+	Name      string
+	ZJUid     string `gorm:"column:zju_id"`
+	Mobile    string
+	Intention string
+	EventID   uint
+	Content   datatypes.JSON
 }
 
 func CreateForm(requestForm *FormApi) error {
@@ -69,15 +83,15 @@ func QueryAllForm() (*[]Form, error) {
 	return &dbForm, result.Error
 }
 
-func QueryAnswerByZjuidAndEvent(zjuid string, eid uint) (*AnswerResponse, error) {
+func QueryAnswer(fid uint, zjuid string, eid uint) (*AnswerResponse, error) {
 	var dbAnswer AnswerResponse
-	result := gormDb.Model(&Answer{}).First(&dbAnswer, zjuid, eid)
+	result := gormDb.Model(&Answer{}).First(&dbAnswer, fid, zjuid, eid)
 	return &dbAnswer, result.Error
 }
 
-func CreateAnswer(content datatypes.JSON, fid uint, zjuid string, eid uint) (uint, error) {
+func CreateAnswer(answerRequest *AnswerRequest, fid uint, zjuid string, eid uint) (uint, error) {
 	dbAnswer := Answer{}
-	copier.Copy(&dbAnswer.Content, content)
+	copier.Copy(&dbAnswer, answerRequest)
 	dbAnswer.FormID = fid
 	dbAnswer.ZJUid = zjuid
 	dbAnswer.EventID = eid
@@ -86,9 +100,9 @@ func CreateAnswer(content datatypes.JSON, fid uint, zjuid string, eid uint) (uin
 	return dbAnswer.ID, result.Error
 }
 
-func UpdateAnswer(content datatypes.JSON, zjuid string, eid uint) error {
+func UpdateAnswer(answerRequest *AnswerRequest, fid uint, zjuid string, eid uint) error {
 	dbAnswer := Answer{}
-	copier.Copy(&dbAnswer.Content, content)
-	result := gormDb.Model(&Answer{ZJUid: zjuid, EventID: eid}).Updates(&dbAnswer)
+	copier.Copy(&dbAnswer, answerRequest)
+	result := gormDb.Model(&Answer{FormID: fid, ZJUid: zjuid, EventID: eid}).Updates(&dbAnswer)
 	return result.Error
 }
