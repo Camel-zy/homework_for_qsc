@@ -41,6 +41,11 @@ type AllMessageTemplateAPI struct {
 	Status uint
 }
 
+type MessageCostAPI struct {
+	Cost    float32
+	Balance float32
+}
+
 func CreateMessage(requestMessage *Message) error {
 	result := gormDb.Create(requestMessage)
 	return result.Error

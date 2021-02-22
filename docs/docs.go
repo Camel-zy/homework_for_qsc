@@ -271,39 +271,9 @@ var doc = `{
             }
         },
         "/message": {
-            "get": {
-                "description": "Get information of a specific message",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Message"
-                ],
-                "summary": "Get a message",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Message ID",
-                        "name": "mid",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.MessageAPI"
-                        }
-                    }
-                }
-            },
             "put": {
                 "description": "send a message",
                 "consumes": [
-                    "application/json"
-                ],
-                "produces": [
                     "application/json"
                 ],
                 "tags": [
@@ -311,6 +281,13 @@ var doc = `{
                 ],
                 "summary": "Send a message",
                 "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Organization ID",
+                        "name": "oid",
+                        "in": "query",
+                        "required": true
+                    },
                     {
                         "description": "Message Information",
                         "name": "data",
@@ -323,9 +300,35 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/message/cost": {
+            "get": {
+                "description": "get message cost and balance",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Message"
+                ],
+                "summary": "get message cost and balance",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Organization ID",
+                        "name": "oid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.MessageAPI"
+                            "$ref": "#/definitions/model.MessageCostAPI"
                         }
                     }
                 }
@@ -371,9 +374,6 @@ var doc = `{
                 "consumes": [
                     "application/json"
                 ],
-                "produces": [
-                    "application/json"
-                ],
                 "tags": [
                     "MessageTemplate"
                 ],
@@ -398,19 +398,13 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.MessageTemplateAPI"
-                        }
+                        "description": ""
                     }
                 }
             },
             "post": {
                 "description": "Update a message template",
                 "consumes": [
-                    "application/json"
-                ],
-                "produces": [
                     "application/json"
                 ],
                 "tags": [
@@ -444,10 +438,7 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.MessageTemplateAPI"
-                        }
+                        "description": ""
                     }
                 }
             }
@@ -708,14 +699,14 @@ var doc = `{
         "model.AllMessageTemplateAPI": {
             "type": "object",
             "properties": {
-                "description": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "integer"
                 },
                 "status": {
                     "type": "integer"
+                },
+                "title": {
+                    "type": "string"
                 }
             }
         },
@@ -741,6 +732,9 @@ var doc = `{
                 },
                 "id": {
                     "type": "integer"
+                },
+                "messageCost": {
+                    "type": "number"
                 },
                 "name": {
                     "type": "string"
@@ -881,39 +875,29 @@ var doc = `{
                 }
             }
         },
-        "model.MessageAPI": {
+        "model.MessageCostAPI": {
             "type": "object",
             "properties": {
-                "id": {
-                    "type": "integer"
+                "balance": {
+                    "type": "number"
                 },
-                "receiverID": {
-                    "type": "integer"
-                },
-                "reply": {
-                    "type": "string"
-                },
-                "senderID": {
-                    "type": "integer"
-                },
-                "text": {
-                    "type": "string"
+                "cost": {
+                    "type": "number"
                 }
             }
         },
         "model.MessageRequest": {
             "type": "object",
             "required": [
-                "MessageTemplateID",
-                "ReceiverID",
-                "SenderID"
+                "AnswerID",
+                "DepartmentID",
+                "MessageTemplateID"
             ],
             "properties": {
-                "CrossInterviewID": {
-                    "description": "TODO(TO/GA): wait for logic",
+                "AnswerID": {
                     "type": "integer"
                 },
-                "FormID": {
+                "DepartmentID": {
                     "type": "integer"
                 },
                 "InterviewID": {
@@ -921,21 +905,12 @@ var doc = `{
                 },
                 "MessageTemplateID": {
                     "type": "integer"
-                },
-                "ReceiverID": {
-                    "type": "integer"
-                },
-                "SenderID": {
-                    "type": "integer"
                 }
             }
         },
         "model.MessageTemplateAPI": {
             "type": "object",
             "properties": {
-                "description": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "integer"
                 },
@@ -947,20 +922,23 @@ var doc = `{
                 },
                 "text": {
                     "type": "string"
+                },
+                "title": {
+                    "type": "string"
                 }
             }
         },
         "model.MessageTemplateRequest": {
             "type": "object",
             "required": [
-                "Description",
-                "Text"
+                "Text",
+                "Title"
             ],
             "properties": {
-                "Description": {
+                "Text": {
                     "type": "string"
                 },
-                "Text": {
+                "Title": {
                     "type": "string"
                 }
             }
@@ -973,6 +951,9 @@ var doc = `{
                 },
                 "id": {
                     "type": "integer"
+                },
+                "messageCost": {
+                    "type": "number"
                 },
                 "name": {
                     "type": "string"

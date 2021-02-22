@@ -59,11 +59,12 @@ func addRoutes(e *echo.Echo) {
 	answer.GET("", getAnswer)
 	answer.POST("", updateAnswer)
 
-	message := api.Group("/message") // TODO(TO/GA): auth middleware & test
+	message := api.Group("/message", middleware.GetOrganizationIdFromParam, middleware.AuthOrganization)
+	message.GET("/cost", getMessageCost)
 	message.PUT("", addMessage)
 	// message.GET("/all", getAllMessage) // TODO(TO/GA): wait until we know the logic
 
-	template := api.Group("/messageTemplate", middleware.GetOrganizationIdFromParam, middleware.AuthOrganization) // TODO(TO/GA): test
+	template := api.Group("/messageTemplate", middleware.GetOrganizationIdFromParam, middleware.AuthOrganization)
 	template.PUT("", addMessageTemplate)
 	template.POST("", setMessageTemplate, middleware.AuthMessageTemplate)
 	template.GET("", getMessageTemplate, middleware.AuthMessageTemplate)

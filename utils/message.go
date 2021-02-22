@@ -9,12 +9,19 @@ import (
 	"gorm.io/gorm"
 )
 
+func GetMessageBalance() (float32, error) {
+	//TODO(TO/GA): call sms service
+	var cost float32
+
+	return cost, nil
+}
+
 func GenerateMap(templateText string, answer *model.Answer, departmentID uint, interviewID uint) (map[string]string, error) {
 	ret := make(map[string]string)
 	// answer
 	{
 		if strings.Contains(templateText, "#name#") {
-			// ret["#name#"] = answer.Name // TODO(TO/GA): uncomment
+			ret["#name#"] = answer.Name
 		}
 
 		if strings.Contains(templateText, "#stuid#") {
@@ -22,11 +29,11 @@ func GenerateMap(templateText string, answer *model.Answer, departmentID uint, i
 		}
 
 		if strings.Contains(templateText, "#phone#") {
-			// ret["#phone#"] = answer.Mobile // TODO(TO/GA): uncomment
+			ret["#phone#"] = answer.Mobile
 		}
 
 		if strings.Contains(templateText, "#intent#") {
-			// ret["#intent#"] = answer.Intent // TODO(TO/GA): uncomment
+			ret["#intent#"] = answer.Intention
 		}
 	}
 
@@ -167,7 +174,7 @@ func AddMessageTemplate(oid uint, messageTemplateRequest *model.MessageTemplateR
 
 	var IDInSMSService uint
 	messageTemplate := &model.MessageTemplate{
-		Title: messageTemplateRequest.Title,
+		Title:          messageTemplateRequest.Title,
 		IDInSMSService: IDInSMSService,
 		OrganizationID: oid,
 	}

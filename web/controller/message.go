@@ -6,18 +6,39 @@ import (
 
 	"git.zjuqsc.com/rop/rop-back-neo/model"
 	"git.zjuqsc.com/rop/rop-back-neo/utils"
-	"github.com/jinzhu/copier"
 	"github.com/labstack/echo/v4"
+	"gorm.io/gorm"
 )
+
+// @tags Message
+// @summary get message cost and balance
+// @description get message cost and balance
+// @router /message/cost [get]
+// @param oid query uint true "Organization ID"
+// @produce json
+// @success 200 {object} model.MessageCostAPI
+func getMessageCost(c echo.Context) error {
+	balance, _ := utils.GetMessageBalance()
+	// TODO(TO/GA): error handling
+
+	organization, _ := model.QueryOrganizationById(c.Get("oid").(uint))
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: &model.MessageCostAPI{
+			Cost:    organization.MessageCost,
+			Balance: balance,
+		},
+	})
+}
 
 // @tags Message
 // @summary Send a message
 // @description send a message
 // @router /message [put]
 // @accept json
+// @param oid query uint true "Organization ID"
 // @param data body model.MessageRequest true "Message Information"
-// @produce json
-// @success 200 {object} model.MessageAPI
+// @success 200
 func addMessage(c echo.Context) error {
 	var messageRequest model.MessageRequest
 	if bindErr := c.Bind(&messageRequest); bindErr != nil {
@@ -34,6 +55,26 @@ func addMessage(c echo.Context) error {
 		})
 	}
 
+	department, departErr := model.QueryDepartmentById(messageRequest.DepartmentID)
+	if departErr != nil {
+		if errors.Is(departErr, gorm.ErrRecordNotFound) {
+			return c.JSON(http.StatusBadRequest, &utils.Error{
+				Code: "BAD_REQUEST",
+				Data: "department not found",
+			})
+		}
+		return c.JSON(http.StatusInternalServerError, &utils.Error{
+			Code: "INTERNAL_SERVER_ERR",
+			Data: "send message fail",
+		})
+	}
+	if department.OrganizationID != c.Get("oid").(uint) {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "department and organization don't match",
+		})
+	}
+
 	sendErr := utils.SendMessage(messageRequest)
 	if sendErr != nil {
 		if errors.Is(sendErr, model.ErrInternalError) {
@@ -47,49 +88,10 @@ func addMessage(c echo.Context) error {
 			Data: sendErr.Error(),
 		})
 	}
-	return nil
-}
-
-func modifyMessageTemplate(callSMSAndModifyDB func(model.MessageTemplateRequest) (*model.MessageTemplate, error)) func(c echo.Context) error {
-	return func(c echo.Context) error {
-		var messageTemplateRequest model.MessageTemplateRequest
-		if bindErr := c.Bind(&messageTemplateRequest); bindErr != nil {
-			return c.JSON(http.StatusBadRequest, &utils.Error{
-				Code: "BAD_REQUEST",
-				Data: bindErr.Error(),
-			})
-		}
-
-		if validateErr := c.Validate(&messageTemplateRequest); validateErr != nil {
-			return c.JSON(http.StatusBadRequest, &utils.Error{
-				Code: "BAD_REQUEST",
-				Data: validateErr.Error(),
-			})
-		}
-
-		messageTemplate, msgTplErr := callSMSAndModifyDB(messageTemplateRequest)
-		if msgTplErr != nil {
-			if msgTplErr == model.ErrInternalError {
-				return c.JSON(http.StatusInternalServerError, &utils.Error{
-					Code: "INTERNAL_SERVER_ERR",
-					Data: "modify message template fail",
-				})
-			}
-			return c.JSON(http.StatusBadRequest, &utils.Error{
-				Code: "BAD_REQUEST",
-				Data: msgTplErr.Error(),
-			})
-		}
-
-		// TODO(jy): call rop-sms
-
-		var MessageTemplateAPI model.MessageTemplateAPI
-		copier.Copy(&MessageTemplateAPI, &messageTemplate)
-		return c.JSON(http.StatusOK, &utils.Error{
-			Code: "SUCCESS",
-			Data: MessageTemplateAPI,
-		})
-	}
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: nil,
+	})
 }
 
 // @tags MessageTemplate
