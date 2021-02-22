@@ -197,3 +197,19 @@ func getAllMessageTemplate(c echo.Context) error {
 		Data: &messageTemplates,
 	})
 }
+
+// @tags MessageTemplate
+// @summary Get all message signs
+// @description Get information of all message signs
+// @router /messageSign/all [get]
+// @produce json
+// @success 200 {object} []model.AllMessageSignAPI
+func getAllMessageSign(c echo.Context) error {
+	signs, _ := utils.GetAllMessageSign()
+	// TODO(TO/GA): error handling
+
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: &signs,
+	})
+}

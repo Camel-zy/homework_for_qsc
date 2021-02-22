@@ -69,6 +69,7 @@ func addRoutes(e *echo.Echo) {
 	template.POST("", setMessageTemplate, middleware.AuthMessageTemplate)
 	template.GET("", getMessageTemplate, middleware.AuthMessageTemplate)
 	template.GET("/all", getAllMessageTemplate)
+	api.GET("/messageSign/all", getAllMessageSign)
 
 	avatar := api.Group("/avatar", middleware.CheckMinioStatus)
 	avatar.POST("", setAvatar)

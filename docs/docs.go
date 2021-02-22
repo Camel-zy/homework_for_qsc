@@ -334,6 +334,29 @@ var doc = `{
                 }
             }
         },
+        "/messageSign/all": {
+            "get": {
+                "description": "Get information of all message signs",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "MessageTemplate"
+                ],
+                "summary": "Get all message signs",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.AllMessageSignAPI"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/messageTemplate": {
             "get": {
                 "description": "Get information of a specific message template",
@@ -696,6 +719,17 @@ var doc = `{
         }
     },
     "definitions": {
+        "model.AllMessageSignAPI": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "sign": {
+                    "type": "string"
+                }
+            }
+        },
         "model.AllMessageTemplateAPI": {
             "type": "object",
             "properties": {
@@ -917,6 +951,9 @@ var doc = `{
                 "organizationID": {
                     "type": "integer"
                 },
+                "sign": {
+                    "type": "string"
+                },
                 "status": {
                     "type": "integer"
                 },
@@ -931,10 +968,14 @@ var doc = `{
         "model.MessageTemplateRequest": {
             "type": "object",
             "required": [
+                "SignID",
                 "Text",
                 "Title"
             ],
             "properties": {
+                "SignID": {
+                    "type": "integer"
+                },
                 "Text": {
                     "type": "string"
                 },

@@ -169,6 +169,11 @@ func SendMessage(messageRequest model.MessageRequest) error {
 	return nil
 }
 
+func GetAllMessageSign() ([]*model.AllMessageSignAPI, error) {
+	// TODO(TO/GA): call sms service
+	return nil, nil
+}
+
 func AddMessageTemplate(oid uint, messageTemplateRequest *model.MessageTemplateRequest) error {
 	// TODO(TO/GA): call sms service
 

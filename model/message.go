@@ -23,13 +23,15 @@ type MessageTemplate struct {
 }
 
 type MessageTemplateRequest struct {
-	Title string `json:"Title" validate:"required"`
-	Text  string `json:"Text" validate:"required"`
+	SignID uint   `json:"SignID" validate:"required"`
+	Title  string `json:"Title" validate:"required"`
+	Text   string `json:"Text" validate:"required"`
 }
 
 type MessageTemplateAPI struct {
 	ID             uint
 	Title          string
+	Sign           string
 	Text           string
 	OrganizationID uint
 	Status         uint
@@ -44,6 +46,11 @@ type AllMessageTemplateAPI struct {
 type MessageCostAPI struct {
 	Cost    float32
 	Balance float32
+}
+
+type AllMessageSignAPI struct {
+	ID   uint
+	Sign string
 }
 
 func CreateMessage(requestMessage *Message) error {
