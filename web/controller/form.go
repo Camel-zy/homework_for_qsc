@@ -106,6 +106,13 @@ func getForm(c echo.Context) error {
 }
 
 func updateAnswer(c echo.Context) error {
+	fid, typeErr := utils.IsUnsignedInteger(c.QueryParam("fid"))
+	if typeErr != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "fid need to be an unsigned integer",
+		})
+	}
 	zjuid, typeErr := utils.IsUnsignedInteger(c.QueryParam("zjuid"))
 	if typeErr != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
@@ -126,7 +133,7 @@ func updateAnswer(c echo.Context) error {
 	temp = strings.Replace(temp, "\n", "", -1)
 	json.Unmarshal([]byte(temp), &content)
 	if errors.Is(itvErr, gorm.ErrRecordNotFound) {
-		if aid, err := model.CreateAnswer(content, strconv.FormatUint(uint64(zjuid), 10), eid); err != nil {
+		if aid, err := model.CreateAnswer(content, fid, strconv.FormatUint(uint64(zjuid), 10), eid); err != nil {
 			return c.JSON(http.StatusInternalServerError, &utils.Error{
 				Code: "INTERNAL_SERVER_ERR",
 				Data: "create answer fail",

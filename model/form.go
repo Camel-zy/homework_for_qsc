@@ -28,6 +28,7 @@ type FormApi struct {
 
 type Answer struct {
 	ID      uint           `gorm:"not null;autoIncrement;primaryKey"`
+	FormID  uint           `gorm:"not null"`
 	ZJUid   string         `gorm:"column:zju_id;size:10;unique;not null"`
 	EventID uint           `gorm:"not null"`
 	Status  uint           `gorm:"not null"` // 0 abandoned, 1 used
@@ -36,6 +37,7 @@ type Answer struct {
 
 type AnswerResponse struct {
 	ID      uint
+	FormID  uint
 	ZJUid   string `gorm:"column:zju_id"`
 	EventID uint
 	Content datatypes.JSON
@@ -73,9 +75,10 @@ func QueryAnswerByZjuidAndEvent(zjuid string, eid uint) (*AnswerResponse, error)
 	return &dbAnswer, result.Error
 }
 
-func CreateAnswer(content datatypes.JSON, zjuid string, eid uint) (uint, error) {
+func CreateAnswer(content datatypes.JSON, fid uint, zjuid string, eid uint) (uint, error) {
 	dbAnswer := Answer{}
 	copier.Copy(&dbAnswer.Content, content)
+	dbAnswer.FormID = fid
 	dbAnswer.ZJUid = zjuid
 	dbAnswer.EventID = eid
 	dbAnswer.Status = 1
