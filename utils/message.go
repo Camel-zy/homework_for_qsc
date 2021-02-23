@@ -2,7 +2,6 @@ package utils
 
 import (
 	"errors"
-	"strings"
 
 	"git.zjuqsc.com/rop/rop-back-neo/model"
 	"github.com/sirupsen/logrus"
@@ -16,24 +15,23 @@ func GetMessageBalance() (float32, error) {
 	return cost, nil
 }
 
-func GenerateMap(templateText string, answer *model.Answer, departmentID uint, interviewID uint) (map[string]string, error) {
-	ret := make(map[string]string)
+func GenerateMap(templateMap *map[string]string, answer *model.Answer, departmentID uint, interviewID uint) error {
 	// answer
 	{
-		if strings.Contains(templateText, "#name#") {
-			ret["#name#"] = answer.Name
+		if _, ok := (*templateMap)["#name#"]; ok {
+			(*templateMap)["#name#"] = answer.Name
 		}
 
-		if strings.Contains(templateText, "#stuid#") {
-			ret["#stuid#"] = answer.ZJUid
+		if _, ok := (*templateMap)["#stuid#"]; ok {
+			(*templateMap)["#stuid#"] = answer.ZJUid
 		}
 
-		if strings.Contains(templateText, "#phone#") {
-			ret["#phone#"] = answer.Mobile
+		if _, ok := (*templateMap)["#phone#"]; ok {
+			(*templateMap)["#phone#"] = answer.Mobile
 		}
 
-		if strings.Contains(templateText, "#intent#") {
-			ret["#intent#"] = answer.Intention
+		if _, ok := (*templateMap)["#intent#"]; ok {
+			(*templateMap)["#intent#"] = answer.Intention // TODO(TO/GA): decode it
 		}
 	}
 
@@ -41,59 +39,59 @@ func GenerateMap(templateText string, answer *model.Answer, departmentID uint, i
 	{
 		interview, itvErr := model.QueryInterviewByID(interviewID)
 
-		if strings.Contains(templateText, "#interview#") {
+		if _, ok := (*templateMap)["#interview#"]; ok {
 			if itvErr != nil {
-				return nil, itvErr
+				return itvErr
 			}
-			ret["#interview#"] = interview.Description // TODO(TO/GA): what the fuck?
+			(*templateMap)["#interview#"] = interview.Description // TODO(TO/GA): what the fuck?
 		}
 
-		if strings.Contains(templateText, "#time#") {
+		if _, ok := (*templateMap)["#time#"]; ok {
 			if itvErr != nil {
-				return nil, itvErr
+				return itvErr
 			}
-			ret["#time"] = interview.StartTime.String() // TODO(TO/GA): start time or end time?
+			(*templateMap)["#time"] = interview.StartTime.String() // TODO(TO/GA): start time or end time?
 		}
 
-		if strings.Contains(templateText, "#location#") {
+		if _, ok := (*templateMap)["#location#"]; ok {
 			if itvErr != nil {
-				return nil, itvErr
+				return itvErr
 			}
-			ret["#location"] = interview.Location
+			(*templateMap)["#location"] = interview.Location
 		}
 	}
 
 	// DepartmentID
 	{
 		department, departErr := model.QueryDepartmentById(departmentID)
-		if strings.Contains(templateText, "#depart#") {
+		if _, ok := (*templateMap)["#depart#"]; ok {
 			if departErr != nil {
-				return nil, departErr
+				return departErr
 			}
-			ret["#depart#"] = department.Name // TODO(TO/GA): cross interview
+			(*templateMap)["#depart#"] = department.Name // TODO(TO/GA): cross interview
 		}
 
-		if strings.Contains(templateText, "#association#") {
+		if _, ok := (*templateMap)["#association#"]; ok {
 			if departErr != nil {
-				return nil, departErr
+				return departErr
 			}
 			// TODO(TO/GA): preload
 			organization, orgErr := model.QueryOrganizationById(department.OrganizationID)
 			if orgErr != nil {
-				return nil, orgErr
+				return orgErr
 			}
-			ret["#association#"] = organization.Name // TODO(TO/GA): test
+			(*templateMap)["#association#"] = organization.Name // TODO(TO/GA): test
 		}
 	}
 
 	// WTF
 	{
-		if strings.Contains(templateText, "#url#") {
+		if _, ok := (*templateMap)["#url#"]; ok {
 			// TODO(TO/GA): finish
 		}
 	}
 
-	return ret, nil
+	return nil
 }
 
 func SendMessage(messageRequest model.MessageRequest) error {
@@ -118,10 +116,10 @@ func SendMessage(messageRequest model.MessageRequest) error {
 	}
 
 	// TODO(TO/GA): call sms serview for template
-	var templateText string
+	var templateMap map[string]string
 
 	// generate map
-	_, mapErr := GenerateMap(templateText, answer, messageRequest.DepartmentID, messageRequest.InterviewID)
+	mapErr := GenerateMap(&templateMap, answer, messageRequest.DepartmentID, messageRequest.InterviewID)
 	if mapErr != nil {
 		if errors.Is(ansErr, gorm.ErrRecordNotFound) {
 			return errors.New("fill placeholders fail due to the lack of information")

@@ -3,14 +3,22 @@ package controller
 import (
 	"encoding/json"
 	"errors"
+	"net/http"
+	"strconv"
+
 	"git.zjuqsc.com/rop/rop-back-neo/model"
 	"git.zjuqsc.com/rop/rop-back-neo/utils"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
-	"net/http"
-	"strconv"
 )
 
+// @tags Form
+// @summary Create a form
+// @description Create a form
+// @router /form [put]
+// @accept  json
+// @param data body model.FormApi true "Form Infomation"
+// @success 200
 func createForm(c echo.Context) error {
 	FormRequest := model.FormApi{}
 	if err := c.Bind(&FormRequest); err != nil {
@@ -44,6 +52,13 @@ func createForm(c echo.Context) error {
 	})
 }
 
+// @tags Form
+// @summary Update a form
+// @description Update a form
+// @router /form [post]
+// @accept  json
+// @param data body model.FormApi true "Form Infomation"
+// @success 200
 func updateForm(c echo.Context) error {
 	FormRequest := model.FormApi{}
 	err := c.Bind(&FormRequest)
@@ -80,6 +95,12 @@ func updateForm(c echo.Context) error {
 	})
 }
 
+// @tags Form
+// @summary Get a form
+// @description Get a form
+// @router /form [get]
+// @param fid query uint true "Form ID"
+// @success 200 {object} model.Form
 func getForm(c echo.Context) error {
 	fid, typeErr := utils.IsUnsignedInteger(c.QueryParam("fid"))
 	if typeErr != nil {
@@ -103,6 +124,16 @@ func getForm(c echo.Context) error {
 	})
 }
 
+// @tags Answer
+// @summary Update an answer
+// @description Update an answer
+// @router /answer [post]
+// @accept  json
+// @param fid query uint true "Form ID"
+// @param zjuid query uint true "ZJUID"
+// @param eid query uint true "Event ID"
+// @param data body model.AnswerRequest true "Answer Infomation"
+// @success 200
 func updateAnswer(c echo.Context) error {
 	fid, typeErr := utils.IsUnsignedInteger(c.QueryParam("fid"))
 	if typeErr != nil {
@@ -159,6 +190,14 @@ func updateAnswer(c echo.Context) error {
 	})
 }
 
+// @tags Answer
+// @summary Get an answer
+// @description Get an answer
+// @router /answer [get]
+// @param fid query uint true "Form ID"
+// @param zjuid query uint true "ZJUID"
+// @param eid query uint true "Event ID"
+// @success 200 {object} model.AnswerResponse
 func getAnswer(c echo.Context) error {
 	fid, typeErr := utils.IsUnsignedInteger(c.QueryParam("fid"))
 	if typeErr != nil {
