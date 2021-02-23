@@ -435,41 +435,6 @@ var doc = `{
                 ]
             }
         },
-        "/message": {
-            "put": {
-                "description": "send a message",
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Message"
-                ],
-                "summary": "Send a message",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Organization ID",
-                        "name": "oid",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "description": "Message Information",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.MessageRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": ""
-                    }
-                }
-            }
-        },
         "/message/cost": {
             "get": {
                 "description": "get message cost and balance",
@@ -499,73 +464,13 @@ var doc = `{
                 }
             }
         },
-        "/messageSign/all": {
-            "get": {
-                "description": "Get information of all message signs",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "MessageTemplate"
-                ],
-                "summary": "Get all message signs",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/model.AllMessageSignAPI"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/messageTemplate": {
-            "get": {
-                "description": "Get information of a specific message template",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "MessageTemplate"
-                ],
-                "summary": "Get a message template",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Organization ID",
-                        "name": "oid",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Message Template ID",
-                        "name": "tid",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.MessageTemplateAPI"
-                        }
-                    }
-                }
-            },
+        "/message/form": {
             "put": {
-                "description": "Add a message template",
-                "consumes": [
-                    "application/json"
-                ],
+                "description": "send form confirm message",
                 "tags": [
-                    "MessageTemplate"
+                    "Message"
                 ],
-                "summary": "Add a message template",
+                "summary": "send form confirm message",
                 "parameters": [
                     {
                         "type": "integer",
@@ -575,52 +480,12 @@ var doc = `{
                         "required": true
                     },
                     {
-                        "description": "Message Template information",
+                        "description": "Message Information",
                         "name": "data",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.MessageTemplateRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": ""
-                    }
-                }
-            },
-            "post": {
-                "description": "Update a message template",
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "MessageTemplate"
-                ],
-                "summary": "Update a message template",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Organization ID",
-                        "name": "oid",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Message Template ID",
-                        "name": "tid",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "description": "Message Template information",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.MessageTemplateRequest"
+                            "$ref": "#/definitions/model.SendUserMessageRequest"
                         }
                     }
                 ],
@@ -631,16 +496,13 @@ var doc = `{
                 }
             }
         },
-        "/messageTemplate/all": {
-            "get": {
-                "description": "Get information of all message templates of a specific organization",
-                "produces": [
-                    "application/json"
-                ],
+        "/message/interview/confirm": {
+            "put": {
+                "description": "send interview confirm message",
                 "tags": [
-                    "MessageTemplate"
+                    "Message"
                 ],
-                "summary": "Get all message templates",
+                "summary": "send interview confirm message",
                 "parameters": [
                     {
                         "type": "integer",
@@ -648,17 +510,84 @@ var doc = `{
                         "name": "oid",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "description": "Message Information",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.SendInterviewMessageRequest"
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/message/interview/select": {
+            "put": {
+                "description": "send interview select message",
+                "tags": [
+                    "Message"
+                ],
+                "summary": "send interview select message",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Organization ID",
+                        "name": "oid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "description": "Message Information",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/model.AllMessageTemplateAPI"
-                            }
+                            "$ref": "#/definitions/model.SendInterviewMessageRequest"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/message/reject": {
+            "put": {
+                "description": "send reject message",
+                "tags": [
+                    "Message"
+                ],
+                "summary": "send reject message",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Organization ID",
+                        "name": "oid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "description": "Message Information",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.SendUserMessageRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
                     }
                 }
             }
@@ -884,31 +813,6 @@ var doc = `{
         }
     },
     "definitions": {
-        "model.AllMessageSignAPI": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "sign": {
-                    "type": "string"
-                }
-            }
-        },
-        "model.AllMessageTemplateAPI": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "status": {
-                    "type": "integer"
-                },
-                "title": {
-                    "type": "string"
-                }
-            }
-        },
         "model.AnswerRequest_": {
             "type": "object",
             "properties": {
@@ -1196,70 +1100,6 @@ var doc = `{
                 }
             }
         },
-        "model.MessageRequest": {
-            "type": "object",
-            "required": [
-                "AnswerID",
-                "DepartmentID",
-                "MessageTemplateID"
-            ],
-            "properties": {
-                "AnswerID": {
-                    "type": "integer"
-                },
-                "DepartmentID": {
-                    "type": "integer"
-                },
-                "InterviewID": {
-                    "type": "integer"
-                },
-                "MessageTemplateID": {
-                    "type": "integer"
-                }
-            }
-        },
-        "model.MessageTemplateAPI": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "organizationID": {
-                    "type": "integer"
-                },
-                "sign": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "integer"
-                },
-                "text": {
-                    "type": "string"
-                },
-                "title": {
-                    "type": "string"
-                }
-            }
-        },
-        "model.MessageTemplateRequest": {
-            "type": "object",
-            "required": [
-                "SignID",
-                "Text",
-                "Title"
-            ],
-            "properties": {
-                "SignID": {
-                    "type": "integer"
-                },
-                "Text": {
-                    "type": "string"
-                },
-                "Title": {
-                    "type": "string"
-                }
-            }
-        },
         "model.OrganizationApi": {
             "type": "object",
             "properties": {
@@ -1274,6 +1114,40 @@ var doc = `{
                 },
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "model.SendInterviewMessageRequest": {
+            "type": "object",
+            "required": [
+                "AnswerID",
+                "DepartmentID",
+                "InterviewID"
+            ],
+            "properties": {
+                "AnswerID": {
+                    "type": "integer"
+                },
+                "DepartmentID": {
+                    "type": "integer"
+                },
+                "InterviewID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.SendUserMessageRequest": {
+            "type": "object",
+            "required": [
+                "AnswerID",
+                "DepartmentID"
+            ],
+            "properties": {
+                "AnswerID": {
+                    "type": "integer"
+                },
+                "DepartmentID": {
+                    "type": "integer"
                 }
             }
         }
