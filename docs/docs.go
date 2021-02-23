@@ -24,6 +24,93 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/answer": {
+            "get": {
+                "description": "Get an answer",
+                "tags": [
+                    "Answer"
+                ],
+                "summary": "Get an answer",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Form ID",
+                        "name": "fid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "ZJUID",
+                        "name": "zjuid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Event ID",
+                        "name": "eid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.AnswerResponse_"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Update an answer",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Answer"
+                ],
+                "summary": "Update an answer",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Form ID",
+                        "name": "fid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "ZJUID",
+                        "name": "zjuid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Event ID",
+                        "name": "eid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "description": "Answer information",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.AnswerRequest_"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/avatar": {
             "get": {
                 "description": "If everything is fine, the Data field will be a URL, from which you can get the avatar",
@@ -207,6 +294,84 @@ var doc = `{
                                 "$ref": "#/definitions/model.Brief"
                             }
                         }
+                    }
+                }
+            }
+        },
+        "/form": {
+            "get": {
+                "description": "Get a form",
+                "tags": [
+                    "Form"
+                ],
+                "summary": "Get a form",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Form ID",
+                        "name": "fid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Form_"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Create a form",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Form"
+                ],
+                "summary": "Create a form",
+                "parameters": [
+                    {
+                        "description": "Form information",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.FormApi_"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "description": "Update a form",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Form"
+                ],
+                "summary": "Update a form",
+                "parameters": [
+                    {
+                        "description": "Form information",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.FormApi_"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
                     }
                 }
             }
@@ -410,7 +575,7 @@ var doc = `{
                         "required": true
                     },
                     {
-                        "description": "Message Template Infomation",
+                        "description": "Message Template information",
                         "name": "data",
                         "in": "body",
                         "required": true,
@@ -450,7 +615,7 @@ var doc = `{
                         "required": true
                     },
                     {
-                        "description": "Message Template Infomation",
+                        "description": "Message Template information",
                         "name": "data",
                         "in": "body",
                         "required": true,
@@ -744,6 +909,57 @@ var doc = `{
                 }
             }
         },
+        "model.AnswerRequest_": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string",
+                    "example": "JSON"
+                },
+                "intention": {
+                    "type": "string"
+                },
+                "mobile": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "zjuid": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.AnswerResponse_": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string",
+                    "example": "JSON"
+                },
+                "eventID": {
+                    "type": "integer"
+                },
+                "formID": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "intention": {
+                    "type": "string"
+                },
+                "mobile": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "zjuid": {
+                    "type": "string"
+                }
+            }
+        },
         "model.Brief": {
             "type": "object",
             "properties": {
@@ -839,6 +1055,60 @@ var doc = `{
                 }
             }
         },
+        "model.FormApi_": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string",
+                    "example": "JSON"
+                },
+                "createTime": {
+                    "type": "string"
+                },
+                "departmentID": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "organizationID": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.Form_": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string",
+                    "example": "JSON"
+                },
+                "createTime": {
+                    "type": "string"
+                },
+                "departmentID": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "organizationID": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
         "model.InterviewRequest": {
             "type": "object",
             "required": [
@@ -847,6 +1117,9 @@ var doc = `{
                 "StartTime"
             ],
             "properties": {
+                "CrossTag": {
+                    "type": "integer"
+                },
                 "Description": {
                     "type": "string"
                 },
@@ -876,6 +1149,9 @@ var doc = `{
         "model.InterviewResponse": {
             "type": "object",
             "properties": {
+                "crossTag": {
+                    "type": "integer"
+                },
                 "departmentID": {
                     "type": "integer"
                 },

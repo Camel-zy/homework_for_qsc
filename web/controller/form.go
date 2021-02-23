@@ -17,7 +17,7 @@ import (
 // @description Create a form
 // @router /form [put]
 // @accept  json
-// @param data body model.FormApi true "Form Infomation"
+// @param data body model.FormApi_ true "Form information"
 // @success 200
 func createForm(c echo.Context) error {
 	FormRequest := model.FormApi{}
@@ -57,7 +57,7 @@ func createForm(c echo.Context) error {
 // @description Update a form
 // @router /form [post]
 // @accept  json
-// @param data body model.FormApi true "Form Infomation"
+// @param data body model.FormApi_ true "Form information"
 // @success 200
 func updateForm(c echo.Context) error {
 	FormRequest := model.FormApi{}
@@ -100,7 +100,7 @@ func updateForm(c echo.Context) error {
 // @description Get a form
 // @router /form [get]
 // @param fid query uint true "Form ID"
-// @success 200 {object} model.Form
+// @success 200 {object} model.Form_
 func getForm(c echo.Context) error {
 	fid, typeErr := utils.IsUnsignedInteger(c.QueryParam("fid"))
 	if typeErr != nil {
@@ -132,7 +132,7 @@ func getForm(c echo.Context) error {
 // @param fid query uint true "Form ID"
 // @param zjuid query uint true "ZJUID"
 // @param eid query uint true "Event ID"
-// @param data body model.AnswerRequest true "Answer Infomation"
+// @param data body model.AnswerRequest_ true "Answer information"
 // @success 200
 func updateAnswer(c echo.Context) error {
 	fid, typeErr := utils.IsUnsignedInteger(c.QueryParam("fid"))
@@ -197,7 +197,7 @@ func updateAnswer(c echo.Context) error {
 // @param fid query uint true "Form ID"
 // @param zjuid query uint true "ZJUID"
 // @param eid query uint true "Event ID"
-// @success 200 {object} model.AnswerResponse
+// @success 200 {object} model.AnswerResponse_
 func getAnswer(c echo.Context) error {
 	fid, typeErr := utils.IsUnsignedInteger(c.QueryParam("fid"))
 	if typeErr != nil {

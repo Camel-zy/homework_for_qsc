@@ -100,7 +100,7 @@ func addMessage(c echo.Context) error {
 // @router /messageTemplate [put]
 // @param oid query uint true "Organization ID"
 // @accept  json
-// @param data body model.MessageTemplateRequest true "Message Template Infomation"
+// @param data body model.MessageTemplateRequest true "Message Template information"
 // @success 200
 func addMessageTemplate(c echo.Context) error {
 	var messageTemplateRequest model.MessageTemplateRequest
@@ -134,7 +134,7 @@ func addMessageTemplate(c echo.Context) error {
 // @param oid query uint true "Organization ID"
 // @param tid query uint true "Message Template ID"
 // @accept  json
-// @param data body model.MessageTemplateRequest true "Message Template Infomation"
+// @param data body model.MessageTemplateRequest true "Message Template information"
 // @success 200
 func setMessageTemplate(c echo.Context) error {
 	var messageTemplateRequest model.MessageTemplateRequest
