@@ -62,7 +62,7 @@ func sendMessage(BindAndValidate func(c echo.Context) (*model.MessageRequest, ui
 			})
 		}
 
-		sendErr := utils.SendMessage(messageRequest, messageTemplateID)
+		text, sendErr := utils.SendMessage(messageRequest, messageTemplateID)
 		if sendErr != nil {
 			if errors.Is(sendErr, model.ErrInternalError) {
 				return c.JSON(http.StatusInternalServerError, &utils.Error{
@@ -77,7 +77,7 @@ func sendMessage(BindAndValidate func(c echo.Context) (*model.MessageRequest, ui
 		}
 		return c.JSON(http.StatusOK, &utils.Error{
 			Code: "SUCCESS",
-			Data: nil,
+			Data: text,
 		})
 	}
 }
@@ -174,6 +174,6 @@ func sendRejectMessage(c echo.Context) error {
 
 		var req model.MessageRequest
 		copier.Copy(&req, &messageRequest)
-		return &req, 4, nil
+		return &req, 3, nil
 	})(c)
 }

@@ -101,18 +101,18 @@ func GenerateText(templateText *string, answer *model.Answer, departmentID uint,
 	return nil
 }
 
-func SendMessage(messageRequest *model.MessageRequest, messageTemplateID uint) error {
+func SendMessage(messageRequest *model.MessageRequest, messageTemplateID uint) (*string, error) {
 	// fetch info
 	answer, ansErr := model.QueryAnswerById(messageRequest.AnswerID)
 	if ansErr != nil {
 		if errors.Is(ansErr, gorm.ErrRecordNotFound) {
-			return errors.New("answer not found")
+			return nil, errors.New("answer not found")
 		}
-		return model.ErrInternalError
+		return nil, model.ErrInternalError
 	}
 	receiver, recvErr := model.QueryUserByZJUid(answer.ZJUid)
 	if recvErr != nil {
-		return model.ErrInternalError
+		return nil, model.ErrInternalError
 	}
 
 	text := model.MessageTemplate[messageTemplateID]
@@ -121,9 +121,9 @@ func SendMessage(messageRequest *model.MessageRequest, messageTemplateID uint) e
 	textErr := GenerateText(&text, answer, messageRequest.DepartmentID, messageRequest.InterviewID)
 	if textErr != nil {
 		if errors.Is(ansErr, gorm.ErrRecordNotFound) {
-			return errors.New("fill placeholders fail due to the lack of information")
+			return nil, errors.New("fill placeholders fail due to the lack of information")
 		}
-		return model.ErrInternalError
+		return nil, model.ErrInternalError
 	}
 
 	// TODO(TO/GA): call sms service to send
@@ -140,7 +140,7 @@ func SendMessage(messageRequest *model.MessageRequest, messageTemplateID uint) e
 	createErr := model.CreateMessage(message)
 	if createErr != nil {
 		logrus.Errorf("message sent but failed to insert into database, %+v", message)
-		return nil
+		return &text, nil
 	}
 
 	// update cost
@@ -163,5 +163,5 @@ func SendMessage(messageRequest *model.MessageRequest, messageTemplateID uint) e
 		logrus.Errorf("fail to update organization's message(ID=%v) cost, %v\n", message.ID, orgErr.Error())
 	}
 
-	return nil
+	return &text, nil
 }
