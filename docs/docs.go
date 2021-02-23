@@ -491,7 +491,10 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": ""
+                        "description": "MessageText",
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 }
             }
@@ -523,7 +526,10 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": ""
+                        "description": "MessageText",
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 }
             }
@@ -555,7 +561,10 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": ""
+                        "description": "MessageText",
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 }
             }
@@ -587,7 +596,10 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": ""
+                        "description": "MessageText",
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 }
             }
@@ -1022,7 +1034,8 @@ var doc = `{
             ],
             "properties": {
                 "CrossTag": {
-                    "type": "integer"
+                    "description": "1 represent CrossInterview",
+                    "type": "boolean"
                 },
                 "Description": {
                     "type": "string"
@@ -1054,7 +1067,8 @@ var doc = `{
             "type": "object",
             "properties": {
                 "crossTag": {
-                    "type": "integer"
+                    "description": "1 represent CrossInterview",
+                    "type": "boolean"
                 },
                 "departmentID": {
                     "type": "integer"

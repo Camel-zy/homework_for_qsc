@@ -16,19 +16,21 @@ func GetMessageBalance() (float32, error) {
 	return cost, nil
 }
 
-func GenerateText(templateText *string, answer *model.Answer, departmentID uint, interviewID uint) error {
+func GenerateText(messageTemplateID uint, answer *model.Answer, departmentID uint, interviewID uint) (*string, error) {
+	templateText := model.MessageTemplate[messageTemplateID]
+
 	// answer
 	{
-		if strings.Contains(*templateText, "#name#") {
-			*templateText = strings.ReplaceAll(*templateText, "#name#", answer.Name)
+		if strings.Contains(templateText, "#name#") {
+			templateText = strings.ReplaceAll(templateText, "#name#", answer.Name)
 		}
 
-		if strings.Contains(*templateText, "#stuid#") {
-			*templateText = strings.ReplaceAll(*templateText, "#stuid#", answer.ZJUid)
+		if strings.Contains(templateText, "#stuid#") {
+			templateText = strings.ReplaceAll(templateText, "#stuid#", answer.ZJUid)
 		}
 
-		if strings.Contains(*templateText, "#intent#") {
-			*templateText = strings.ReplaceAll(*templateText, "#intent#", answer.Intention) // TODO(TO/GA): decode it
+		if strings.Contains(templateText, "#intent#") {
+			templateText = strings.ReplaceAll(templateText, "#intent#", answer.Intention) // TODO(TO/GA): decode it
 		}
 	}
 
@@ -36,69 +38,70 @@ func GenerateText(templateText *string, answer *model.Answer, departmentID uint,
 	{
 		event, eventErr := model.QueryEventByID(answer.EventID)
 		if eventErr != nil {
-			return eventErr
+			return nil, eventErr
 		}
-		if strings.Contains(*templateText, "#event#") {
-			*templateText = strings.ReplaceAll(*templateText, "#event#", event.Name)
-		}
-	}
-	// InterviewID
-	{
-		interview, itvErr := model.QueryInterviewByID(interviewID)
-
-		if strings.Contains(*templateText, "#interview#") {
-			if itvErr != nil {
-				return itvErr
-			}
-			*templateText = strings.ReplaceAll(*templateText, "#interview#", interview.Name)
-		}
-
-		if strings.Contains(*templateText, "#time#") {
-			if itvErr != nil {
-				return itvErr
-			}
-			*templateText = strings.ReplaceAll(*templateText, "#time", interview.StartTime.String())
-		}
-
-		if strings.Contains(*templateText, "#location#") {
-			if itvErr != nil {
-				return itvErr
-			}
-			*templateText = strings.ReplaceAll(*templateText, "#location", interview.Location)
+		if strings.Contains(templateText, "#event#") {
+			templateText = strings.ReplaceAll(templateText, "#event#", event.Name)
 		}
 	}
 
 	// DepartmentID
 	{
 		department, departErr := model.QueryDepartmentById(departmentID)
-		if strings.Contains(*templateText, "#depart#") {
+		if strings.Contains(templateText, "#depart#") {
 			if departErr != nil {
-				return departErr
+				return nil, departErr
 			}
-			*templateText = strings.ReplaceAll(*templateText, "#depart#", department.Name) // TODO(TO/GA): cross interview
+			templateText = strings.ReplaceAll(templateText, "#depart#", department.Name) // TODO(TO/GA): cross interview
 		}
 
-		if strings.Contains(*templateText, "#association#") {
+		if strings.Contains(templateText, "#association#") {
 			if departErr != nil {
-				return departErr
+				return nil, departErr
 			}
 			// TODO(TO/GA): preload
 			organization, orgErr := model.QueryOrganizationById(department.OrganizationID)
 			if orgErr != nil {
-				return orgErr
+				return nil, orgErr
 			}
-			*templateText = strings.ReplaceAll(*templateText, "#association#", organization.Name)
+			templateText = strings.ReplaceAll(templateText, "#association#", organization.Name)
+		}
+	}
+
+	// InterviewID
+	if messageTemplateID == 1 || messageTemplateID == 2 {
+		interview, itvErr := model.QueryInterviewByID(interviewID)
+
+		if strings.Contains(templateText, "#interview#") {
+			if itvErr != nil {
+				return nil, itvErr
+			}
+			templateText = strings.ReplaceAll(templateText, "#interview#", interview.Name)
+		}
+
+		if strings.Contains(templateText, "#time#") {
+			if itvErr != nil {
+				return nil, itvErr
+			}
+			templateText = strings.ReplaceAll(templateText, "#time#", interview.StartTime.String())
+		}
+
+		if strings.Contains(templateText, "#location#") {
+			if itvErr != nil {
+				return nil, itvErr
+			}
+			templateText = strings.ReplaceAll(templateText, "#location#", interview.Location)
 		}
 	}
 
 	// WTF
 	{
-		if strings.Contains(*templateText, "#url#") {
+		if strings.Contains(templateText, "#url#") {
 			// TODO(TO/GA): finish
 		}
 	}
 
-	return nil
+	return &templateText, nil
 }
 
 func SendMessage(messageRequest *model.MessageRequest, messageTemplateID uint) (*string, error) {
@@ -115,10 +118,8 @@ func SendMessage(messageRequest *model.MessageRequest, messageTemplateID uint) (
 		return nil, model.ErrInternalError
 	}
 
-	text := model.MessageTemplate[messageTemplateID]
-
 	// generate map
-	textErr := GenerateText(&text, answer, messageRequest.DepartmentID, messageRequest.InterviewID)
+	text, textErr := GenerateText(messageTemplateID, answer, messageRequest.DepartmentID, messageRequest.InterviewID)
 	if textErr != nil {
 		if errors.Is(ansErr, gorm.ErrRecordNotFound) {
 			return nil, errors.New("fill placeholders fail due to the lack of information")
@@ -139,29 +140,29 @@ func SendMessage(messageRequest *model.MessageRequest, messageTemplateID uint) (
 	}
 	createErr := model.CreateMessage(message)
 	if createErr != nil {
-		logrus.Errorf("message sent but failed to insert into database, %+v", message)
-		return &text, nil
+		logrus.Errorf("message sent but failed to insert into database, %+v\n", message)
+		return text, nil
 	}
 
 	// update cost
 	department, departErr := model.QueryDepartmentById(messageRequest.DepartmentID)
 	if departErr != nil {
-		logrus.Errorf("fail to update department's message(ID=%v) cost, %v\n", message.ID, departErr.Error())
+		logrus.Errorf("fail to update department's message(ID=%v) cost\n", message.ID)
 	}
 	departErr = model.UpdateDepartmentById(&model.Department{ID: department.ID, MessageCost: department.MessageCost + cost})
 	if departErr != nil {
-		logrus.Errorf("fail to update department's message(ID=%v) cost, %v\n", message.ID, departErr.Error())
+		logrus.Errorf("fail to update department's message(ID=%v) cost\n", message.ID)
 	}
 	// TODO(TO/GA): preload
 	organization, orgErr := model.QueryOrganizationById(department.OrganizationID)
 	if orgErr != nil {
-		logrus.Errorf("fail to update organization's message(ID=%v) cost, %v\n", message.ID, orgErr.Error())
+		logrus.Errorf("fail to update organization's message(ID=%v) cost\n", message.ID)
 	}
 	organization.MessageCost += cost
 	orgErr = model.UpdateOrganizationById(&model.Organization{ID: organization.ID, MessageCost: organization.MessageCost + cost})
 	if orgErr != nil {
-		logrus.Errorf("fail to update organization's message(ID=%v) cost, %v\n", message.ID, orgErr.Error())
+		logrus.Errorf("fail to update organization's message(ID=%v) cost\n", message.ID)
 	}
 
-	return &text, nil
+	return text, nil
 }

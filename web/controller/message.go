@@ -88,7 +88,7 @@ func sendMessage(BindAndValidate func(c echo.Context) (*model.MessageRequest, ui
 // @router /message/form [put]
 // @param oid query uint true "Organization ID"
 // @param data body model.SendUserMessageRequest true "Message Information"
-// @success 200
+// @success 200 {string} MessageText "MessageText"
 func sendFormConfirmMessage(c echo.Context) error {
 	return sendMessage(func(c echo.Context) (*model.MessageRequest, uint, error) {
 		var messageRequest model.SendUserMessageRequest
@@ -112,7 +112,7 @@ func sendFormConfirmMessage(c echo.Context) error {
 // @router /message/interview/select [put]
 // @param oid query uint true "Organization ID"
 // @param data body model.SendInterviewMessageRequest true "Message Information"
-// @success 200
+// @success 200 {string} MessageText "MessageText"
 func sendInterviewSelectMessage(c echo.Context) error {
 	return sendMessage(func(c echo.Context) (*model.MessageRequest, uint, error) {
 		var messageRequest model.SendInterviewMessageRequest
@@ -136,7 +136,7 @@ func sendInterviewSelectMessage(c echo.Context) error {
 // @router /message/interview/confirm [put]
 // @param oid query uint true "Organization ID"
 // @param data body model.SendInterviewMessageRequest true "Message Information"
-// @success 200
+// @success 200 {string} MessageText "MessageText"
 func sendInterviewConfirmMessage(c echo.Context) error {
 	return sendMessage(func(c echo.Context) (*model.MessageRequest, uint, error) {
 		var messageRequest model.SendInterviewMessageRequest
@@ -160,7 +160,7 @@ func sendInterviewConfirmMessage(c echo.Context) error {
 // @router /message/reject [put]
 // @param oid query uint true "Organization ID"
 // @param data body model.SendUserMessageRequest true "Message Information"
-// @success 200
+// @success 200 {string} MessageText "MessageText"
 func sendRejectMessage(c echo.Context) error {
 	return sendMessage(func(c echo.Context) (*model.MessageRequest, uint, error) {
 		var messageRequest model.SendUserMessageRequest
