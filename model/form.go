@@ -28,15 +28,16 @@ type FormApi struct {
 }
 
 type Answer struct {
-	ID        uint           `gorm:"not null;autoIncrement;primaryKey"`
-	FormID    uint           `gorm:"not null"`
-	Name      string         `gorm:"not null"`
-	ZJUid     string         `gorm:"column:zju_id;size:10;not null"`
-	Mobile    string         `gorm:"size:11;not null"`
-	Intention string         `gorm:"not null"`
-	EventID   uint           `gorm:"not null"`
-	Status    uint           `gorm:"not null"` // 0 abandoned, 1 used
-	Content   datatypes.JSON `gorm:"type:datatypes;not null"`
+	ID                   uint           `gorm:"not null;autoIncrement;primaryKey"`
+	FormID               uint           `gorm:"not null"`
+	Name                 string         `gorm:"not null"`
+	ZJUid                string         `gorm:"column:zju_id;size:10;not null"`
+	Mobile               string         `gorm:"size:11;not null"`
+	Intention            string         `gorm:"not null"`
+	EventID              uint           `gorm:"not null"`
+	AppliedDepartmentSeq uint           `gorm:"not null"` // one bit for every department
+	Status               uint           `gorm:"not null"` // 0 abandoned, 1 used
+	Content              datatypes.JSON `gorm:"type:datatypes;not null"`
 }
 
 type AnswerRequest struct {
