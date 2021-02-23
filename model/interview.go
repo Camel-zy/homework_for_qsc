@@ -106,3 +106,9 @@ func UpdateJoinedInterview(id uint, newResult uint) error {
 	result := gormDb.Model(&JoinedInterview{ID: id}).Update("result", newResult)
 	return result.Error
 }
+
+func QueryAllJoinedInterviewOfInterview(iid uint) (*[]JoinedInterview, error) {
+	var dbJoinedInterview []JoinedInterview
+	result := gormDb.Model(&JoinedInterview{}).Where(&JoinedInterview{InterviewID: iid}).Find(&dbJoinedInterview)
+	return &dbJoinedInterview, result.Error
+}
