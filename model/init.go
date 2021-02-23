@@ -53,7 +53,6 @@ func CreateTables() {
 		&Answer{},
 		&JoinedInterview{},
 		&Message{},
-		&MessageTemplate{},
 		&Image{})
 	if err != nil {
 		logrus.Fatal(err)

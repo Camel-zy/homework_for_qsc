@@ -8,39 +8,21 @@ type Message struct {
 	Cost           float32 `gorm:"not null"`
 }
 
+type SendUserMessageRequest struct {
+	DepartmentID      uint `json:"DepartmentID" validate:"required"`
+	AnswerID          uint `json:"AnswerID" validate:"required"`
+}
+
+type SendInterviewMessageRequest struct {
+	DepartmentID      uint `json:"DepartmentID" validate:"required"`
+	AnswerID          uint `json:"AnswerID" validate:"required"`
+	InterviewID       uint `json:"InterviewID" validate:"required"`
+}
+
 type MessageRequest struct {
 	DepartmentID      uint `json:"DepartmentID" validate:"required"`
 	AnswerID          uint `json:"AnswerID" validate:"required"`
-	MessageTemplateID uint `json:"MessageTemplateID" validate:"required"`
 	InterviewID       uint `json:"InterviewID"`
-}
-
-type MessageTemplate struct {
-	ID             uint   `gorm:"not null;autoIncrement;primaryKey"`
-	Title          string `gorm:"not null;size:255"`
-	IDInSMSService uint   `gorm:"not null"`
-	OrganizationID uint   `gorm:"not null"`
-}
-
-type MessageTemplateRequest struct {
-	SignID uint   `json:"SignID" validate:"required"`
-	Title  string `json:"Title" validate:"required"`
-	Text   string `json:"Text" validate:"required"`
-}
-
-type MessageTemplateAPI struct {
-	ID             uint
-	Title          string
-	Sign           string
-	Text           string
-	OrganizationID uint
-	Status         uint
-}
-
-type AllMessageTemplateAPI struct {
-	ID     uint
-	Title  string
-	Status uint
 }
 
 type MessageCostAPI struct {
@@ -48,40 +30,13 @@ type MessageCostAPI struct {
 	Balance float32
 }
 
-type AllMessageSignAPI struct {
-	ID   uint
-	Sign string
-}
-
 func CreateMessage(requestMessage *Message) error {
 	result := gormDb.Create(requestMessage)
 	return result.Error
 }
 
-func CreateMessageTemplate(requestMessageTemplate *MessageTemplate) error {
-	result := gormDb.Create(requestMessageTemplate)
-	return result.Error
-}
-
-func UpdateMessageTemplateById(requestMessageTemplate *MessageTemplate) error {
-	result := gormDb.Model(&MessageTemplate{ID: requestMessageTemplate.ID}).Updates(requestMessageTemplate)
-	if result.RowsAffected == 0 && result.Error == nil {
-		return ErrNoRowsAffected
-	}
-	return result.Error
-}
-
-func QueryMessageTemplateById(id uint) (*MessageTemplate, error) {
-	var dbMessageTemplate MessageTemplate
-	result := gormDb.First(&dbMessageTemplate, id)
-	return &dbMessageTemplate, result.Error
-}
-
-func QueryAllMessageTemplateInOrganization(oid uint) (*[]MessageTemplate, error) {
-	var dbMessageTemplate []MessageTemplate
-	if findOrganizationError := gormDb.First(&Organization{}, oid).Error; findOrganizationError != nil {
-		return nil, findOrganizationError
-	}
-	result := gormDb.Where(&MessageTemplate{OrganizationID: oid}).Find(&dbMessageTemplate)
-	return &dbMessageTemplate, result.Error
-}
+var MessageTemplate = []string{
+	"【求是潮纳新平台】亲爱的#name#，我们已经收到了您的报名表，请核对下列信息，重复提交可覆盖原表。学号：#stuid# 。部门志愿： #intent# 。我们将在之后通过短信通知您具体的初试信息，敬请留意。感谢您报名#event#，期待您的加入！",
+	"【求是潮纳新平台】#name#同学，我们已为你生成出了#depart##interview#的时间与地点，请点击以下链接进行选择与确认。（注意：在链接中我们不会要求你输入任何诸如密码等的敏感信息）感谢参与#event#。 #url#",
+	"【求是潮纳新平台】#name#同学您好，您刚刚提交的#depart##interview#已经确认。时间为#time#，地点为#location#。请提前10分钟到场准备。感谢报名#event#。",
+	"【求是潮纳新平台】#name#同学，我们很遗憾地通知你，你未能成功加入#association##depart#。感谢你的支持，欢迎继续关注#association#。"}

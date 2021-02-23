@@ -6,6 +6,7 @@ import (
 
 	"git.zjuqsc.com/rop/rop-back-neo/model"
 	"git.zjuqsc.com/rop/rop-back-neo/utils"
+	"github.com/jinzhu/copier"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 )
@@ -31,185 +32,148 @@ func getMessageCost(c echo.Context) error {
 	})
 }
 
-// @tags Message
-// @summary Send a message
-// @description send a message
-// @router /message [put]
-// @accept json
-// @param oid query uint true "Organization ID"
-// @param data body model.MessageRequest true "Message Information"
-// @success 200
-func addMessage(c echo.Context) error {
-	var messageRequest model.MessageRequest
-	if bindErr := c.Bind(&messageRequest); bindErr != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: bindErr.Error(),
-		})
-	}
-
-	if validateErr := c.Validate(&messageRequest); validateErr != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: validateErr.Error(),
-		})
-	}
-
-	department, departErr := model.QueryDepartmentById(messageRequest.DepartmentID)
-	if departErr != nil {
-		if errors.Is(departErr, gorm.ErrRecordNotFound) {
+func sendMessage(BindAndValidate func(c echo.Context) (*model.MessageRequest, uint, error)) func(c echo.Context) error {
+	return func(c echo.Context) error {
+		messageRequest, messageTemplateID, msgReqErr := BindAndValidate(c)
+		if msgReqErr != nil {
 			return c.JSON(http.StatusBadRequest, &utils.Error{
 				Code: "BAD_REQUEST",
-				Data: "department not found",
+				Data: msgReqErr.Error(),
 			})
 		}
-		return c.JSON(http.StatusInternalServerError, &utils.Error{
-			Code: "INTERNAL_SERVER_ERR",
-			Data: "send message fail",
-		})
-	}
-	if department.OrganizationID != c.Get("oid").(uint) {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "department and organization don't match",
-		})
-	}
 
-	sendErr := utils.SendMessage(messageRequest)
-	if sendErr != nil {
-		if errors.Is(sendErr, model.ErrInternalError) {
+		department, departErr := model.QueryDepartmentById(messageRequest.DepartmentID)
+		if departErr != nil {
+			if errors.Is(departErr, gorm.ErrRecordNotFound) {
+				return c.JSON(http.StatusBadRequest, &utils.Error{
+					Code: "BAD_REQUEST",
+					Data: "department not found",
+				})
+			}
 			return c.JSON(http.StatusInternalServerError, &utils.Error{
 				Code: "INTERNAL_SERVER_ERR",
 				Data: "send message fail",
 			})
 		}
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: sendErr.Error(),
+		if department.OrganizationID != c.Get("oid").(uint) {
+			return c.JSON(http.StatusBadRequest, &utils.Error{
+				Code: "BAD_REQUEST",
+				Data: "department and organization don't match",
+			})
+		}
+
+		sendErr := utils.SendMessage(messageRequest, messageTemplateID)
+		if sendErr != nil {
+			if errors.Is(sendErr, model.ErrInternalError) {
+				return c.JSON(http.StatusInternalServerError, &utils.Error{
+					Code: "INTERNAL_SERVER_ERR",
+					Data: "send message fail",
+				})
+			}
+			return c.JSON(http.StatusBadRequest, &utils.Error{
+				Code: "BAD_REQUEST",
+				Data: sendErr.Error(),
+			})
+		}
+		return c.JSON(http.StatusOK, &utils.Error{
+			Code: "SUCCESS",
+			Data: nil,
 		})
 	}
-	return c.JSON(http.StatusOK, &utils.Error{
-		Code: "SUCCESS",
-		Data: nil,
-	})
 }
 
-// @tags MessageTemplate
-// @summary Add a message template
-// @description Add a message template
-// @router /messageTemplate [put]
+// @tags Message
+// @summary send form confirm message
+// @description send form confirm message
+// @router /message/form [put]
 // @param oid query uint true "Organization ID"
-// @accept  json
-// @param data body model.MessageTemplateRequest true "Message Template information"
+// @param data body model.SendUserMessageRequest true "Message Information"
 // @success 200
-func addMessageTemplate(c echo.Context) error {
-	var messageTemplateRequest model.MessageTemplateRequest
-	if bindErr := c.Bind(&messageTemplateRequest); bindErr != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: bindErr.Error(),
-		})
-	}
+func sendFormConfirmMessage(c echo.Context) error {
+	return sendMessage(func(c echo.Context) (*model.MessageRequest, uint, error) {
+		var messageRequest model.SendUserMessageRequest
+		if bindErr := c.Bind(&messageRequest); bindErr != nil {
+			return nil, 0, bindErr
+		}
 
-	if validateErr := c.Validate(&messageTemplateRequest); validateErr != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: validateErr.Error(),
-		})
-	}
+		if validateErr := c.Validate(&messageRequest); validateErr != nil {
+			return nil, 0, validateErr
+		}
 
-	utils.AddMessageTemplate(c.Get("oid").(uint), &messageTemplateRequest)
-	// TODO(TO/GA): error handling
-
-	return c.JSON(http.StatusOK, &utils.Error{
-		Code: "SUCCESS",
-		Data: nil,
-	})
+		var req model.MessageRequest
+		copier.Copy(&req, &messageRequest)
+		return &req, 0, nil
+	})(c)
 }
 
-// @tags MessageTemplate
-// @summary Update a message template
-// @description Update a message template
-// @router /messageTemplate [post]
+// @tags Message
+// @summary send interview select message
+// @description send interview select message
+// @router /message/interview/select [put]
 // @param oid query uint true "Organization ID"
-// @param tid query uint true "Message Template ID"
-// @accept  json
-// @param data body model.MessageTemplateRequest true "Message Template information"
+// @param data body model.SendInterviewMessageRequest true "Message Information"
 // @success 200
-func setMessageTemplate(c echo.Context) error {
-	var messageTemplateRequest model.MessageTemplateRequest
-	if bindErr := c.Bind(&messageTemplateRequest); bindErr != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: bindErr.Error(),
-		})
-	}
+func sendInterviewSelectMessage(c echo.Context) error {
+	return sendMessage(func(c echo.Context) (*model.MessageRequest, uint, error) {
+		var messageRequest model.SendInterviewMessageRequest
+		if bindErr := c.Bind(&messageRequest); bindErr != nil {
+			return nil, 0, bindErr
+		}
 
-	if validateErr := c.Validate(&messageTemplateRequest); validateErr != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: validateErr.Error(),
-		})
-	}
+		if validateErr := c.Validate(&messageRequest); validateErr != nil {
+			return nil, 0, validateErr
+		}
 
-	utils.UpdateMessageTemplate(c.Get("tid").(uint), &messageTemplateRequest)
-	// TODO(TO/GA): error handling
-
-	return c.JSON(http.StatusOK, &utils.Error{
-		Code: "SUCCESS",
-		Data: nil,
-	})
+		var req model.MessageRequest
+		copier.Copy(&req, &messageRequest)
+		return &req, 1, nil
+	})(c)
 }
 
-// @tags MessageTemplate
-// @summary Get a message template
-// @description Get information of a specific message template
-// @router /messageTemplate [get]
+// @tags Message
+// @summary send interview confirm message
+// @description send interview confirm message
+// @router /message/interview/confirm [put]
 // @param oid query uint true "Organization ID"
-// @param tid query uint true "Message Template ID"
-// @produce json
-// @success 200 {object} model.MessageTemplateAPI
-func getMessageTemplate(c echo.Context) error {
-	messageTemplate, _ := utils.GetMessageTemplate(c.Get("&messageTemplate").(*model.MessageTemplate).IDInSMSService)
-	// TODO(TO/GA): error handling
+// @param data body model.SendInterviewMessageRequest true "Message Information"
+// @success 200
+func sendInterviewConfirmMessage(c echo.Context) error {
+	return sendMessage(func(c echo.Context) (*model.MessageRequest, uint, error) {
+		var messageRequest model.SendInterviewMessageRequest
+		if bindErr := c.Bind(&messageRequest); bindErr != nil {
+			return nil, 0, bindErr
+		}
 
-	return c.JSON(http.StatusOK, &utils.Error{
-		Code: "SUCCESS",
-		Data: &messageTemplate,
-	})
+		if validateErr := c.Validate(&messageRequest); validateErr != nil {
+			return nil, 0, validateErr
+		}
+
+		var req model.MessageRequest
+		copier.Copy(&req, &messageRequest)
+		return &req, 2, nil
+	})(c)
 }
 
-// @tags MessageTemplate
-// @summary Get all message templates
-// @description Get information of all message templates of a specific organization
-// @router /messageTemplate/all [get]
+// @tags Message
+// @summary send reject message
+// @description send reject message
+// @router /message/reject [put]
 // @param oid query uint true "Organization ID"
-// @produce json
-// @success 200 {object} []model.AllMessageTemplateAPI
-func getAllMessageTemplate(c echo.Context) error {
-	oid := c.Get("oid").(uint)
+// @param data body model.SendUserMessageRequest true "Message Information"
+// @success 200
+func sendRejectMessage(c echo.Context) error {
+	return sendMessage(func(c echo.Context) (*model.MessageRequest, uint, error) {
+		var messageRequest model.SendUserMessageRequest
+		if bindErr := c.Bind(&messageRequest); bindErr != nil {
+			return nil, 0, bindErr
+		}
 
-	messageTemplates, _ := utils.GetAllMessageTemplate(oid)
-	// TODO(TO/GA): error handling
+		if validateErr := c.Validate(&messageRequest); validateErr != nil {
+			return nil, 0, validateErr
+		}
 
-	return c.JSON(http.StatusOK, &utils.Error{
-		Code: "SUCCESS",
-		Data: &messageTemplates,
-	})
-}
-
-// @tags MessageTemplate
-// @summary Get all message signs
-// @description Get information of all message signs
-// @router /messageSign/all [get]
-// @produce json
-// @success 200 {object} []model.AllMessageSignAPI
-func getAllMessageSign(c echo.Context) error {
-	signs, _ := utils.GetAllMessageSign()
-	// TODO(TO/GA): error handling
-
-	return c.JSON(http.StatusOK, &utils.Error{
-		Code: "SUCCESS",
-		Data: &signs,
-	})
+		var req model.MessageRequest
+		copier.Copy(&req, &messageRequest)
+		return &req, 4, nil
+	})(c)
 }
