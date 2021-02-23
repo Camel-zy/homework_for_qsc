@@ -1,8 +1,9 @@
 package model
 
 import (
-	"gorm.io/gorm/clause"
 	"time"
+
+	"gorm.io/gorm/clause"
 
 	"github.com/jinzhu/copier"
 )
@@ -17,6 +18,7 @@ type Interview struct {
 	OtherInfo      string    `gorm:"size:200"`
 	Location       string    `gorm:"size:200"`
 	MaxInterviewee uint      `gorm:"default:6"`
+	CrossTag       uint      `gorm:"not null"`
 	StartTime      time.Time `gorm:"not null"`
 	EndTime        time.Time `gorm:"not null"`
 	UpdatedTime    time.Time `gorm:"autoUpdateTime"`
@@ -27,7 +29,8 @@ type InterviewRequest struct {
 	Description    string    `json:"Description"`
 	OtherInfo      string    `json:"OtherInfo"`
 	Location       string    `json:"Location"`
-	MaxInterviewee uint      `json:"MaxInterviewee"`                // default 6
+	MaxInterviewee uint      `json:"MaxInterviewee"` // default 6
+	CrossTag       uint      `json:"CrossTag"`
 	StartTime      time.Time `json:"StartTime" validate:"required"` // request string must be in RFC 3339 format
 	EndTime        time.Time `json:"EndTime" validate:"required"`   // request string must be in RFC 3339 format
 }
@@ -41,6 +44,7 @@ type InterviewResponse struct {
 	OtherInfo      string
 	Location       string
 	MaxInterviewee uint // default 6
+	CrossTag       uint
 	StartTime      time.Time
 	EndTime        time.Time
 }
@@ -53,11 +57,11 @@ type JoinedInterview struct {
 	UpdatedTime time.Time `gorm:"not null"`
 }
 
-// TODO(OE.Heart): change this model to fit the logic
 type CrossInterview struct {
 	ID             uint      `gorm:"not null;autoIncrement;primaryKey"`
 	OrganizationID uint      `gorm:"not null"`
 	InterviewID    uint      `gorm:"not null"`
+	DepartmentSeq  uint      `gorm:"not null"`
 	UpdatedTime    time.Time `gorm:"not null"`
 }
 
@@ -107,4 +111,13 @@ func QueryAllInterviewInEvent(eid uint) (*[]Brief, error) {
 func UpdateJoinedInterview(id uint, newResult uint) error {
 	result := gormDb.Model(&JoinedInterview{ID: id}).Update("result", newResult)
 	return result.Error
+}
+
+func CreateCrossInterview(crossInterview *CrossInterview, iid uint, dseq uint) (uint, error) {
+	dbCrossInterview := CrossInterview{}
+	copier.Copy(&dbCrossInterview, crossInterview)
+	dbCrossInterview.InterviewID = iid
+	dbCrossInterview.DepartmentSeq = dseq
+	result := gormDb.Create(&dbCrossInterview)
+	return dbCrossInterview.ID, result.Error
 }
