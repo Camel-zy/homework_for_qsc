@@ -7,6 +7,7 @@ import (
 	"gorm.io/datatypes"
 )
 
+// Don't forget to modify Form_ if you modify this
 type Form struct {
 	ID             uint           `gorm:"not null;autoIncrement;primaryKey"`
 	Name           string         `gorm:"size:40;not null"`
@@ -17,6 +18,7 @@ type Form struct {
 	Content        datatypes.JSON `gorm:"type:datatypes;not null"`
 }
 
+// Don't forget to modify FormApi_ if you modify this
 type FormApi struct {
 	ID             uint
 	Name           string         `json:"Name" validate:"required"`
@@ -27,6 +29,7 @@ type FormApi struct {
 	Content        datatypes.JSON `json:"Content" validate:"required"`
 }
 
+// Don't forget to modify Answer_ if you modify this
 type Answer struct {
 	ID        uint           `gorm:"not null;autoIncrement;primaryKey"`
 	FormID    uint           `gorm:"not null"`
@@ -39,6 +42,7 @@ type Answer struct {
 	Content   datatypes.JSON `gorm:"type:datatypes;not null"`
 }
 
+// Don't forget to modify AnswerRequest_ if you modify this
 type AnswerRequest struct {
 	Name      string         `json:"Name"`
 	ZJUid     string         `json:"ZJUid"`
@@ -47,6 +51,7 @@ type AnswerRequest struct {
 	Content   datatypes.JSON `json:"Content"`
 }
 
+// Don't forget to modify AnswerResponse_ if you modify this
 type AnswerResponse struct {
 	ID        uint
 	FormID    uint
