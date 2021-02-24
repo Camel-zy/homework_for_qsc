@@ -20,7 +20,8 @@ import (
 // @produce json
 func setAvatar(c echo.Context) error {
 	url, formData, err := model.CreateFile(c.Request().Context(),
-		`avatar/` + strconv.FormatUint(uint64(c.Get("uid").(uint)), 10))
+		`avatar/` + strconv.FormatUint(uint64(c.Get("uid").(uint)), 10),
+		nil)
 
 	formData["url"] = url.String()
 

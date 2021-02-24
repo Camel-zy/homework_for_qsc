@@ -27,8 +27,12 @@ func (image *Image) GetByUid() error {
 	return gormDb.Preload(clause.Associations).Where(&User{ID: image.UserID}).First(image).Error
 }
 
-func CreateFile(ctx context.Context, objectName string) (url *url.URL, formData map[string]string, err error) {
+func CreateFile(ctx context.Context, objectName string,
+	userMetadata map[string]string) (url *url.URL, formData map[string]string, err error) {
 	policy := minio.NewPostPolicy()
+	for k, v := range userMetadata {
+		_ = policy.SetUserMetadata(k, v)
+	}
 	_ = policy.SetBucket(bucketName)
 	_ = policy.SetKey(objectName)
 	_ = policy.SetExpires(time.Now().UTC().Add(time.Minute * 5))
