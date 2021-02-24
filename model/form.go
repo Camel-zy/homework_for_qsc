@@ -13,7 +13,6 @@ type Form struct {
 	Name           string         `gorm:"size:40;not null"`
 	CreateTime     time.Time      `gorm:"size:30;not null"`
 	OrganizationID uint           `gorm:"not null"`
-	DepartmentID   uint           `gorm:"not null"`
 	Status         uint           `gorm:"not null"` // 0 pinned, 1 used, 2 unused, 3 abandoned
 	Content        datatypes.JSON `gorm:"type:datatypes;not null"`
 }
@@ -24,7 +23,6 @@ type FormApi struct {
 	Name           string         `json:"Name" validate:"required"`
 	CreateTime     time.Time      `json:"CreateTime" validate:"required"` // request string must be in RFC 3339 format
 	OrganizationID uint           `json:"OrganizationID" validate:"required"`
-	DepartmentID   uint           `json:"DepartmentID" validate:"required"`
 	Status         uint           `json:"Status" validate:"required"`
 	Content        datatypes.JSON `json:"Content" validate:"required"`
 }
