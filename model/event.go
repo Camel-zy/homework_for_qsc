@@ -12,7 +12,7 @@ type Event struct {
 	Description    string       `gorm:"size:200"`
 	OrganizationID uint         `gorm:"not null"`
 	Organization   Organization // FOREIGN KEY (OrganizationID) REFERENCES Organization(OrganizationID)
-	Status         uint         `gorm:"default:0"` // 0 disabled, 1 testing, 2 running
+	Status         uint         `gorm:"default:0"` // 1 disabled, 2 testing, 3 running
 	OtherInfo      string       `gorm:"size:200"`
 	StartTime      time.Time    `gorm:"size:30;not null"`
 	EndTime        time.Time    `gorm:"size:30;not null"`
@@ -29,7 +29,7 @@ type JoinedEvent struct {
 type EventRequest struct {
 	Name        string    `json:"Name" validate:"required"`
 	Description string    `json:"Description"`
-	Status      uint      `json:"Status"` // 0 disabled (default), 1 testing, 2 running
+	Status      uint      `json:"Status"` // 1 disabled (default), 2 testing, 3 running
 	OtherInfo   string    `json:"OtherInfo"`
 	StartTime   time.Time `json:"StartTime" validate:"required"` // request string must be in RFC 3339 format
 	EndTime     time.Time `json:"EndTime" validate:"required"`   // request string must be in RFC 3339 format
@@ -40,7 +40,7 @@ type EventResponse struct {
 	Name           string
 	Description    string
 	OrganizationID uint
-	Status         uint // 0 disabled (default), 1 testing, 2 running
+	Status         uint // 1 disabled (default), 2 testing, 3 running
 	OtherInfo      string
 	StartTime      time.Time
 	EndTime        time.Time

@@ -13,7 +13,7 @@ type Form struct {
 	Name           string         `gorm:"size:40;not null"`
 	CreateTime     time.Time      `gorm:"size:30;not null"`
 	OrganizationID uint           `gorm:"not null"`
-	Status         uint           `gorm:"not null"` // 0 pinned, 1 used, 2 unused, 3 abandoned
+	Status         uint           `gorm:"not null"` // 1 pinned, 2 used, 3 unused, 4 abandoned
 	Content        datatypes.JSON `gorm:"type:datatypes;not null"`
 }
 
@@ -37,7 +37,7 @@ type Answer struct {
 	Intention            string         `gorm:"not null"`
 	EventID              uint           `gorm:"not null"`
 	AppliedDepartmentSeq uint           `gorm:"not null"` // one bit for every department
-	Status               uint           `gorm:"not null"` // 0 abandoned, 1 used
+	Status               uint           `gorm:"not null"` // 1 abandoned, 2 used
 	Content              datatypes.JSON `gorm:"type:datatypes;not null"`
 }
 
