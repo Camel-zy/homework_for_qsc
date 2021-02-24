@@ -30,7 +30,7 @@ func GenerateText(messageTemplateID uint, answer *model.Answer, departmentID uin
 		}
 
 		if strings.Contains(templateText, "#intent#") {
-			templateText = strings.ReplaceAll(templateText, "#intent#", answer.Intention) // TODO(TO/GA): decode it
+			// templateText = strings.ReplaceAll(templateText, "#intent#", answer.Intention) // TODO(TO/GA): decode it
 		}
 	}
 

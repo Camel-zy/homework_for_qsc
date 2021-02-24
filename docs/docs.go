@@ -25,53 +25,15 @@ var doc = `{
     "basePath": "{{.BasePath}}",
     "paths": {
         "/answer": {
-            "get": {
-                "description": "Get an answer",
-                "tags": [
-                    "Answer"
-                ],
-                "summary": "Get an answer",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Form ID",
-                        "name": "fid",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "ZJUID",
-                        "name": "zjuid",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Event ID",
-                        "name": "eid",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.AnswerResponse_"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "Update an answer",
+            "put": {
+                "description": "Create an answer",
                 "consumes": [
                     "application/json"
                 ],
                 "tags": [
                     "Answer"
                 ],
-                "summary": "Update an answer",
+                "summary": "Create an answer",
                 "parameters": [
                     {
                         "type": "integer",
@@ -81,8 +43,8 @@ var doc = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
-                        "description": "ZJUID",
+                        "type": "string",
+                        "description": "ZJU ID",
                         "name": "zjuid",
                         "in": "query",
                         "required": true
@@ -684,45 +646,15 @@ var doc = `{
                     "example": "JSON"
                 },
                 "intention": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Intention"
+                    }
                 },
                 "mobile": {
                     "type": "string"
                 },
                 "name": {
-                    "type": "string"
-                },
-                "zjuid": {
-                    "type": "string"
-                }
-            }
-        },
-        "model.AnswerResponse_": {
-            "type": "object",
-            "properties": {
-                "content": {
-                    "type": "string",
-                    "example": "JSON"
-                },
-                "eventID": {
-                    "type": "integer"
-                },
-                "formID": {
-                    "type": "integer"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "intention": {
-                    "type": "string"
-                },
-                "mobile": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "zjuid": {
                     "type": "string"
                 }
             }
@@ -872,6 +804,21 @@ var doc = `{
                     "type": "integer"
                 },
                 "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.Intention": {
+            "type": "object",
+            "required": [
+                "DepartmentID"
+            ],
+            "properties": {
+                "DepartmentID": {
+                    "type": "integer"
+                },
+                "IntentRank": {
+                    "description": "this feature hasn't been implemented",
                     "type": "integer"
                 }
             }

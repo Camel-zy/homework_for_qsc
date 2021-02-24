@@ -20,9 +20,9 @@ type Interview struct {
 	Location               string    `gorm:"size:200"`
 	MaxInterviewee         uint      `gorm:"default:6"`
 	Round                  uint      `gorm:"not null;default:1"` // 一面为1，二面为2，以此类推
-	DepartmentAuthoritySeq uint      `gorm:"not null"`           // two bit for every department, the first represent view, the second represent edit
-	CrossTag               bool      `gorm:"not null"`           // 1 represent CrossInterview
-	InvolvedDepartmentSeq  uint      `gorm:"not null"`           // one bit for every department
+	DepartmentAuthoritySeq uint      `gorm:"not null;default:0"` // two bit for every department, the first represent view, the second represent edit
+	CrossTag               uint      `gorm:"not null;default:1"` // 2 represent CrossInterview
+	InvolvedDepartmentSeq  uint      `gorm:"not null;default:0"` // one bit for every department
 	StartTime              time.Time `gorm:"not null"`
 	EndTime                time.Time `gorm:"not null"`
 	UpdatedTime            time.Time `gorm:"autoUpdateTime"`
@@ -31,15 +31,14 @@ type Interview struct {
 // 一个志愿一条记录
 type Interviewee struct {
 	ID                  uint           `gorm:"not null;autoIncrement;primaryKey"`
-	UserID              uint           `gorm:"not null"`
 	EventID             uint           `gorm:"not null"`
 	AnswerID            uint           `gorm:"not null"`
 	DepartmentID        uint           `gorm:"not null"`                // 志愿部门
-	IntentRank          uint           `gorm:"not null;default:1"`      // 第几志愿
+	IntentRank          uint           `gorm:"not null;default:0"`      // 第几志愿
 	Round               uint           `gorm:"not null;default:1"`      // 公海为1，一面为2，以此类推
 	SentMessage         uint           `gorm:"not null;default:1"`      // 发送过选择面试场次短信的为2，没有为1
-	SelectableInterview datatypes.JSON `gorm:"type:datatypes;not null"` // 发送选择面试场次的短信用
-	Status              uint           `gorm:"not null; default:2"`     // 1 面试进行中，2 本轮接受但还没选择下轮面试时间，3 纳入组织，4 拒绝
+	SelectableInterview datatypes.JSON `gorm:"type:datatypes"`          // 发送选择面试场次的短信用
+	Status              uint           `gorm:"not null; default:1"`     // 1 本轮接受但还没选择下轮面试时间，2 面试进行中，3 纳入组织，4 拒绝
 }
 
 type InterviewRequest struct {
@@ -129,4 +128,9 @@ func QueryAllJoinedInterviewOfInterview(iid uint) (*[]JoinedInterview, error) {
 	var dbJoinedInterview []JoinedInterview
 	result := gormDb.Model(&JoinedInterview{}).Where(&JoinedInterview{InterviewID: iid}).Find(&dbJoinedInterview)
 	return &dbJoinedInterview, result.Error
+}
+
+func CreateInterviewee(interviewee *Interviewee) (uint, error) {
+	result := gormDb.Create(interviewee)
+	return interviewee.ID, result.Error
 }

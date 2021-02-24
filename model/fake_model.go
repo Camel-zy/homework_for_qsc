@@ -30,11 +30,11 @@ type FormApi_ struct {
 type Answer_ struct {
 	ID        uint
 	FormID    uint
+	EventID   uint
 	Name      string
 	ZJUid     string
 	Mobile    string
-	Intention string
-	EventID   uint
+	Intention string `example:"JSON"`
 	Status    uint
 	Content   string `example:"JSON"`
 }
@@ -42,9 +42,8 @@ type Answer_ struct {
 // CAUTIOUS: do NOT use this
 type AnswerRequest_ struct {
 	Name      string
-	ZJUid     string
 	Mobile    string
-	Intention string
+	Intention []Intention
 	Content   string `example:"JSON"`
 }
 
@@ -52,10 +51,10 @@ type AnswerRequest_ struct {
 type AnswerResponse_ struct {
 	ID        uint
 	FormID    uint
+	EventID   uint
 	Name      string
 	ZJUid     string
 	Mobile    string
-	Intention string
-	EventID   uint
+	Intention string `example:"JSON"`
 	Content   string `example:"JSON"`
 }

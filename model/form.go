@@ -1,6 +1,7 @@
 package model
 
 import (
+	"encoding/json"
 	"time"
 
 	"github.com/jinzhu/copier"
@@ -14,7 +15,7 @@ type Form struct {
 	CreateTime     time.Time      `gorm:"size:30;not null"`
 	OrganizationID uint           `gorm:"not null"`
 	Status         uint           `gorm:"not null"` // 1 pinned, 2 used, 3 unused, 4 abandoned
-	Content        datatypes.JSON `gorm:"type:datatypes;not null"`
+	Content        datatypes.JSON `gorm:"not null"`
 }
 
 // Don't forget to modify FormApi_ if you modify this
@@ -29,36 +30,39 @@ type FormApi struct {
 
 // Don't forget to modify Answer_ if you modify this
 type Answer struct {
-	ID                   uint           `gorm:"not null;autoIncrement;primaryKey"`
-	FormID               uint           `gorm:"not null"`
-	Name                 string         `gorm:"not null"`
-	ZJUid                string         `gorm:"column:zju_id;size:10;not null"`
-	Mobile               string         `gorm:"size:11;not null"`
-	Intention            string         `gorm:"not null"`
-	EventID              uint           `gorm:"not null"`
-	AppliedDepartmentSeq uint           `gorm:"not null"` // one bit for every department
-	Status               uint           `gorm:"not null"` // 1 abandoned, 2 used
-	Content              datatypes.JSON `gorm:"type:datatypes;not null"`
+	ID        uint           `gorm:"not null;autoIncrement;primaryKey"`
+	FormID    uint           `gorm:"not null"`
+	EventID   uint           `gorm:"not null"`
+	Name      string         `gorm:"not null"`
+	ZJUid     string         `gorm:"column:zju_id;size:10;not null"`
+	Mobile    string         `gorm:"size:11;not null"`
+	Intention datatypes.JSON `gorm:"not null"`
+	Status    uint           `gorm:"not null;default:2"` // 1 abandoned, 2 used
+	Content   datatypes.JSON `gorm:"not null"`
 }
 
 // Don't forget to modify AnswerRequest_ if you modify this
 type AnswerRequest struct {
-	Name      string         `json:"Name"`
-	ZJUid     string         `json:"ZJUid"`
-	Mobile    string         `json:"Mobile"`
-	Intention string         `json:"Intention"`
-	Content   datatypes.JSON `json:"Content"`
+	Name      string         `json:"Name" validate:"required"`
+	Mobile    string         `json:"Mobile" validate:"required"`
+	Intention []Intention    `json:"Intention"`
+	Content   datatypes.JSON `json:"Content" validate:"required"`
+}
+
+type Intention struct {
+	DepartmentID uint `json:"DepartmentID" validate:"required"`
+	IntentRank   uint `json:"IntentRank"` // this feature hasn't been implemented
 }
 
 // Don't forget to modify AnswerResponse_ if you modify this
 type AnswerResponse struct {
 	ID        uint
 	FormID    uint
+	EventID   uint
 	Name      string
 	ZJUid     string `gorm:"column:zju_id"`
 	Mobile    string
-	Intention string
-	EventID   uint
+	Intention datatypes.JSON
 	Content   datatypes.JSON
 }
 
@@ -96,7 +100,7 @@ func QueryAnswerById(id uint) (*Answer, error) {
 
 func QueryAnswer(fid uint, zjuid string, eid uint) (*AnswerResponse, error) {
 	var dbAnswer AnswerResponse
-	result := gormDb.Model(&Answer{}).First(&dbAnswer, fid, zjuid, eid)
+	result := gormDb.Model(&Answer{FormID: fid, ZJUid: zjuid, EventID: eid}).First(&dbAnswer)
 	return &dbAnswer, result.Error
 }
 
@@ -106,7 +110,11 @@ func CreateAnswer(answerRequest *AnswerRequest, fid uint, zjuid string, eid uint
 	dbAnswer.FormID = fid
 	dbAnswer.ZJUid = zjuid
 	dbAnswer.EventID = eid
-	dbAnswer.Status = 1
+	dbIntention, err := json.Marshal(answerRequest.Intention)
+	if err != nil {
+		return 0, err
+	}
+	dbAnswer.Intention = dbIntention
 	result := gormDb.Create(&dbAnswer)
 	return dbAnswer.ID, result.Error
 }
