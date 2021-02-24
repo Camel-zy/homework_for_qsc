@@ -2,11 +2,12 @@ package controller
 
 import (
 	"errors"
+	"net/http"
+
 	"git.zjuqsc.com/rop/rop-back-neo/model"
 	"git.zjuqsc.com/rop/rop-back-neo/utils"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
-	"net/http"
 )
 
 // @tags Event
@@ -208,5 +209,83 @@ func getAllEventInOrganization(c echo.Context) error {
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
 		Data: &events,
+	})
+}
+
+// @tags Event
+// @summary Get round number of an event
+// @description Get the number of round of a specific event according to departmentID and eventID
+// @router /event [get]  //TODO(OE.Heart): set this correctly
+// @param did query uint true "Department ID"
+// @param eid query uint true "Event ID"
+// @produce json
+// @success 200 {array} uint
+func getRoundNumOfJoindEvent(c echo.Context) error {
+	var did, eid uint
+	err := echo.QueryParamsBinder(c).
+		MustUint("did", &did).
+		MustUint("eid", &eid).
+		BindError()
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "did and eid need to be an unsigned integer",
+		})
+	}
+
+	_, evtErr := model.QueryEventByID(eid)
+	if errors.Is(evtErr, gorm.ErrRecordNotFound) {
+		return c.JSON(http.StatusNotFound, &utils.Error{
+			Code: "NOT_FOUND",
+			Data: "event not found",
+		})
+	}
+
+	RoundNum, numErr := model.QueryRoundNumOfJoindEvent(did, eid)
+	if errors.Is(numErr, gorm.ErrRecordNotFound) {
+		return c.JSON(http.StatusNotFound, &utils.Error{
+			Code: "NOT_FOUND",
+			Data: "joined event not found"})
+	}
+
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: RoundNum,
+	})
+}
+
+// @tags Event
+// @summary Update round number of an event
+// @description Update the number of round according to  departmentID and eventID
+// @router /event [post]  //TODO(OE.Heart): set this correctly
+// @param did query uint true "Department ID"
+// @param eid query uint true "Event ID"
+// @param newRoundNum body uint true "New Round Number"
+// @produce json
+// @success 200
+func updateRoundNumOfJoinedEvent(c echo.Context) error {
+	var did, eid, newRoundNum uint
+	err := echo.QueryParamsBinder(c).
+		MustUint("did", &did).
+		MustUint("eid", &eid).
+		MustUint("newRoundNum", &newRoundNum).
+		BindError()
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "did, eid adn newRoundNum need to be an unsigned integer",
+		})
+	}
+
+	if err = model.UpdateRoundNumOfJoinedEvent(did, eid, newRoundNum); err != nil {
+		return c.JSON(http.StatusInternalServerError, &utils.Error{
+			Code: "INTERNAL_SERVER_ERR",
+			Data: "update round number fail",
+		})
+	}
+
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: "update round number success",
 	})
 }
