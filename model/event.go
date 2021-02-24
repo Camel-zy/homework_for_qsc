@@ -7,17 +7,23 @@ import (
 )
 
 type Event struct {
-	ID                    uint         `gorm:"not null;autoIncrement;primaryKey"`
-	Name                  string       `gorm:"size:40;not null"`
-	Description           string       `gorm:"size:200"`
-	OrganizationID        uint         `gorm:"not null"`
-	Organization          Organization // FOREIGN KEY (OrganizationID) REFERENCES Organization(OrganizationID)
-	Status                uint         `gorm:"default:0"` // 0 disabled, 1 testing, 2 running
-	OtherInfo             string       `gorm:"size:200"`
-	InvolvedDepartmentSeq uint         `gorm:"not null"` // one bit for every department
-	StartTime             time.Time    `gorm:"size:30;not null"`
-	EndTime               time.Time    `gorm:"size:30;not null"`
-	UpdatedTime           time.Time    `gorm:"autoUpdateTime"`
+	ID             uint         `gorm:"not null;autoIncrement;primaryKey"`
+	Name           string       `gorm:"size:40;not null"`
+	Description    string       `gorm:"size:200"`
+	OrganizationID uint         `gorm:"not null"`
+	Organization   Organization // FOREIGN KEY (OrganizationID) REFERENCES Organization(OrganizationID)
+	Status         uint         `gorm:"default:0"` // 0 disabled, 1 testing, 2 running
+	OtherInfo      string       `gorm:"size:200"`
+	StartTime      time.Time    `gorm:"size:30;not null"`
+	EndTime        time.Time    `gorm:"size:30;not null"`
+	UpdatedTime    time.Time    `gorm:"autoUpdateTime"`
+}
+
+type JoinedEvent struct {
+	ID           uint `gorm:"not null;autoIncrement;primaryKey"`
+	EventID      uint `gorm:"not null"`
+	DepartmentID uint `gorm:"not null"`
+	RoundNum     uint `gorm:"not null;default:1"` // 面试轮次
 }
 
 type EventRequest struct {
