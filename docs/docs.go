@@ -135,15 +135,22 @@ var doc = `{
         },
         "/event": {
             "get": {
-                "description": "Get information of an event",
+                "description": "Get the number of round of a specific event according to departmentID and eventID",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Event"
                 ],
-                "summary": "Get event",
+                "summary": "Get round number of an event",
                 "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Department ID",
+                        "name": "did",
+                        "in": "query",
+                        "required": true
+                    },
                     {
                         "type": "integer",
                         "description": "Event ID",
@@ -156,24 +163,31 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.EventResponse"
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
                         }
                     }
                 }
             },
             "post": {
-                "description": "Update an event",
-                "consumes": [
-                    "application/json"
-                ],
+                "description": "Update the number of round according to  departmentID and eventID",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Event"
                 ],
-                "summary": "Update event",
+                "summary": "Update round number of an event",
                 "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Department ID",
+                        "name": "did",
+                        "in": "query",
+                        "required": true
+                    },
                     {
                         "type": "integer",
                         "description": "Event ID",
@@ -182,14 +196,20 @@ var doc = `{
                         "required": true
                     },
                     {
-                        "description": "Event Information",
-                        "name": "data",
+                        "description": "New Round Number",
+                        "name": "newRoundNum",
                         "in": "body",
+                        "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.EventRequest"
+                            "type": "integer"
                         }
                     }
-                ]
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
             }
         },
         "/event/interview": {
@@ -433,175 +453,6 @@ var doc = `{
                         }
                     }
                 ]
-            }
-        },
-        "/message/cost": {
-            "get": {
-                "description": "get message cost and balance",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Message"
-                ],
-                "summary": "get message cost and balance",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Organization ID",
-                        "name": "oid",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.MessageCostAPI"
-                        }
-                    }
-                }
-            }
-        },
-        "/message/form": {
-            "put": {
-                "description": "send form confirm message",
-                "tags": [
-                    "Message"
-                ],
-                "summary": "send form confirm message",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Organization ID",
-                        "name": "oid",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "description": "Message Information",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.SendUserMessageRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "MessageText",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/message/interview/confirm": {
-            "put": {
-                "description": "send interview confirm message",
-                "tags": [
-                    "Message"
-                ],
-                "summary": "send interview confirm message",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Organization ID",
-                        "name": "oid",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "description": "Message Information",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.SendInterviewMessageRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "MessageText",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/message/interview/select": {
-            "put": {
-                "description": "send interview select message",
-                "tags": [
-                    "Message"
-                ],
-                "summary": "send interview select message",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Organization ID",
-                        "name": "oid",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "description": "Message Information",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.SendInterviewMessageRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "MessageText",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/message/reject": {
-            "put": {
-                "description": "send reject message",
-                "tags": [
-                    "Message"
-                ],
-                "summary": "send reject message",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Organization ID",
-                        "name": "oid",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "description": "Message Information",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.SendUserMessageRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "MessageText",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
             }
         },
         "/organization": {
@@ -936,7 +787,7 @@ var doc = `{
                     "type": "string"
                 },
                 "Status": {
-                    "description": "0 disabled (default), 1 testing, 2 running",
+                    "description": "1 disabled (default), 2 testing, 3 running",
                     "type": "integer"
                 }
             }
@@ -966,7 +817,7 @@ var doc = `{
                     "type": "string"
                 },
                 "status": {
-                    "description": "0 disabled (default), 1 testing, 2 running",
+                    "description": "1 disabled (default), 2 testing, 3 running",
                     "type": "integer"
                 }
             }
@@ -1103,17 +954,6 @@ var doc = `{
                 }
             }
         },
-        "model.MessageCostAPI": {
-            "type": "object",
-            "properties": {
-                "balance": {
-                    "type": "number"
-                },
-                "cost": {
-                    "type": "number"
-                }
-            }
-        },
         "model.OrganizationApi": {
             "type": "object",
             "properties": {
@@ -1128,40 +968,6 @@ var doc = `{
                 },
                 "name": {
                     "type": "string"
-                }
-            }
-        },
-        "model.SendInterviewMessageRequest": {
-            "type": "object",
-            "required": [
-                "AnswerID",
-                "DepartmentID",
-                "InterviewID"
-            ],
-            "properties": {
-                "AnswerID": {
-                    "type": "integer"
-                },
-                "DepartmentID": {
-                    "type": "integer"
-                },
-                "InterviewID": {
-                    "type": "integer"
-                }
-            }
-        },
-        "model.SendUserMessageRequest": {
-            "type": "object",
-            "required": [
-                "AnswerID",
-                "DepartmentID"
-            ],
-            "properties": {
-                "AnswerID": {
-                    "type": "integer"
-                },
-                "DepartmentID": {
-                    "type": "integer"
                 }
             }
         }

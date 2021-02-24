@@ -1,3 +1,4 @@
+// CAUTIOUS: is to be DELETED
 package controller
 
 import (
@@ -11,13 +12,13 @@ import (
 	"gorm.io/gorm"
 )
 
-// @tags Message
-// @summary get message cost and balance
-// @description get message cost and balance
-// @router /message/cost [get]
-// @param oid query uint true "Organization ID"
-// @produce json
-// @success 200 {object} model.MessageCostAPI
+// // @tags Message
+// // @summary get message cost and balance
+// // @description get message cost and balance
+// // @router /message/cost [get]
+// // @param oid query uint true "Organization ID"
+// // @produce json
+// // @success 200 {object} model.MessageCostAPI
 func getMessageCost(c echo.Context) error {
 	balance, _ := utils.GetMessageBalance()
 	// TODO(TO/GA): error handling
@@ -82,13 +83,13 @@ func sendMessage(BindAndValidate func(c echo.Context) (*model.MessageRequest, ui
 	}
 }
 
-// @tags Message
-// @summary send form confirm message
-// @description send form confirm message
-// @router /message/form [put]
-// @param oid query uint true "Organization ID"
-// @param data body model.SendUserMessageRequest true "Message Information"
-// @success 200 {string} MessageText "MessageText"
+// // @tags Message
+// // @summary send form confirm message
+// // @description send form confirm message
+// // @router /message/form [put]
+// // @param oid query uint true "Organization ID"
+// // @param data body model.SendUserMessageRequest true "Message Information"
+// // @success 200 {string} MessageText "MessageText"
 func sendFormConfirmMessage(c echo.Context) error {
 	return sendMessage(func(c echo.Context) (*model.MessageRequest, uint, error) {
 		var messageRequest model.SendUserMessageRequest
@@ -106,13 +107,13 @@ func sendFormConfirmMessage(c echo.Context) error {
 	})(c)
 }
 
-// @tags Message
-// @summary send interview select message
-// @description send interview select message
-// @router /message/interview/select [put]
-// @param oid query uint true "Organization ID"
-// @param data body model.SendInterviewMessageRequest true "Message Information"
-// @success 200 {string} MessageText "MessageText"
+// // @tags Message
+// // @summary send interview select message
+// // @description send interview select message
+// // @router /message/interview/select [put]
+// // @param oid query uint true "Organization ID"
+// // @param data body model.SendInterviewMessageRequest true "Message Information"
+// // @success 200 {string} MessageText "MessageText"
 func sendInterviewSelectMessage(c echo.Context) error {
 	return sendMessage(func(c echo.Context) (*model.MessageRequest, uint, error) {
 		var messageRequest model.SendInterviewMessageRequest
@@ -130,13 +131,13 @@ func sendInterviewSelectMessage(c echo.Context) error {
 	})(c)
 }
 
-// @tags Message
-// @summary send interview confirm message
-// @description send interview confirm message
-// @router /message/interview/confirm [put]
-// @param oid query uint true "Organization ID"
-// @param data body model.SendInterviewMessageRequest true "Message Information"
-// @success 200 {string} MessageText "MessageText"
+// // @tags Message
+// // @summary send interview confirm message
+// // @description send interview confirm message
+// // @router /message/interview/confirm [put]
+// // @param oid query uint true "Organization ID"
+// // @param data body model.SendInterviewMessageRequest true "Message Information"
+// // @success 200 {string} MessageText "MessageText"
 func sendInterviewConfirmMessage(c echo.Context) error {
 	return sendMessage(func(c echo.Context) (*model.MessageRequest, uint, error) {
 		var messageRequest model.SendInterviewMessageRequest
@@ -154,13 +155,13 @@ func sendInterviewConfirmMessage(c echo.Context) error {
 	})(c)
 }
 
-// @tags Message
-// @summary send reject message
-// @description send reject message
-// @router /message/reject [put]
-// @param oid query uint true "Organization ID"
-// @param data body model.SendUserMessageRequest true "Message Information"
-// @success 200 {string} MessageText "MessageText"
+// // @tags Message
+// // @summary send reject message
+// // @description send reject message
+// // @router /message/reject [put]
+// // @param oid query uint true "Organization ID"
+// // @param data body model.SendUserMessageRequest true "Message Information"
+// // @success 200 {string} MessageText "MessageText"
 func sendRejectMessage(c echo.Context) error {
 	return sendMessage(func(c echo.Context) (*model.MessageRequest, uint, error) {
 		var messageRequest model.SendUserMessageRequest

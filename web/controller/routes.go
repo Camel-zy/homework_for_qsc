@@ -59,12 +59,13 @@ func addRoutes(e *echo.Echo) {
 	answer.GET("", getAnswer)
 	answer.POST("", updateAnswer)
 
-	message := api.Group("/message", middleware.GetOrganizationIdFromParam, middleware.AuthOrganization)
-	message.GET("/cost", getMessageCost)
-	message.PUT("/form", sendFormConfirmMessage)
-	message.PUT("/interview/select", sendInterviewSelectMessage)
-	message.PUT("/interview/confirm", sendInterviewConfirmMessage)
-	message.PUT("/reject", sendRejectMessage)
+	// TODO(TO/GA): Delete it
+	// message := api.Group("/message", middleware.GetOrganizationIdFromParam, middleware.AuthOrganization)
+	// message.GET("/cost", getMessageCost)
+	// message.PUT("/form", sendFormConfirmMessage)
+	// message.PUT("/interview/select", sendInterviewSelectMessage)
+	// message.PUT("/interview/confirm", sendInterviewConfirmMessage)
+	// message.PUT("/reject", sendRejectMessage)
 
 	avatar := api.Group("/avatar", middleware.CheckMinioStatus)
 	avatar.POST("", setAvatar)
