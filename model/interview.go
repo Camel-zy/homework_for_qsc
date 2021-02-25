@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"gorm.io/datatypes"
+	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 
 	"github.com/jinzhu/copier"
@@ -19,7 +20,7 @@ type Interview struct {
 	OtherInfo          string `gorm:"size:200"`
 	Location           string `gorm:"size:200"`
 	MaxInterviewee     uint   `gorm:"default:6"`
-	Round              uint   `gorm:"not null;default:1"` // 一面为1，二面为2，以此类推
+	Round              uint   `gorm:"not null;default:1"` // 一面为2，二面为3，以此类推
 	CrossTag           uint   `gorm:"not null;default:1"` // 2 represent CrossInterview, default 1
 	InvolvedDepartment datatypes.JSON
 	StartTime          time.Time `gorm:"not null"`
@@ -33,7 +34,7 @@ type InterviewRequest struct {
 	OtherInfo      string    `json:"OtherInfo"`
 	Location       string    `json:"Location"`
 	MaxInterviewee uint      `json:"MaxInterviewee"`                // default 6
-	Round          uint      `json:"Round"`                         // 一面为1，二面为2，以此类推
+	Round          uint      `json:"Round"`                         // 一面为2，二面为3，以此类推
 	StartTime      time.Time `json:"StartTime" validate:"required"` // request string must be in RFC 3339 format
 	EndTime        time.Time `json:"EndTime" validate:"required"`   // request string must be in RFC 3339 format
 }
@@ -47,7 +48,7 @@ type InterviewResponse struct {
 	OtherInfo      string
 	Location       string
 	MaxInterviewee uint // default 6
-	Round          uint // 一面为1，二面为2，以此类推
+	Round          uint // 一面为2，二面为3，以此类推
 	StartTime      time.Time
 	EndTime        time.Time
 }
@@ -103,4 +104,15 @@ func QueryAllInterviewOfRound(eid uint, did uint, rnd uint) (*[]Brief, error) {
 	}
 	result := gormDb.Model(&Interview{}).Where(&Interview{EventID: eid, DepartmentID: did, Round: rnd}).Find(&dbInterview)
 	return &dbInterview, result.Error
+}
+
+func QueryInterviewByIntervieweeAndRound(vid uint, rnd uint) (*Interview, error) {
+	var dbInterview Interview
+	if gormDb.Joins(`INNER JOIN joined_interviews
+	ON interviews.id = joined_interviews.interview_id
+	AND joined_interviews.interviewee_id = ?
+	AND interviews.round = ?`, vid, rnd).Find(&dbInterview).RowsAffected == 0 {
+		return nil, gorm.ErrRecordNotFound
+	}
+	return &dbInterview, nil
 }

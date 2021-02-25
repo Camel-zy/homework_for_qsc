@@ -2,15 +2,12 @@
 package controller
 
 import (
-	"errors"
 	"net/http"
 
 	"git.zjuqsc.com/rop/rop-back-neo/model"
 	"git.zjuqsc.com/rop/rop-back-neo/utils"
-	"github.com/jinzhu/copier"
 	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
-	"gorm.io/gorm"
 )
 
 // @tags Message
@@ -40,55 +37,55 @@ func getMessageCost(c echo.Context) error {
 	})
 }
 
-func sendMessage(BindAndValidate func(c echo.Context) (*model.MessageRequest, uint, error)) func(c echo.Context) error {
-	return func(c echo.Context) error {
-		messageRequest, messageTemplateID, msgReqErr := BindAndValidate(c)
-		if msgReqErr != nil {
-			return c.JSON(http.StatusBadRequest, &utils.Error{
-				Code: "BAD_REQUEST",
-				Data: msgReqErr.Error(),
-			})
-		}
+// func sendMessage(BindAndValidate func(c echo.Context) (*model.MessageRequest, uint, error)) func(c echo.Context) error {
+// 	return func(c echo.Context) error {
+// 		messageRequest, messageTemplateID, msgReqErr := BindAndValidate(c)
+// 		if msgReqErr != nil {
+// 			return c.JSON(http.StatusBadRequest, &utils.Error{
+// 				Code: "BAD_REQUEST",
+// 				Data: msgReqErr.Error(),
+// 			})
+// 		}
 
-		department, departErr := model.QueryDepartmentById(messageRequest.DepartmentID)
-		if departErr != nil {
-			if errors.Is(departErr, gorm.ErrRecordNotFound) {
-				return c.JSON(http.StatusBadRequest, &utils.Error{
-					Code: "BAD_REQUEST",
-					Data: "department not found",
-				})
-			}
-			return c.JSON(http.StatusInternalServerError, &utils.Error{
-				Code: "INTERNAL_SERVER_ERR",
-				Data: "send message fail",
-			})
-		}
-		if department.OrganizationID != c.Get("oid").(uint) {
-			return c.JSON(http.StatusBadRequest, &utils.Error{
-				Code: "BAD_REQUEST",
-				Data: "department and organization don't match",
-			})
-		}
+// 		department, departErr := model.QueryDepartmentById(messageRequest.DepartmentID)
+// 		if departErr != nil {
+// 			if errors.Is(departErr, gorm.ErrRecordNotFound) {
+// 				return c.JSON(http.StatusBadRequest, &utils.Error{
+// 					Code: "BAD_REQUEST",
+// 					Data: "department not found",
+// 				})
+// 			}
+// 			return c.JSON(http.StatusInternalServerError, &utils.Error{
+// 				Code: "INTERNAL_SERVER_ERR",
+// 				Data: "send message fail",
+// 			})
+// 		}
+// 		if department.OrganizationID != c.Get("oid").(uint) {
+// 			return c.JSON(http.StatusBadRequest, &utils.Error{
+// 				Code: "BAD_REQUEST",
+// 				Data: "department and organization don't match",
+// 			})
+// 		}
 
-		text, sendErr := utils.SendMessage(messageRequest, messageTemplateID)
-		if sendErr != nil {
-			if errors.Is(sendErr, model.ErrInternalError) {
-				return c.JSON(http.StatusInternalServerError, &utils.Error{
-					Code: "INTERNAL_SERVER_ERR",
-					Data: "send message fail",
-				})
-			}
-			return c.JSON(http.StatusBadRequest, &utils.Error{
-				Code: "BAD_REQUEST",
-				Data: sendErr.Error(),
-			})
-		}
-		return c.JSON(http.StatusOK, &utils.Error{
-			Code: "SUCCESS",
-			Data: text,
-		})
-	}
-}
+// 		text, sendErr := utils.SendMessage(messageRequest, messageTemplateID)
+// 		if sendErr != nil {
+// 			if errors.Is(sendErr, model.ErrInternalError) {
+// 				return c.JSON(http.StatusInternalServerError, &utils.Error{
+// 					Code: "INTERNAL_SERVER_ERR",
+// 					Data: "send message fail",
+// 				})
+// 			}
+// 			return c.JSON(http.StatusBadRequest, &utils.Error{
+// 				Code: "BAD_REQUEST",
+// 				Data: sendErr.Error(),
+// 			})
+// 		}
+// 		return c.JSON(http.StatusOK, &utils.Error{
+// 			Code: "SUCCESS",
+// 			Data: text,
+// 		})
+// 	}
+// }
 
 // // @tags Message
 // // @summary send form confirm message
@@ -97,22 +94,22 @@ func sendMessage(BindAndValidate func(c echo.Context) (*model.MessageRequest, ui
 // // @param oid query uint true "Organization ID"
 // // @param data body model.SendUserMessageRequest true "Message Information"
 // // @success 200 {string} MessageText "MessageText"
-func sendFormConfirmMessage(c echo.Context) error {
-	return sendMessage(func(c echo.Context) (*model.MessageRequest, uint, error) {
-		var messageRequest model.SendUserMessageRequest
-		if bindErr := c.Bind(&messageRequest); bindErr != nil {
-			return nil, 0, bindErr
-		}
+// func sendFormConfirmMessage(c echo.Context) error {
+// 	return sendMessage(func(c echo.Context) (*model.MessageRequest, uint, error) {
+// 		var messageRequest model.SendUserMessageRequest
+// 		if bindErr := c.Bind(&messageRequest); bindErr != nil {
+// 			return nil, 0, bindErr
+// 		}
 
-		if validateErr := c.Validate(&messageRequest); validateErr != nil {
-			return nil, 0, validateErr
-		}
+// 		if validateErr := c.Validate(&messageRequest); validateErr != nil {
+// 			return nil, 0, validateErr
+// 		}
 
-		var req model.MessageRequest
-		copier.Copy(&req, &messageRequest)
-		return &req, 0, nil
-	})(c)
-}
+// 		var req model.MessageRequest
+// 		copier.Copy(&req, &messageRequest)
+// 		return &req, 0, nil
+// 	})(c)
+// }
 
 // // @tags Message
 // // @summary send interview select message
@@ -121,22 +118,22 @@ func sendFormConfirmMessage(c echo.Context) error {
 // // @param oid query uint true "Organization ID"
 // // @param data body model.SendInterviewMessageRequest true "Message Information"
 // // @success 200 {string} MessageText "MessageText"
-func sendInterviewSelectMessage(c echo.Context) error {
-	return sendMessage(func(c echo.Context) (*model.MessageRequest, uint, error) {
-		var messageRequest model.SendInterviewMessageRequest
-		if bindErr := c.Bind(&messageRequest); bindErr != nil {
-			return nil, 0, bindErr
-		}
+// func sendInterviewSelectMessage(c echo.Context) error {
+// 	return sendMessage(func(c echo.Context) (*model.MessageRequest, uint, error) {
+// 		var messageRequest model.SendInterviewMessageRequest
+// 		if bindErr := c.Bind(&messageRequest); bindErr != nil {
+// 			return nil, 0, bindErr
+// 		}
 
-		if validateErr := c.Validate(&messageRequest); validateErr != nil {
-			return nil, 0, validateErr
-		}
+// 		if validateErr := c.Validate(&messageRequest); validateErr != nil {
+// 			return nil, 0, validateErr
+// 		}
 
-		var req model.MessageRequest
-		copier.Copy(&req, &messageRequest)
-		return &req, 1, nil
-	})(c)
-}
+// 		var req model.MessageRequest
+// 		copier.Copy(&req, &messageRequest)
+// 		return &req, 1, nil
+// 	})(c)
+// }
 
 // // @tags Message
 // // @summary send interview confirm message
@@ -145,22 +142,22 @@ func sendInterviewSelectMessage(c echo.Context) error {
 // // @param oid query uint true "Organization ID"
 // // @param data body model.SendInterviewMessageRequest true "Message Information"
 // // @success 200 {string} MessageText "MessageText"
-func sendInterviewConfirmMessage(c echo.Context) error {
-	return sendMessage(func(c echo.Context) (*model.MessageRequest, uint, error) {
-		var messageRequest model.SendInterviewMessageRequest
-		if bindErr := c.Bind(&messageRequest); bindErr != nil {
-			return nil, 0, bindErr
-		}
+// func sendInterviewConfirmMessage(c echo.Context) error {
+// 	return sendMessage(func(c echo.Context) (*model.MessageRequest, uint, error) {
+// 		var messageRequest model.SendInterviewMessageRequest
+// 		if bindErr := c.Bind(&messageRequest); bindErr != nil {
+// 			return nil, 0, bindErr
+// 		}
 
-		if validateErr := c.Validate(&messageRequest); validateErr != nil {
-			return nil, 0, validateErr
-		}
+// 		if validateErr := c.Validate(&messageRequest); validateErr != nil {
+// 			return nil, 0, validateErr
+// 		}
 
-		var req model.MessageRequest
-		copier.Copy(&req, &messageRequest)
-		return &req, 2, nil
-	})(c)
-}
+// 		var req model.MessageRequest
+// 		copier.Copy(&req, &messageRequest)
+// 		return &req, 2, nil
+// 	})(c)
+// }
 
 // // @tags Message
 // // @summary send reject message
@@ -169,19 +166,19 @@ func sendInterviewConfirmMessage(c echo.Context) error {
 // // @param oid query uint true "Organization ID"
 // // @param data body model.SendUserMessageRequest true "Message Information"
 // // @success 200 {string} MessageText "MessageText"
-func sendRejectMessage(c echo.Context) error {
-	return sendMessage(func(c echo.Context) (*model.MessageRequest, uint, error) {
-		var messageRequest model.SendUserMessageRequest
-		if bindErr := c.Bind(&messageRequest); bindErr != nil {
-			return nil, 0, bindErr
-		}
+// func sendRejectMessage(c echo.Context) error {
+// 	return sendMessage(func(c echo.Context) (*model.MessageRequest, uint, error) {
+// 		var messageRequest model.SendUserMessageRequest
+// 		if bindErr := c.Bind(&messageRequest); bindErr != nil {
+// 			return nil, 0, bindErr
+// 		}
 
-		if validateErr := c.Validate(&messageRequest); validateErr != nil {
-			return nil, 0, validateErr
-		}
+// 		if validateErr := c.Validate(&messageRequest); validateErr != nil {
+// 			return nil, 0, validateErr
+// 		}
 
-		var req model.MessageRequest
-		copier.Copy(&req, &messageRequest)
-		return &req, 3, nil
-	})(c)
-}
+// 		var req model.MessageRequest
+// 		copier.Copy(&req, &messageRequest)
+// 		return &req, 3, nil
+// 	})(c)
+// }

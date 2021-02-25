@@ -2,6 +2,7 @@ package utils
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 
 	"git.zjuqsc.com/rop/rop-back-neo/model"
@@ -19,7 +20,9 @@ func GetMessageBalance() (float32, error) {
 	return reply.Balance, nil
 }
 
-func GenerateText(messageTemplateID uint, answer *model.Answer, departmentID uint, interviewID uint) (*string, error) {
+var roundName = []string{"0", "公海", "一面", "二面", "三面", "四面", "五面", "六面", "七面", "八面", "九面"}
+
+func GenerateText(messageTemplateID uint, interviewee *model.Interviewee, answer *model.Answer) (*string, error) {
 	templateText := model.MessageTemplate[messageTemplateID]
 
 	// answer
@@ -50,7 +53,7 @@ func GenerateText(messageTemplateID uint, answer *model.Answer, departmentID uin
 
 	// DepartmentID
 	{
-		department, departErr := model.QueryDepartmentById(departmentID)
+		department, departErr := model.QueryDepartmentById(interviewee.DepartmentID)
 		if strings.Contains(templateText, "#depart#") {
 			if departErr != nil {
 				return nil, departErr
@@ -73,13 +76,14 @@ func GenerateText(messageTemplateID uint, answer *model.Answer, departmentID uin
 
 	// InterviewID
 	if messageTemplateID == 1 || messageTemplateID == 2 {
-		interview, itvErr := model.QueryInterviewByID(interviewID)
+		// interview, itvErr := model.QueryInterviewByID(interviewee.)
+		interview, itvErr := model.QueryInterviewByIntervieweeAndRound(interviewee.ID, interviewee.Round)
 
 		if strings.Contains(templateText, "#interview#") {
 			if itvErr != nil {
 				return nil, itvErr
 			}
-			templateText = strings.ReplaceAll(templateText, "#interview#", interview.Name)
+			templateText = strings.ReplaceAll(templateText, "#interview#", roundName[interview.Round])
 		}
 
 		if strings.Contains(templateText, "#time#") {
@@ -107,9 +111,16 @@ func GenerateText(messageTemplateID uint, answer *model.Answer, departmentID uin
 	return &templateText, nil
 }
 
-func SendMessage(messageRequest *model.MessageRequest, messageTemplateID uint) (*string, error) {
+func SendMessage(vid uint, messageTemplateID uint) (*string, error) {
 	// fetch info
-	answer, ansErr := model.QueryAnswerById(messageRequest.AnswerID)
+	interviewee, intervieweeErr := model.QueryIntervieweeById(vid)
+	if intervieweeErr != nil {
+		if errors.Is(intervieweeErr, gorm.ErrRecordNotFound) {
+			return nil, errors.New("interviewee not found")
+		}
+		return nil, model.ErrInternalError
+	}
+	answer, ansErr := model.QueryAnswerById(interviewee.AnswerID)
 	if ansErr != nil {
 		if errors.Is(ansErr, gorm.ErrRecordNotFound) {
 			return nil, errors.New("answer not found")
@@ -122,15 +133,17 @@ func SendMessage(messageRequest *model.MessageRequest, messageTemplateID uint) (
 	}
 
 	// generate map
-	text, textErr := GenerateText(messageTemplateID, answer, messageRequest.DepartmentID, messageRequest.InterviewID)
+	text, textErr := GenerateText(messageTemplateID, interviewee, answer)
 	if textErr != nil {
 		if errors.Is(ansErr, gorm.ErrRecordNotFound) {
 			return nil, errors.New("fill placeholders fail due to the lack of information")
 		}
+		logrus.Errorf("GenerateText failed(vid=%v, mid=%v):%v", vid, messageTemplateID, textErr)
 		return nil, model.ErrInternalError
 	}
 
-	// TODO(TO/GA): error handling
+	fmt.Printf("send to %v\n%v\n", answer.Mobile, *text) // TODO(TO/GA): delete it
+
 	reply, replyErr := rpc.Sms.SendMsgByText(&SMSService.MsgReq{
 		Mobile: answer.Mobile,
 		Text:   *text,
@@ -142,7 +155,7 @@ func SendMessage(messageRequest *model.MessageRequest, messageTemplateID uint) (
 	// update db
 	message := &model.Message{
 		IDInSMSService: uint(reply.ID),
-		DepartmentID:   messageRequest.DepartmentID,
+		DepartmentID:   interviewee.DepartmentID,
 		ReceiverID:     receiver.ID,
 		Cost:           reply.Fee,
 	}
@@ -153,7 +166,7 @@ func SendMessage(messageRequest *model.MessageRequest, messageTemplateID uint) (
 	}
 
 	// update cost
-	department, departErr := model.QueryDepartmentById(messageRequest.DepartmentID)
+	department, departErr := model.QueryDepartmentById(interviewee.DepartmentID)
 	if departErr != nil {
 		logrus.Errorf("fail to update department's message(ID=%v) cost\n", message.ID)
 	}

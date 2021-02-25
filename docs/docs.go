@@ -529,6 +529,50 @@ var doc = `{
                 ]
             }
         },
+        "/interviewee/admit": {
+            "post": {
+                "tags": [
+                    "Interviewee"
+                ],
+                "summary": "Admit an interviewee",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Interviewee ID",
+                        "name": "vid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/interviewee/next": {
+            "post": {
+                "tags": [
+                    "Interviewee"
+                ],
+                "summary": "Send an interviewee to next round",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Interviewee ID",
+                        "name": "vid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/interviewee/options": {
             "post": {
                 "description": "The frontend is required to send multiple iid in a JSON array,\nwhich are the optional interviews for an interviewee to choose from",
@@ -557,6 +601,28 @@ var doc = `{
                         }
                     }
                 ]
+            }
+        },
+        "/interviewee/reject": {
+            "post": {
+                "tags": [
+                    "Interviewee"
+                ],
+                "summary": "Reject an interviewee",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Interviewee ID",
+                        "name": "vid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
             }
         },
         "/message/cost": {
@@ -1023,7 +1089,7 @@ var doc = `{
                     "type": "string"
                 },
                 "Round": {
-                    "description": "一面为1，二面为2，以此类推",
+                    "description": "一面为2，二面为3，以此类推",
                     "type": "integer"
                 },
                 "StartTime": {
@@ -1064,7 +1130,7 @@ var doc = `{
                     "type": "string"
                 },
                 "round": {
-                    "description": "一面为1，二面为2，以此类推",
+                    "description": "一面为2，二面为3，以此类推",
                     "type": "integer"
                 },
                 "startTime": {

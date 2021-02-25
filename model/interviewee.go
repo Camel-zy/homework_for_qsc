@@ -1,10 +1,11 @@
 package model
 
 import (
-	"github.com/satori/go.uuid"
+	"time"
+
+	uuid "github.com/satori/go.uuid"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
-	"time"
 )
 
 // 一个志愿一条记录
@@ -29,7 +30,6 @@ type JoinedInterview struct {
 	ID            uint      `gorm:"not null;autoIncrement;primaryKey"`
 	InterviewID   uint      `gorm:"not null"`
 	IntervieweeID uint      `gorm:"not null"`
-	Result        uint      `gorm:"default:0"`
 	UpdatedTime   time.Time `gorm:"not null"`
 }
 
@@ -47,6 +47,12 @@ func CreateInterviewee(interviewee *Interviewee) (uint, error) {
 func UpdateInterviewee(interviewee *Interviewee, vid uint) error {
 	result := gormDb.Model(&Interviewee{ID: vid}).Updates(interviewee)
 	return result.Error
+}
+
+func QueryIntervieweeById(id uint) (*Interviewee, error) {
+	var dbInterviewee Interviewee
+	result := gormDb.First(&dbInterviewee, id)
+	return &dbInterviewee, result.Error
 }
 
 func UpdateJoinedInterview(id uint, newResult uint) error {
