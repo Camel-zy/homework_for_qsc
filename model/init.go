@@ -48,14 +48,13 @@ func CreateTables() {
 		&Department{},
 		&JoinedDepartment{},
 		&Event{},
-		&JoinedEvent{},
 		&Interview{},
 		&Form{},
 		&Answer{},
 		&Interviewee{},
 		&JoinedInterview{},
 		&Message{},
-		&Image{})
+		&PermanentObject{})
 	if err != nil {
 		logrus.Fatal(err)
 	}
