@@ -23,8 +23,8 @@ before_script:
 sonarqube-check:
   stage: scan
   only:
-    - "merge_requests" # keyword, for pipelines created when a merge request is created or updated
-    - master
+    # - "merge_requests" # keyword, for pipelines created when a merge request is created or updated
+    # - master
   image:
     name: harbor.zjuqsc.com/accelerated/sonar_scanner_cli:go1.15
     entrypoint: [""]
