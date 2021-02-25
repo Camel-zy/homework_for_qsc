@@ -50,7 +50,7 @@ func updateIntervieweeOptions(c echo.Context) error {
 		})
 	}
 
-	err = model.UpdateInterviewee(&model.Interviewee{InterviewOptions: intOptMarshalled, SentMessage: 2}, vid)
+	err = model.UpdateInterviewee(&model.Interviewee{InterviewOptions: intOptMarshalled, Status: 3}, vid)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "INTERNAL_SERVER_ERR",
@@ -106,7 +106,7 @@ func modifyIntervieweeTemplate(newStatus uint) func(echo.Context) error {
 // @param vid query uint true "Interviewee ID"
 // @success 200
 func admitInterviewee(c echo.Context) error {
-	return modifyIntervieweeTemplate(3)(c);
+	return modifyIntervieweeTemplate(4)(c);
 }
 
 // @tags Interviewee
@@ -115,7 +115,7 @@ func admitInterviewee(c echo.Context) error {
 // @param vid query uint true "Interviewee ID"
 // @success 200
 func nextInterviewee(c echo.Context) error {
-	return modifyIntervieweeTemplate(1)(c);
+	return modifyIntervieweeTemplate(2)(c);
 }
 
 // @tags Interviewee
@@ -124,5 +124,5 @@ func nextInterviewee(c echo.Context) error {
 // @param vid query uint true "Interviewee ID"
 // @success 200
 func rejectInterviewee(c echo.Context) error {
-	return modifyIntervieweeTemplate(4)(c);
+	return modifyIntervieweeTemplate(5)(c);
 }

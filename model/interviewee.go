@@ -17,9 +17,8 @@ type Interviewee struct {
 	DepartmentID     uint           `gorm:"not null"`           // 志愿部门
 	IntentRank       uint           `gorm:"not null;default:0"` // 第几志愿
 	Round            uint           `gorm:"not null;default:1"` // 公海为1，一面为2，以此类推
-	SentMessage      uint           `gorm:"not null;default:1"` // 发送过选择面试场次短信的为2，没有为1
 	InterviewOptions datatypes.JSON // 发送选择面试场次的短信用
-	Status           uint           `gorm:"not null; default:1"` // 1 本轮接受但还没选择下轮面试时间，2 面试进行中，3 纳入组织，4 拒绝
+	Status           uint           `gorm:"not null; default:2"` // 1 已确认本轮面试时间/正在面试，2 本轮通过，3 已发送下轮分配短信，4 纳入组织，5 拒绝
 }
 
 type IntervieweeRequest struct {
