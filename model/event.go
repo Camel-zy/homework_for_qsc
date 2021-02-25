@@ -12,7 +12,7 @@ type Event struct {
 	Description    string       `gorm:"size:200"`
 	OrganizationID uint         `gorm:"not null"`
 	Organization   Organization // FOREIGN KEY (OrganizationID) REFERENCES Organization(OrganizationID)
-	Status         uint         `gorm:"default:0"` // 1 disabled, 2 testing, 3 running
+	Status         uint         `gorm:"default:1"` // 1 disabled, 2 testing, 3 running
 	OtherInfo      string       `gorm:"size:200"`
 	StartTime      time.Time    `gorm:"size:30;not null"`
 	EndTime        time.Time    `gorm:"size:30;not null"`

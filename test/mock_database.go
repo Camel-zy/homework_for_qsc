@@ -35,21 +35,18 @@ func CreateDatabaseRows() {
 			ID: uint(1),
 			Name: "Tech",
 			OrganizationID: uint(1),
-			SerialNumInOrg: uint(1),
 			Description: "Geeks! Have fun!",
 		},
 		&model.Department{
 			ID: uint(2),
 			Name: "Design",
 			OrganizationID: uint(1),
-			SerialNumInOrg: uint(2),
 			Description: "Wow that's beautiful!",
 		},
 		&model.Department{
 			ID: uint(3),
 			Name: "StudentManagement",
 			OrganizationID: uint(2),
-			SerialNumInOrg: uint(1),
 			Description: "emm",
 		},
 		&model.Event{

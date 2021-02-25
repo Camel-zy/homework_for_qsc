@@ -831,10 +831,6 @@ var doc = `{
                 "StartTime"
             ],
             "properties": {
-                "CrossTag": {
-                    "description": "1 represent CrossInterview",
-                    "type": "boolean"
-                },
                 "Description": {
                     "type": "string"
                 },
@@ -855,6 +851,10 @@ var doc = `{
                 "OtherInfo": {
                     "type": "string"
                 },
+                "Round": {
+                    "description": "一面为1，二面为2，以此类推",
+                    "type": "integer"
+                },
                 "StartTime": {
                     "description": "request string must be in RFC 3339 format",
                     "type": "string"
@@ -864,10 +864,6 @@ var doc = `{
         "model.InterviewResponse": {
             "type": "object",
             "properties": {
-                "crossTag": {
-                    "description": "1 represent CrossInterview",
-                    "type": "boolean"
-                },
                 "departmentID": {
                     "type": "integer"
                 },
@@ -895,6 +891,10 @@ var doc = `{
                 },
                 "otherInfo": {
                     "type": "string"
+                },
+                "round": {
+                    "description": "一面为1，二面为2，以此类推",
+                    "type": "integer"
                 },
                 "startTime": {
                     "type": "string"
