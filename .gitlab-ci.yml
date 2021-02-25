@@ -18,6 +18,7 @@ variables:
 before_script:
   - which docker && docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD harbor.zjuqsc.com
   - git config --global url."git@git.zjuqsc.com:".insteadOf "https://git.zjuqsc.com/"
+  - apk update && apk upgrade && apk add openssh-client
 
 sonarqube-check:
   stage: scan
