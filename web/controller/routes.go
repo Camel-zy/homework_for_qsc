@@ -45,6 +45,8 @@ func addRoutes(e *echo.Echo) {
 	event.GET("/interview", getInterviewInEvent)
 	event.GET("/interview/all", getAllInterviewInEvent)
 	event.PUT("/interview", createInterview, middleware.CheckDepartmentInOrganization)
+	event.GET("/department", getRoundNumOfJoindEvent)
+	event.POST("/department", updateRoundNumOfJoinedEvent)
 
 	interview := api.Group("/interview", middleware.SetInterviewOrganization, middleware.AuthOrganization)
 	interview.POST("", updateInterview)

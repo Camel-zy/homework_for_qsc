@@ -97,6 +97,65 @@ var doc = `{
         },
         "/event": {
             "get": {
+                "description": "Get information of an event",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Event"
+                ],
+                "summary": "Get event",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Event ID",
+                        "name": "eid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.EventResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Update an event",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Event"
+                ],
+                "summary": "Update event",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Event ID",
+                        "name": "eid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "description": "Event Information",
+                        "name": "data",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/model.EventRequest"
+                        }
+                    }
+                ]
+            }
+        },
+        "/event/department": {
+            "get": {
                 "description": "Get the number of round of a specific event according to departmentID and eventID",
                 "produces": [
                     "application/json"
@@ -855,6 +914,10 @@ var doc = `{
                 "OtherInfo": {
                     "type": "string"
                 },
+                "Round": {
+                    "description": "一面为1，二面为2，以此类推",
+                    "type": "integer"
+                },
                 "StartTime": {
                     "description": "request string must be in RFC 3339 format",
                     "type": "string"
@@ -895,6 +958,10 @@ var doc = `{
                 },
                 "otherInfo": {
                     "type": "string"
+                },
+                "round": {
+                    "description": "一面为1，二面为2，以此类推",
+                    "type": "integer"
                 },
                 "startTime": {
                     "type": "string"

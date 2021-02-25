@@ -215,7 +215,7 @@ func getAllEventInOrganization(c echo.Context) error {
 // @tags Event
 // @summary Get round number of an event
 // @description Get the number of round of a specific event according to departmentID and eventID
-// @router /event [get]  //TODO(OE.Heart): set this correctly
+// @router /event/department [get]
 // @param did query uint true "Department ID"
 // @param eid query uint true "Event ID"
 // @produce json
@@ -257,7 +257,7 @@ func getRoundNumOfJoindEvent(c echo.Context) error {
 // @tags Event
 // @summary Update round number of an event
 // @description Update the number of round according to  departmentID and eventID
-// @router /event [post]  //TODO(OE.Heart): set this correctly
+// @router /event/department [post]
 // @param did query uint true "Department ID"
 // @param eid query uint true "Event ID"
 // @param newRoundNum body uint true "New Round Number"
@@ -273,7 +273,7 @@ func updateRoundNumOfJoinedEvent(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
-			Data: "did, eid adn newRoundNum need to be an unsigned integer",
+			Data: "did, eid and newRoundNum need to be an unsigned integer",
 		})
 	}
 
