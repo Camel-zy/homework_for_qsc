@@ -3,7 +3,8 @@ FROM golang:1.15 AS builder
 ENV GOPROXY=https://mirrors.aliyun.com/goproxy/,direct \
     GO111MODULE=on \
     WORKDIR=/tmp/workdir/ \
-    CGO_ENABLED=0
+    CGO_ENABLED=0 \
+    GOPRIVATE=git.zjuqsc.com/rop/rop-sms
 
 RUN mkdir -p $WORKDIR
 
