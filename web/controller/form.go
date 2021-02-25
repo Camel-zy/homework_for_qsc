@@ -173,10 +173,15 @@ func updateAnswer(c echo.Context) error {
 	}
 
 	if _, err := model.QueryAnswer(fid, zjuid, eid); err == nil {
-		// TODO: write update logic instead of this
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "the answer already exists",
+		if suberr := model.UpdateAnswer(&answerRequest, fid, zjuid, eid); suberr != nil {
+			return c.JSON(http.StatusInternalServerError, &utils.Error{
+				Code: "INTERNAL_SERVER_ERR",
+				Data: "update answer failed",
+			})
+		}
+		return c.JSON(http.StatusOK, &utils.Error{
+			Code: "SUCCESS",
+			Data: "update answer success",
 		})
 	} else if !errors.Is(err, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
