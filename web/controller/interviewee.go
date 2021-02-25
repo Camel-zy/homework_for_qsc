@@ -7,6 +7,7 @@ import (
 	"git.zjuqsc.com/rop/rop-back-neo/model"
 	"git.zjuqsc.com/rop/rop-back-neo/utils"
 	"github.com/labstack/echo/v4"
+	"github.com/sirupsen/logrus"
 )
 
 // @tags Interviewee
@@ -49,7 +50,7 @@ func updateIntervieweeOptions(c echo.Context) error {
 		})
 	}
 
-	err = model.UpdateInterviewee(&model.Interviewee{InterviewOptions: intOptMarshalled}, vid)
+	err = model.UpdateInterviewee(&model.Interviewee{InterviewOptions: intOptMarshalled, SentMessage: 2}, vid)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "INTERNAL_SERVER_ERR",
@@ -57,10 +58,71 @@ func updateIntervieweeOptions(c echo.Context) error {
 		})
 	}
 
-	// TODO(TO/GA): Send SMS
+	_, err = utils.SendMessage(vid, 1)
+	if err != nil {
+		logrus.Errorf("send reject message fail(vid=%v): %v", vid, err)
+		return c.JSON(http.StatusInternalServerError, &utils.Error{
+			Code: "INTERNAL_SERVER_ERR",
+			Data: "send message fail",
+		})
+	}
 
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
 		Data: "",
 	})
+}
+
+func modifyIntervieweeTemplate(newStatus uint) func(echo.Context) error {
+	return func(c echo.Context) error {
+		vid := c.Get("vid").(uint)
+		err := model.UpdateInterviewee(&model.Interviewee{Status: newStatus}, vid)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, &utils.Error{
+				Code: "INTERNAL_SERVER_ERR",
+				Data: "update interviewee fail",
+			})
+		}
+		if newStatus == 4 {
+			_, err = utils.SendMessage(vid, 3)
+			if err != nil {
+				logrus.Errorf("send reject message fail(vid=%v): %v", vid, err)
+				return c.JSON(http.StatusInternalServerError, &utils.Error{
+					Code: "INTERNAL_SERVER_ERR",
+					Data: "send message fail",
+				})
+			}
+		}
+		return c.JSON(http.StatusOK, &utils.Error{
+			Code: "SUCCESS",
+			Data: "update interviewee success",
+		})
+	}
+}
+
+// @tags Interviewee
+// @summary Admit an interviewee
+// @router /interviewee/admit [post]
+// @param vid query uint true "Interviewee ID"
+// @success 200
+func admitInterviewee(c echo.Context) error {
+	return modifyIntervieweeTemplate(3)(c);
+}
+
+// @tags Interviewee
+// @summary Send an interviewee to next round
+// @router /interviewee/next [post]
+// @param vid query uint true "Interviewee ID"
+// @success 200
+func nextInterviewee(c echo.Context) error {
+	return modifyIntervieweeTemplate(1)(c);
+}
+
+// @tags Interviewee
+// @summary Reject an interviewee
+// @router /interviewee/reject [post]
+// @param vid query uint true "Interviewee ID"
+// @success 200
+func rejectInterviewee(c echo.Context) error {
+	return modifyIntervieweeTemplate(4)(c);
 }

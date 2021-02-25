@@ -53,6 +53,12 @@ func addRoutes(e *echo.Echo) {
 	interview.POST("", updateInterview)
 	interview.GET("", getInterview)
 
+	interviewee := api.Group("/interviewee", middleware.AuthInterviewee)
+	interviewee.POST("/options", updateIntervieweeOptions)
+	interviewee.POST("/admit", admitInterviewee)
+	interviewee.POST("/next", nextInterviewee)
+	interviewee.POST("/reject", rejectInterviewee)
+
 	form := api.Group("/form") //
 	form.PUT("", createForm)
 	form.POST("", updateForm)
@@ -61,7 +67,6 @@ func addRoutes(e *echo.Echo) {
 	answer := api.Group("/answer")
 	// answer.GET("", getAnswer)
 	answer.PUT("", updateAnswer)
-	api.POST("/interviewee/options", updateIntervieweeOptions)
 
 	// TODO(TO/GA): Delete it
 	message := api.Group("/message", middleware.GetOrganizationIdFromParam, middleware.AuthOrganization)

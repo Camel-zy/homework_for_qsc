@@ -9,20 +9,20 @@ type Message struct {
 }
 
 type SendUserMessageRequest struct {
-	DepartmentID      uint `json:"DepartmentID" validate:"required"`
-	AnswerID          uint `json:"AnswerID" validate:"required"`
+	DepartmentID uint `json:"DepartmentID"`
+	AnswerID     uint `json:"AnswerID"`
 }
 
 type SendInterviewMessageRequest struct {
-	DepartmentID      uint `json:"DepartmentID" validate:"required"`
-	AnswerID          uint `json:"AnswerID" validate:"required"`
-	InterviewID       uint `json:"InterviewID" validate:"required"`
+	DepartmentID uint `json:"DepartmentID"`
+	AnswerID     uint `json:"AnswerID"`
+	InterviewID  uint `json:"InterviewID"`
 }
 
 type MessageRequest struct {
-	DepartmentID      uint `json:"DepartmentID" validate:"required"`
-	AnswerID          uint `json:"AnswerID" validate:"required"`
-	InterviewID       uint `json:"InterviewID"`
+	DepartmentID uint `json:"DepartmentID"`
+	AnswerID     uint `json:"AnswerID"`
+	InterviewID  uint `json:"InterviewID"`
 }
 
 type MessageCostAPI struct {
