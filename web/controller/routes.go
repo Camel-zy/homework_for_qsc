@@ -75,4 +75,9 @@ func addRoutes(e *echo.Echo) {
 	// message.PUT("/interview/select", sendInterviewSelectMessage)
 	// message.PUT("/interview/confirm", sendInterviewConfirmMessage)
 	// message.PUT("/reject", sendRejectMessage)
+
+	object := api.Group("/object")
+	object.POST("/create", createObject)
+	object.POST("/seal", sealObject)
+	object.GET("/get", getObject)
 }
