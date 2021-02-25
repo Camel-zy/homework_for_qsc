@@ -497,6 +497,36 @@ var doc = `{
                 ]
             }
         },
+        "/interviewee/options": {
+            "post": {
+                "description": "The frontend is required to send multiple iid in a JSON array,\nwhich are the optional interviews for an interviewee to choose from",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Interviewee"
+                ],
+                "summary": "Update the interview option of a interviewee",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Interviewee ID",
+                        "name": "vid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "description": "The InterviewOption field is required, in JSON array",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.IntervieweeRequest"
+                        }
+                    }
+                ]
+            }
+        },
         "/organization": {
             "get": {
                 "description": "Get information of a specific organization",
@@ -891,13 +921,13 @@ var doc = `{
         "model.Intention": {
             "type": "object",
             "required": [
-                "DepartmentID"
+                "department_id"
             ],
             "properties": {
-                "DepartmentID": {
+                "department_id": {
                     "type": "integer"
                 },
-                "IntentRank": {
+                "intent_rank": {
                     "description": "this feature hasn't been implemented",
                     "type": "integer"
                 }
@@ -978,6 +1008,17 @@ var doc = `{
                 },
                 "startTime": {
                     "type": "string"
+                }
+            }
+        },
+        "model.IntervieweeRequest": {
+            "type": "object",
+            "properties": {
+                "InterviewOptions": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 }
             }
         },
