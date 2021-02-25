@@ -890,10 +890,6 @@ var doc = `{
                 "StartTime"
             ],
             "properties": {
-                "CrossTag": {
-                    "description": "1 represent CrossInterview",
-                    "type": "boolean"
-                },
                 "Description": {
                     "type": "string"
                 },
@@ -927,10 +923,6 @@ var doc = `{
         "model.InterviewResponse": {
             "type": "object",
             "properties": {
-                "crossTag": {
-                    "description": "1 represent CrossInterview",
-                    "type": "boolean"
-                },
                 "departmentID": {
                     "type": "integer"
                 },

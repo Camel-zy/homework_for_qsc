@@ -7,9 +7,8 @@ import (
 type Department struct {
 	ID             uint         `gorm:"not null;autoIncrement;primaryKey"`
 	Name           string       `gorm:"size:40;not null"`
-	OrganizationID uint         `gorm:"not null;uniqueIndex:foo"`
+	OrganizationID uint         `gorm:"not null"`
 	Organization   Organization // FOREIGN KEY (OrganizationID) REFERENCES Organization(OrganizationID)
-	SerialNumInOrg uint         `gorm:"not null;uniqueIndex:foo"`
 	Description    string       `gorm:"size:200"`
 	MessageCost    float32      `gorm:"not null;default:0"`
 	UpdateTime     time.Time    `gorm:"autoUpdateTime"`

@@ -20,9 +20,8 @@ type Interview struct {
 	Location               string    `gorm:"size:200"`
 	MaxInterviewee         uint      `gorm:"default:6"`
 	Round                  uint      `gorm:"not null;default:1"` // 一面为1，二面为2，以此类推
-	DepartmentAuthoritySeq uint      `gorm:"not null;default:0"` // two bit for every department, the first represent view, the second represent edit
-	CrossTag               uint      `gorm:"not null;default:1"` // 2 represent CrossInterview
-	InvolvedDepartmentSeq  uint      `gorm:"not null;default:0"` // one bit for every department
+	CrossTag               uint      `gorm:"not null;default:1"` // 2 represent CrossInterview, default 1
+	InvolvedDepartment     datatypes.JSON
 	StartTime              time.Time `gorm:"not null"`
 	EndTime                time.Time `gorm:"not null"`
 	UpdatedTime            time.Time `gorm:"autoUpdateTime"`
@@ -48,7 +47,6 @@ type InterviewRequest struct {
 	Location       string    `json:"Location"`
 	MaxInterviewee uint      `json:"MaxInterviewee"`                // default 6
 	Round          uint      `json:"Round"`                         // 一面为1，二面为2，以此类推
-	CrossTag       bool      `json:"CrossTag"`                      // 1 represent CrossInterview
 	StartTime      time.Time `json:"StartTime" validate:"required"` // request string must be in RFC 3339 format
 	EndTime        time.Time `json:"EndTime" validate:"required"`   // request string must be in RFC 3339 format
 }
@@ -63,7 +61,6 @@ type InterviewResponse struct {
 	Location       string
 	MaxInterviewee uint // default 6
 	Round          uint // 一面为1，二面为2，以此类推
-	CrossTag       bool // 1 represent CrossInterview
 	StartTime      time.Time
 	EndTime        time.Time
 }
