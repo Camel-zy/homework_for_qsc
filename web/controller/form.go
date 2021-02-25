@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"encoding/json"
 	"errors"
 	"git.zjuqsc.com/rop/rop-back-neo/model"
 	"git.zjuqsc.com/rop/rop-back-neo/utils"
@@ -20,36 +19,43 @@ import (
 // @param data body model.FormApi_ true "Form information"
 // @success 200
 func createForm(c echo.Context) error {
-	FormRequest := model.FormApi{}
-	if err := c.Bind(&FormRequest); err != nil {
+	var oid, did uint
+	err := echo.QueryParamsBinder(c).
+		MustUint("eid", &oid).
+		MustUint("did", &did).
+		BindError()
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "oid and did need to be an unsigned integer",
+		})
+	}
+
+	formRequest := model.FormRequest{}
+	if err := c.Bind(&formRequest); err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
 			Data: err.Error(),
 		})
 	}
-	if err := c.Validate(&FormRequest); err != nil {
+	if err := c.Validate(&formRequest); err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
 			Data: err.Error(),
 		})
 	}
-	if err := json.Valid(FormRequest.Content); err != true {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "wrong format, JSON required",
-		})
-	}
-	if err := model.CreateForm(&FormRequest); err != nil {
+
+	if fid, err := model.CreateForm(&formRequest, oid, did); err != nil {
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "INTERNAL_SERVER_ERR",
 			Data: "create form fail",
 		})
+	} else {
+		return c.JSON(http.StatusOK, &utils.Error{
+			Code: "SUCCESS",
+			Data: fid,
+		})
 	}
-
-	return c.JSON(http.StatusOK, &utils.Error{
-		Code: "SUCCESS",
-		Data: "create form success",
-	})
 }
 
 // @tags Form
@@ -60,38 +66,34 @@ func createForm(c echo.Context) error {
 // @param data body model.FormApi_ true "Form information"
 // @success 200
 func updateForm(c echo.Context) error {
-	FormRequest := model.FormApi{}
-	err := c.Bind(&FormRequest)
+	var fid uint
+	err := echo.QueryParamsBinder(c).MustUint("fid", &fid).BindError()
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "fid needs to be an unsigned integer",
+		})
+	}
+
+	formRequest := model.FormRequest{}
+	err = c.Bind(&formRequest)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
 			Data: err.Error(),
 		})
 	}
-	fid, err := utils.IsUnsignedInteger(c.QueryParam("fid"))
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "fid needs to be specified correctly",
-		})
-	}
-	FormRequest.ID = fid
-	if err := json.Valid(FormRequest.Content); err != true {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "wrong format, JSON required",
-		})
-	}
-	if err := model.UpdateFormByID(&FormRequest); err != nil {
+
+	if err := model.UpdateFormByID(&formRequest, fid); err != nil {
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "INTERNAL_SERVER_ERR",
-			Data: "update Form fail",
+			Data: "update form fail",
 		})
 	}
 
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
-		Data: "update Form success",
+		Data: "update form success",
 	})
 }
 
@@ -193,10 +195,10 @@ func updateAnswer(c echo.Context) error {
 
 	for _, v := range answerRequest.Intention {
 		interviewee := model.Interviewee{
-			EventID: eid,
-			AnswerID: aid,
+			EventID:      eid,
+			AnswerID:     aid,
 			DepartmentID: v.DepartmentID,
-			IntentRank: v.IntentRank,
+			IntentRank:   v.IntentRank,
 		}
 		_, err := model.CreateInterviewee(&interviewee)
 		if err != nil {
@@ -233,7 +235,7 @@ func SortIntention(origArray *[]model.Intention) (*[]model.Intention, error) {
 			return newIntention[i].IntentRank < newIntention[j].IntentRank
 		})
 		for k, v := range newIntention {
-			if k + 1 != int(v.IntentRank) {
+			if k+1 != int(v.IntentRank) {
 				err := errors.New("interview rank must be a string of continuous positive, or all 0 to disable rank")
 				return nil, err
 			}
