@@ -163,10 +163,15 @@ func updateAnswer(c echo.Context) error {
 			Data: err.Error(),
 		})
 	}
-	if newIntention, err := SortIntention(&answerRequest.Intention); err != nil {
+	if newIntention, err := SortIntention(&answerRequest.Intention); err != nil  {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
 			Data: err.Error(),
+		})
+	} else if len(*newIntention) == 0 {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "no valid intention has been found",
 		})
 	} else {
 		answerRequest.Intention = *newIntention

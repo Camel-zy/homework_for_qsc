@@ -1,14 +1,16 @@
 package model
 
 import (
-	"time"
-
+	"github.com/satori/go.uuid"
 	"gorm.io/datatypes"
+	"gorm.io/gorm"
+	"time"
 )
 
 // 一个志愿一条记录
 type Interviewee struct {
 	ID               uint           `gorm:"not null;autoIncrement;primaryKey"`
+	UUID             uuid.UUID      `gorm:"not null;type:uuid"`
 	EventID          uint           `gorm:"not null"`
 	AnswerID         uint           `gorm:"not null"`
 	DepartmentID     uint           `gorm:"not null"`           // 志愿部门
@@ -29,6 +31,12 @@ type JoinedInterview struct {
 	IntervieweeID uint      `gorm:"not null"`
 	Result        uint      `gorm:"default:0"`
 	UpdatedTime   time.Time `gorm:"not null"`
+}
+
+// "Create Hook" of GORM
+func (i *Interviewee) BeforeCreate(tx *gorm.DB) (err error) {
+	i.UUID = uuid.NewV4()
+	return
 }
 
 func CreateInterviewee(interviewee *Interviewee) (uint, error) {

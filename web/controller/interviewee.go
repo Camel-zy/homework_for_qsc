@@ -57,7 +57,7 @@ func updateIntervieweeOptions(c echo.Context) error {
 		})
 	}
 
-
+	// TODO(TO/GA): Send SMS
 
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
