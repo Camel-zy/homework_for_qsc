@@ -8,6 +8,8 @@ ENV GOPROXY=https://mirrors.aliyun.com/goproxy/,direct \
 
 RUN mkdir -p $WORKDIR
 
+RUN git config --global url."https://gitlab-ci-token:${CI_JOB_TOKEN}@git.zjuqsc.com/".insteadOf "https://git.zjuqsc.com/"
+
 COPY go.mod go.sum $WORKDIR
 
 RUN cd $WORKDIR && go mod download all
