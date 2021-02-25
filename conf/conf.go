@@ -2,6 +2,7 @@ package conf
 
 import (
 	"fmt"
+
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
@@ -23,6 +24,7 @@ func Init() {
 		"minio": {"enable", "endpoint", "id", "secret", "secure", "bucket_name"},
 		"passport": {"enable", "is_secure_mode", "app_id", "app_secret", "api_name"},
 		"jwt": {"issuer", "max_age", "secret_key"},
+		"rpc": {"enable", "endpoint", "timeout", "app_id", "app_key"},
 	}
 
 	for k, v := range confItems {

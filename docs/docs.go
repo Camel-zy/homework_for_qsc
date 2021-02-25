@@ -527,6 +527,35 @@ var doc = `{
                 ]
             }
         },
+        "/message/cost": {
+            "get": {
+                "description": "get message cost and balance",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Message"
+                ],
+                "summary": "get message cost and balance",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Organization ID",
+                        "name": "oid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.MessageCostAPI"
+                        }
+                    }
+                }
+            }
+        },
         "/organization": {
             "get": {
                 "description": "Get information of a specific organization",
@@ -1019,6 +1048,17 @@ var doc = `{
                     "items": {
                         "type": "integer"
                     }
+                }
+            }
+        },
+        "model.MessageCostAPI": {
+            "type": "object",
+            "properties": {
+                "balance": {
+                    "type": "number"
+                },
+                "cost": {
+                    "type": "number"
                 }
             }
         },

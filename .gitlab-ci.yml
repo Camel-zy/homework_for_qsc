@@ -17,6 +17,7 @@ variables:
 # if docker command present, run docker login
 before_script:
   - which docker && docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD harbor.zjuqsc.com
+  - git config --global url."git@git.zjuqsc.com:".insteadOf "https://git.zjuqsc.com/"
 
 sonarqube-check:
   stage: scan

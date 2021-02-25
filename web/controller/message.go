@@ -9,19 +9,26 @@ import (
 	"git.zjuqsc.com/rop/rop-back-neo/utils"
 	"github.com/jinzhu/copier"
 	"github.com/labstack/echo/v4"
+	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
 
-// // @tags Message
-// // @summary get message cost and balance
-// // @description get message cost and balance
-// // @router /message/cost [get]
-// // @param oid query uint true "Organization ID"
-// // @produce json
-// // @success 200 {object} model.MessageCostAPI
+// @tags Message
+// @summary get message cost and balance
+// @description get message cost and balance
+// @router /message/cost [get]
+// @param oid query uint true "Organization ID"
+// @produce json
+// @success 200 {object} model.MessageCostAPI
 func getMessageCost(c echo.Context) error {
-	balance, _ := utils.GetMessageBalance()
-	// TODO(TO/GA): error handling
+	balance, err := utils.GetMessageBalance()
+	if err != nil {
+		logrus.Error(err)
+		return c.JSON(http.StatusInternalServerError, &utils.Error{
+			Code: "INTERNAL_SERVER_ERR",
+			Data: "get message balance fail",
+		})
+	}
 
 	organization, _ := model.QueryOrganizationById(c.Get("oid").(uint))
 	return c.JSON(http.StatusOK, &utils.Error{
