@@ -75,8 +75,4 @@ func addRoutes(e *echo.Echo) {
 	// message.PUT("/interview/select", sendInterviewSelectMessage)
 	// message.PUT("/interview/confirm", sendInterviewConfirmMessage)
 	// message.PUT("/reject", sendRejectMessage)
-
-	avatar := api.Group("/avatar", middleware.CheckMinioStatus)
-	avatar.POST("", setAvatar)
-	avatar.GET("", getAvatar)
 }
