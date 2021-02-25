@@ -9,6 +9,7 @@ type Department struct {
 	Name           string       `gorm:"size:40;not null"`
 	OrganizationID uint         `gorm:"not null"`
 	Organization   Organization // FOREIGN KEY (OrganizationID) REFERENCES Organization(OrganizationID)
+	EventID        uint         `gorm:"not null"`
 	Description    string       `gorm:"size:200"`
 	MessageCost    float64      `gorm:"not null;default:0"`
 	UpdateTime     time.Time    `gorm:"autoUpdateTime"`
@@ -70,5 +71,11 @@ func QueryAllDepartmentInOrganization(oid uint) (*[]Brief, error) {
 
 	/* then, the organization exists */
 	result := gormDb.Model(&Department{}).Where(&Department{OrganizationID: oid}).Find(&dbDepartment)
+	return &dbDepartment, result.Error
+}
+
+func QueryAllDepartmentByEid(eid uint) (*[]Department, error) {
+	var dbDepartment []Department
+	result := gormDb.Model(&Department{}).Where(&Department{EventID: eid}).Find(&dbDepartment)
 	return &dbDepartment, result.Error
 }

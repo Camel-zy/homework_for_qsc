@@ -58,11 +58,14 @@ func addRoutes(e *echo.Echo) {
 	interviewee.POST("/admit", admitInterviewee)
 	interviewee.POST("/next", nextInterviewee)
 	interviewee.POST("/reject", rejectInterviewee)
+	interviewee.GET("", getIntervieweeInEventOfDepartment)
+	interviewee.GET("", getIntervieweeByDidAndEidAndRoundAndStatus)
 
 	form := api.Group("/form") //
 	form.PUT("", createForm)
 	form.POST("", updateForm)
 	form.GET("", getForm)
+	form.GET("", getAllFormInOrganization)
 
 	answer := api.Group("/answer")
 	// answer.GET("", getAnswer)
