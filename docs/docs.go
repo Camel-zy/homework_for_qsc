@@ -296,6 +296,13 @@ var doc = `{
                         "required": true
                     },
                     {
+                        "type": "integer",
+                        "description": "Round",
+                        "name": "rnd",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
                         "description": "Interview Information",
                         "name": "data",
                         "in": "body",
@@ -309,19 +316,33 @@ var doc = `{
         },
         "/event/interview/all": {
             "get": {
-                "description": "Get brief information of all interviews in a specific event",
+                "description": "Get brief information of all interviews of the same round in a specific event and department",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Interview"
                 ],
-                "summary": "Get all interviews in event",
+                "summary": "Get all interviews of same round",
                 "parameters": [
                     {
                         "type": "integer",
                         "description": "Event ID",
                         "name": "eid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Department ID",
+                        "name": "did",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Round",
+                        "name": "rnd",
                         "in": "query",
                         "required": true
                     }

@@ -2,11 +2,12 @@ package controller
 
 import (
 	"errors"
+	"net/http"
+
 	"git.zjuqsc.com/rop/rop-back-neo/model"
 	"git.zjuqsc.com/rop/rop-back-neo/utils"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
-	"net/http"
 )
 
 // @tags Interview
@@ -15,19 +16,21 @@ import (
 // @router /event/interview [put]
 // @param eid query uint true "Event ID"
 // @param did query uint true "Department ID"
+// @param rnd query uint true "Round"
 // @accept json
 // @param data body model.InterviewRequest true "Interview Information"
 // @produce json
 func createInterview(c echo.Context) error {
-	var eid, did uint
+	var eid, did, rnd uint
 	err := echo.QueryParamsBinder(c).
 		MustUint("eid", &eid).
 		MustUint("did", &did).
+		MustUint("rnd", &rnd).
 		BindError()
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
-			Data: "eid and did need to be an unsigned integer",
+			Data: "eid, did and rnd need to be an unsigned integer",
 		})
 	}
 
@@ -45,7 +48,7 @@ func createInterview(c echo.Context) error {
 		})
 	}
 
-	if iid, err := model.CreateInterview(&interviewRequest, eid, did); err != nil {
+	if iid, err := model.CreateInterview(&interviewRequest, eid, did, rnd); err != nil {
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "INTERNAL_SERVER_ERR",
 			Data: "create interview fail",
@@ -189,6 +192,43 @@ func getAllInterviewInEvent(c echo.Context) error {
 	}
 
 	interviews, itvErr := model.QueryAllInterviewInEvent(eid)
+	if errors.Is(itvErr, gorm.ErrRecordNotFound) {
+		return c.JSON(http.StatusNotFound, &utils.Error{
+			Code: "NOT_FOUND",
+			Data: "event not found",
+		})
+	}
+
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: &interviews,
+	})
+}
+
+// @tags Interview
+// @summary Get all interviews of same round
+// @description Get brief information of all interviews of the same round in a specific event and department
+// @router /event/interview/all [get]
+// @param eid query uint true "Event ID"
+// @param did query uint true "Department ID"
+// @param rnd query uint true "Round"
+// @produce json
+// @success 200 {array} model.Brief
+func getAllInterviewOfRound(c echo.Context) error {
+	var eid, did, rnd uint
+	err := echo.QueryParamsBinder(c).
+		MustUint("eid", &eid).
+		MustUint("did", &did).
+		MustUint("rnd", &rnd).
+		BindError()
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "eid, did and rnd need to be an unsigned integer",
+		})
+	}
+
+	interviews, itvErr := model.QueryAllInterviewOfRound(eid, did, rnd)
 	if errors.Is(itvErr, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, &utils.Error{
 			Code: "NOT_FOUND",
