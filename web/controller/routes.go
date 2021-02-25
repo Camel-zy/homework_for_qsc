@@ -44,10 +44,10 @@ func addRoutes(e *echo.Echo) {
 	event.GET("", getEvent)
 	event.GET("/interview", getInterviewInEvent)
 	event.GET("/interview/all", getAllInterviewInEvent)
-	event.GET("/interview/all", getAllInterviewOfRound)
+	event.GET("/department/round/interview/all", getAllInterviewOfRound)
 	event.PUT("/interview", createInterview, middleware.CheckDepartmentInOrganization)
-	event.GET("/department", getRoundNumOfJoindEvent)
-	event.POST("/department", updateRoundNumOfJoinedEvent)
+	event.GET("/department/round", getRoundNumOfJoindEvent)
+	event.POST("/department/round", updateRoundNumOfJoinedEvent)
 
 	interview := api.Group("/interview", middleware.SetInterviewOrganization, middleware.AuthOrganization)
 	interview.POST("", updateInterview)

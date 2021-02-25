@@ -3,7 +3,7 @@ module git.zjuqsc.com/rop/rop-back-neo
 go 1.15
 
 require (
-	git.zjuqsc.com/rop/rop-sms v0.0.0-20210225073616-c66e11882809
+	git.zjuqsc.com/rop/rop-sms v0.0.0-20210225082048-7420812851fd
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-playground/validator/v10 v10.4.1

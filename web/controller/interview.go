@@ -208,7 +208,7 @@ func getAllInterviewInEvent(c echo.Context) error {
 // @tags Interview
 // @summary Get all interviews of same round
 // @description Get brief information of all interviews of the same round in a specific event and department
-// @router /event/interview/all [get]
+// @router /event/department/round/interview/all [get]
 // @param eid query uint true "Event ID"
 // @param did query uint true "Department ID"
 // @param rnd query uint true "Round"

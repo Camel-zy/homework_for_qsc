@@ -215,7 +215,7 @@ func getAllEventInOrganization(c echo.Context) error {
 // @tags Event
 // @summary Get round number of an event
 // @description Get the number of round of a specific event according to departmentID and eventID
-// @router /event/department [get]
+// @router /event/department/round [get]
 // @param did query uint true "Department ID"
 // @param eid query uint true "Event ID"
 // @produce json
@@ -257,7 +257,7 @@ func getRoundNumOfJoindEvent(c echo.Context) error {
 // @tags Event
 // @summary Update round number of an event
 // @description Update the number of round according to  departmentID and eventID
-// @router /event/department [post]
+// @router /event/department/round [post]
 // @param did query uint true "Department ID"
 // @param eid query uint true "Event ID"
 // @param newRoundNum body uint true "New Round Number"

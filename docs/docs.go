@@ -154,7 +154,7 @@ var doc = `{
                 ]
             }
         },
-        "/event/department": {
+        "/event/department/round": {
             "get": {
                 "description": "Get the number of round of a specific event according to departmentID and eventID",
                 "produces": [
@@ -229,6 +229,52 @@ var doc = `{
                 "responses": {
                     "200": {
                         "description": ""
+                    }
+                }
+            }
+        },
+        "/event/department/round/interview/all": {
+            "get": {
+                "description": "Get brief information of all interviews of the same round in a specific event and department",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Interview"
+                ],
+                "summary": "Get all interviews of same round",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Event ID",
+                        "name": "eid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Department ID",
+                        "name": "did",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Round",
+                        "name": "rnd",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Brief"
+                            }
+                        }
                     }
                 }
             }
@@ -316,33 +362,19 @@ var doc = `{
         },
         "/event/interview/all": {
             "get": {
-                "description": "Get brief information of all interviews of the same round in a specific event and department",
+                "description": "Get brief information of all interviews in a specific event",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Interview"
                 ],
-                "summary": "Get all interviews of same round",
+                "summary": "Get all interviews in event",
                 "parameters": [
                     {
                         "type": "integer",
                         "description": "Event ID",
                         "name": "eid",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Department ID",
-                        "name": "did",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Round",
-                        "name": "rnd",
                         "in": "query",
                         "required": true
                     }
