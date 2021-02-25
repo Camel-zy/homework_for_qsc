@@ -5,15 +5,18 @@ import (
 	"strings"
 
 	"git.zjuqsc.com/rop/rop-back-neo/model"
+	"git.zjuqsc.com/rop/rop-back-neo/rpc"
+	SMSService "git.zjuqsc.com/rop/rop-sms/gRPC"
 	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
 
 func GetMessageBalance() (float32, error) {
-	//TODO(TO/GA): call sms service
-	var cost float32
-
-	return cost, nil
+	reply, replyErr := rpc.Sms.UserBalance(&SMSService.UsrReq{})
+	if replyErr != nil {
+		return 0, replyErr
+	}
+	return reply.Balance, nil
 }
 
 func GenerateText(messageTemplateID uint, answer *model.Answer, departmentID uint, interviewID uint) (*string, error) {
@@ -127,16 +130,21 @@ func SendMessage(messageRequest *model.MessageRequest, messageTemplateID uint) (
 		return nil, model.ErrInternalError
 	}
 
-	// TODO(TO/GA): call sms service to send
-	var cost float32
-	var IDInSMSService uint
+	// TODO(TO/GA): error handling
+	reply, replyErr := rpc.Sms.SendMsgByText(&SMSService.MsgReq{
+		Mobile: answer.Mobile,
+		Text:   *text,
+	})
+	if replyErr != nil {
+		return nil, replyErr // TODO(TO/GA): error handling
+	}
 
 	// update db
 	message := &model.Message{
-		IDInSMSService: IDInSMSService,
+		IDInSMSService: uint(reply.ID),
 		DepartmentID:   messageRequest.DepartmentID,
 		ReceiverID:     receiver.ID,
-		Cost:           cost,
+		Cost:           reply.Fee,
 	}
 	createErr := model.CreateMessage(message)
 	if createErr != nil {
@@ -149,7 +157,7 @@ func SendMessage(messageRequest *model.MessageRequest, messageTemplateID uint) (
 	if departErr != nil {
 		logrus.Errorf("fail to update department's message(ID=%v) cost\n", message.ID)
 	}
-	departErr = model.UpdateDepartmentById(&model.Department{ID: department.ID, MessageCost: department.MessageCost + cost})
+	departErr = model.UpdateDepartmentById(&model.Department{ID: department.ID, MessageCost: department.MessageCost + reply.Fee})
 	if departErr != nil {
 		logrus.Errorf("fail to update department's message(ID=%v) cost\n", message.ID)
 	}
@@ -158,8 +166,8 @@ func SendMessage(messageRequest *model.MessageRequest, messageTemplateID uint) (
 	if orgErr != nil {
 		logrus.Errorf("fail to update organization's message(ID=%v) cost\n", message.ID)
 	}
-	organization.MessageCost += cost
-	orgErr = model.UpdateOrganizationById(&model.Organization{ID: organization.ID, MessageCost: organization.MessageCost + cost})
+	organization.MessageCost += reply.Fee
+	orgErr = model.UpdateOrganizationById(&model.Organization{ID: organization.ID, MessageCost: organization.MessageCost + reply.Fee})
 	if orgErr != nil {
 		logrus.Errorf("fail to update organization's message(ID=%v) cost\n", message.ID)
 	}

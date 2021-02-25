@@ -10,6 +10,7 @@ import (
 	"git.zjuqsc.com/rop/rop-back-neo/conf"
 	_ "git.zjuqsc.com/rop/rop-back-neo/docs"
 	"git.zjuqsc.com/rop/rop-back-neo/model"
+	"git.zjuqsc.com/rop/rop-back-neo/rpc"
 	"git.zjuqsc.com/rop/rop-back-neo/web/controller"
 	"gorm.io/driver/postgres"
 )
@@ -21,6 +22,8 @@ func main() {
 	model.CreateTables()
 
 	model.ConnectObjectStorage()
+
+	rpc.Init()
 
 	controller.InitWebFramework()
 	controller.StartServer()

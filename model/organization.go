@@ -12,7 +12,7 @@ type Organization struct {
 	ID          uint      `gorm:"not null;autoIncrement;primaryKey"`
 	Name        string    `gorm:"size:40;not null"`
 	Description string    `gorm:"size:200"`
-	MessageCost float32   `gorm:"not null;default:0"`
+	MessageCost float64   `gorm:"not null;default:0"`
 	UpdateTime  time.Time `gorm:"autoUpdateTime"`
 }
 
@@ -20,7 +20,7 @@ type OrganizationApi struct {
 	ID          uint
 	Name        string
 	Description string
-	MessageCost float32
+	MessageCost float64
 }
 
 /*

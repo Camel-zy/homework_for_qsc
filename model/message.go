@@ -5,7 +5,7 @@ type Message struct {
 	IDInSMSService uint    `gorm:"not null"`
 	DepartmentID   uint    `gorm:"not null"`
 	ReceiverID     uint    `gorm:"not null"`
-	Cost           float32 `gorm:"not null"`
+	Cost           float64 `gorm:"not null"`
 }
 
 type SendUserMessageRequest struct {
@@ -26,7 +26,7 @@ type MessageRequest struct {
 }
 
 type MessageCostAPI struct {
-	Cost    float32
+	Cost    float64
 	Balance float32
 }
 

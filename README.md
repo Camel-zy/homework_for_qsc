@@ -14,20 +14,20 @@
 
 
 ## External Packages 
-| Web Framework | ORM | Database Driver | Object Storage Driver |
-| :---------: | :---: | :------: | :-----: |
-| labstack/echo/v4 | gorm.io/gorm | gorm.io/driver/postgres | minio/minio-go/v7 |
+|  Web Framework   |     ORM      |     Database Driver     | Object Storage Driver |
+| :--------------: | :----------: | :---------------------: | :-------------------: |
+| labstack/echo/v4 | gorm.io/gorm | gorm.io/driver/postgres |   minio/minio-go/v7   |
 
-| Configuration Manager | Log Manager | Authentication |
-| :-----: | :---: | :---: |
-spf13/viper | sirupsen/logrus | dgrijalva/jwt-go |
+| Configuration Manager |   Log Manager   |  Authentication  |
+| :-------------------: | :-------------: | :--------------: |
+|      spf13/viper      | sirupsen/logrus | dgrijalva/jwt-go |
 
 service port: `:1323`
 
 ### Unit test
-| Assert | In-Memory Database Driver |
-| :---: | :---------: |
-| stretchr/testify | gorm.io/driver/sqlite |
+|      Assert      | In-Memory Database Driver |
+| :--------------: | :-----------------------: |
+| stretchr/testify |   gorm.io/driver/sqlite   |
 
 ## Directories
 `conf` contain functions related to the configuration file, and it is also the default directory of configuration file.  
@@ -86,6 +86,12 @@ jwt:
   issuer: rop                # note: you can freely change this
   max_age: 600               # seconds
   secret_key:                # set this by yourself
+rpc:
+  enable: false   # this must be set true in production environment!!!
+  endpoint: 127.0.0.1:50051
+  timeout: 1000              # milliseconds, including executing time
+  app_id:                    # consult the admin for this
+  app_key:                   # consult the admin for this
 ```
 
 If you set `passport.enable` false, you will be in a superuser testing mode. 
