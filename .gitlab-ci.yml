@@ -5,7 +5,7 @@ services:
     alias: docker
 
 stages:
-  - scan
+  # - scan
   - build
   - deploy
 
@@ -20,28 +20,28 @@ before_script:
   - apk update && apk upgrade && apk add git
   - git config --global url."https://gitlab-ci-token:${CI_JOB_TOKEN}@git.zjuqsc.com/".insteadOf "https://git.zjuqsc.com/"
 
-sonarqube-check:
-  stage: scan
-  only:
-    # - "merge_requests" # keyword, for pipelines created when a merge request is created or updated
-    # - master
-  image:
-    name: harbor.zjuqsc.com/accelerated/sonar_scanner_cli:go1.15
-    entrypoint: [""]
-  variables:
-    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
-    GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
-    GOMODCACHE: "${CI_PROJECT_DIR}/.cache/go-mod"
-    # SONAR_TOKEN is set as protected masked CI variable
-  cache:
-    key: "${CI_JOB_NAME}"
-    paths:
-      - .sonar/cache
-      - .cache/go-mod
-  script:
-    - go env -w GOPRIVATE="git.zjuqsc.com/rop/rop-sms"
-    - go test ./... -coverprofile=test-coverage.out -json > test-report.out
-    - sonar-scanner -Dsonar.qualitygate.wait=true -Dsonar.gitlab.project_id=$CI_PROJECT_ID -Dsonar.gitlab.commit_sha=$CI_COMMIT_SHA -Dsonar.gitlab.ref_name=$CI_COMMIT_REF_NAME
+# sonarqube-check:
+#   stage: scan
+#   only:
+#     - "merge_requests" # keyword, for pipelines created when a merge request is created or updated
+#     - master
+#   image:
+#     name: harbor.zjuqsc.com/accelerated/sonar_scanner_cli:go1.15
+#     entrypoint: [""]
+#   variables:
+#     SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
+#     GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+#     GOMODCACHE: "${CI_PROJECT_DIR}/.cache/go-mod"
+#     # SONAR_TOKEN is set as protected masked CI variable
+#   cache:
+#     key: "${CI_JOB_NAME}"
+#     paths:
+#       - .sonar/cache
+#       - .cache/go-mod
+#   script:
+#     - go env -w GOPRIVATE="git.zjuqsc.com/rop/rop-sms"
+#     - go test ./... -coverprofile=test-coverage.out -json > test-report.out
+#     - sonar-scanner -Dsonar.qualitygate.wait=true -Dsonar.gitlab.project_id=$CI_PROJECT_ID -Dsonar.gitlab.commit_sha=$CI_COMMIT_SHA -Dsonar.gitlab.ref_name=$CI_COMMIT_REF_NAME
 
 build:
   only:
