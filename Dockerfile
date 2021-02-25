@@ -1,5 +1,7 @@
 FROM golang:1.15 AS builder
 
+ARG CI_JOB_TOKEN=$CI_JOB_TOKEN
+
 ENV GOPROXY=https://mirrors.aliyun.com/goproxy/,direct \
     GO111MODULE=on \
     WORKDIR=/tmp/workdir/ \
