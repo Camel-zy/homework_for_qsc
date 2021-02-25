@@ -5,7 +5,7 @@ services:
     alias: docker
 
 stages:
-  # - scan
+  - scan
   - build
   - deploy
 
