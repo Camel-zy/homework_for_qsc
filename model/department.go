@@ -72,3 +72,14 @@ func QueryAllDepartmentInOrganization(oid uint) (*[]Brief, error) {
 	result := gormDb.Model(&Department{}).Where(&Department{OrganizationID: oid}).Find(&dbDepartment)
 	return &dbDepartment, result.Error
 }
+
+func QueryAllDepartmentByEid(eid uint) (*[]Brief, error) {
+	var dbDepartment []Brief
+
+	if findEventErr := gormDb.First(&Event{}, eid).Error; findEventErr != nil {
+		return nil, findEventErr
+	}
+
+	result := gormDb.Model(&JoinedEvent{}).Where(&JoinedEvent{EventID: eid}).Find(&dbDepartment)
+	return &dbDepartment, result.Error
+}

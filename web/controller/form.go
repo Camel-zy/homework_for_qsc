@@ -124,3 +124,31 @@ func getForm(c echo.Context) error {
 		Data: &form,
 	})
 }
+
+// @tags Form
+// @summary Get all forms in organization
+// @description Get a form
+// @router /organization/form/all [get]
+// @param oid query uint true "Organization ID"
+// @success 200 {object} model.Form
+func getAllFormInOrganization(c echo.Context) error {
+	oid, typeErr := utils.IsUnsignedInteger(c.QueryParam("oid"))
+	if typeErr != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "oid need to be an unsigned integer",
+		})
+	}
+	forms, formErr := model.QueryAllFormByOid(oid)
+	if errors.Is(formErr, gorm.ErrRecordNotFound) {
+		return c.JSON(http.StatusNotFound, &utils.Error{
+			Code: "NOT_FOUND",
+			Data: "organization not found",
+		})
+	}
+
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: &forms,
+	})
+}
