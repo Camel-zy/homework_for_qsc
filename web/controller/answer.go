@@ -114,6 +114,37 @@ func updateAnswer(c echo.Context) error {
 	})
 }
 
+// @tags Answer
+// @summary Get an answer
+// @description Get information of an answer by AnswerID
+// @router /answer [get]
+// @param aid query uint true "Answer ID"
+// @produce json
+// @success 200 {object} model.Answer
+func getAnswer(c echo.Context) error {
+	var aid uint
+	err := echo.QueryParamsBinder(c).MustUint("aid", &aid).BindError()
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "aid needs to be an unsigned integer",
+		})
+	}
+
+	answer, aswErr := model.QueryAnswerByID(aid)
+	if errors.Is(aswErr, gorm.ErrRecordNotFound) {
+		return c.JSON(http.StatusNotFound, &utils.Error{
+			Code: "NOT_FOUND",
+			Data: "answer not found",
+		})
+	}
+
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: &answer,
+	})
+}
+
 func SortIntention(origArray *[]model.Intention) (*[]model.Intention, error) {
 	var newIntention []model.Intention
 	hasRank := false

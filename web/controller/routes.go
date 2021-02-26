@@ -70,7 +70,7 @@ func addRoutes(e *echo.Echo) {
 	form.GET("", getForm)
 
 	answer := api.Group("/answer")
-	// answer.GET("", getAnswer)
+	answer.GET("", getAnswer)
 	answer.PUT("", updateAnswer)
 
 	// TODO(TO/GA): Delete it
