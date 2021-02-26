@@ -67,9 +67,3 @@ func QueryAllForm() (*[]Form, error) {
 	result := gormDb.Find(&dbForm)
 	return &dbForm, result.Error
 }
-
-func QueryAllFormByOid(oid uint) (*[]Form, error) {
-	var dbForm []Form
-	result := gormDb.Model(&Organization{}).Where(&Form{OrganizationID: oid}).Find(&dbForm)
-	return &dbForm, result.Error
-}

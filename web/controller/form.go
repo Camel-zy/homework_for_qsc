@@ -163,7 +163,7 @@ func updateAnswer(c echo.Context) error {
 			Data: err.Error(),
 		})
 	}
-	if newIntention, err := SortIntention(&answerRequest.Intention); err != nil {
+	if newIntention, err := SortIntention(&answerRequest.Intention); err != nil  {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
 			Data: err.Error(),
@@ -252,26 +252,4 @@ func SortIntention(origArray *[]model.Intention) (*[]model.Intention, error) {
 		}
 	}
 	return &newIntention, nil
-}
-
-func getAllFormInOrganization(c echo.Context) error {
-	oid, typeErr := utils.IsUnsignedInteger(c.QueryParam("oid"))
-	if typeErr != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "oid need to be an unsigned integer",
-		})
-	}
-	forms, formErr := model.QueryAllFormByOid(oid)
-	if errors.Is(formErr, gorm.ErrRecordNotFound) {
-		return c.JSON(http.StatusNotFound, &utils.Error{
-			Code: "NOT_FOUND",
-			Data: "organization not found",
-		})
-	}
-
-	return c.JSON(http.StatusOK, &utils.Error{
-		Code: "SUCCESS",
-		Data: &forms,
-	})
 }
