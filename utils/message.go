@@ -120,7 +120,7 @@ func SendMessage(vid uint, messageTemplateID uint) (*string, error) {
 		}
 		return nil, model.ErrInternalError
 	}
-	answer, ansErr := model.QueryAnswerById(interviewee.AnswerID)
+	answer, ansErr := model.QueryAnswerByID(interviewee.AnswerID)
 	if ansErr != nil {
 		if errors.Is(ansErr, gorm.ErrRecordNotFound) {
 			return nil, errors.New("answer not found")
