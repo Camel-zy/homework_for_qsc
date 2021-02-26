@@ -188,11 +188,19 @@ func getIntervieweeByRound(c echo.Context) error {
 	did, didErr := utils.IsUnsignedInteger(c.QueryParam("did"))
 	eid, eidErr := utils.IsUnsignedInteger(c.QueryParam("eid"))
 	round, roundErr := utils.IsUnsignedInteger(c.QueryParam("round"))
+	status, statusErr := utils.IsUnsignedInteger(c.QueryParam("status"))
 
-	if didErr != nil || eidErr != nil || roundErr != nil {
+	if status == 4 || status == 5 {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
-			Data: "require uint did, eid and round",
+			Data: "status should not be 4 or 5",
+		})
+	}
+
+	if didErr != nil || eidErr != nil || roundErr != nil || statusErr != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "require uint did, eid, round and status",
 		})
 	}
 
@@ -212,7 +220,7 @@ func getIntervieweeByRound(c echo.Context) error {
 		})
 	}
 
-	interviewee, intervieweeErr := model.QueryIntervieweeByRound(did, eid, round)
+	interviewee, intervieweeErr := model.QueryIntervieweeByRound(did, eid, round, status)
 	if intervieweeErr != nil {
 		return c.JSON(http.StatusNotFound, &utils.Error{
 			Code: "NOT_FOUND",
