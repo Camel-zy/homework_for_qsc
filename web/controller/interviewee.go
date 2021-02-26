@@ -2,6 +2,8 @@ package controller
 
 import (
 	"encoding/json"
+	"errors"
+	"gorm.io/gorm"
 	"net/http"
 
 	"git.zjuqsc.com/rop/rop-back-neo/model"
@@ -106,7 +108,7 @@ func modifyIntervieweeTemplate(newStatus uint) func(echo.Context) error {
 // @param vid query uint true "Interviewee ID"
 // @success 200
 func admitInterviewee(c echo.Context) error {
-	return modifyIntervieweeTemplate(4)(c);
+	return modifyIntervieweeTemplate(4)(c)
 }
 
 // @tags Interviewee
@@ -115,7 +117,7 @@ func admitInterviewee(c echo.Context) error {
 // @param vid query uint true "Interviewee ID"
 // @success 200
 func nextInterviewee(c echo.Context) error {
-	return modifyIntervieweeTemplate(2)(c);
+	return modifyIntervieweeTemplate(2)(c)
 }
 
 // @tags Interviewee
@@ -124,5 +126,206 @@ func nextInterviewee(c echo.Context) error {
 // @param vid query uint true "Interviewee ID"
 // @success 200
 func rejectInterviewee(c echo.Context) error {
-	return modifyIntervieweeTemplate(5)(c);
+	return modifyIntervieweeTemplate(5)(c)
+}
+
+// @tags Interviewee
+// @summary Get interviewee in event of department
+// @router /event/department/interviewee [get]
+// @param eid query uint true "Event ID"
+// @param did query uint true "Department ID"
+// @produce json
+// @success 200 {object} model.Interviewee
+func getIntervieweeInEventOfDepartment(c echo.Context) error {
+	eid, eidErr := utils.IsUnsignedInteger(c.QueryParam("eid"))
+	did, didErr := utils.IsUnsignedInteger(c.QueryParam("did"))
+
+	if eidErr != nil || didErr != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "require uint eid and did",
+		})
+	}
+
+	_, eventErr := model.QueryEventByID(eid)
+	if errors.Is(eventErr, gorm.ErrRecordNotFound) {
+		return c.JSON(http.StatusNotFound, &utils.Error{
+			Code: "NOT_FOUND",
+			Data: "event not found",
+		})
+	}
+	_, departmentErr := model.QueryDepartmentById(did)
+	if errors.Is(departmentErr, gorm.ErrRecordNotFound) {
+		return c.JSON(http.StatusNotFound, &utils.Error{
+			Code: "NOT_FOUND",
+			Data: "department not found",
+		})
+	}
+
+	interviewee, intervieweeErr := model.QueryIntervieweeByDidAndEid(did, eid)
+	if intervieweeErr != nil {
+		return c.JSON(http.StatusNotFound, &utils.Error{
+			Code: "NOT_FOUND",
+			Data: "interviewee not found",
+		})
+	}
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: &interviewee,
+	})
+}
+
+// @tags Interviewee
+// @summary Get interviewee in event of department by round
+// @router /event/department/round/interviewee [get]
+// @param eid query uint true "Event ID"
+// @param did query uint true "Department ID"
+// @param round query uint true "Round"
+// @produce json
+// @success 200 {object} model.Interviewee
+func getIntervieweeByRound(c echo.Context) error {
+
+	did, didErr := utils.IsUnsignedInteger(c.QueryParam("did"))
+	eid, eidErr := utils.IsUnsignedInteger(c.QueryParam("eid"))
+	round, roundErr := utils.IsUnsignedInteger(c.QueryParam("round"))
+
+	if didErr != nil || eidErr != nil || roundErr != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "require uint did, eid and round",
+		})
+	}
+
+	_, departmentErr := model.QueryDepartmentById(did)
+	if departmentErr != nil {
+		return c.JSON(http.StatusNotFound, &utils.Error{
+			Code: "NOT_FOUND",
+			Data: "department not found",
+		})
+	}
+
+	_, eventErr := model.QueryEventByID(eid)
+	if eventErr != nil {
+		return c.JSON(http.StatusNotFound, &utils.Error{
+			Code: "NOT_FOUND",
+			Data: "event not found",
+		})
+	}
+
+	interviewee, intervieweeErr := model.QueryIntervieweeByRound(did, eid, round)
+	if intervieweeErr != nil {
+		return c.JSON(http.StatusNotFound, &utils.Error{
+			Code: "NOT_FOUND",
+			Data: "interviewee not found",
+		})
+	}
+
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: &interviewee,
+	})
+}
+
+// @tags Interviewee
+// @summary Get interviewee of admitted status
+// @router /event/department/round/admitted/interviewee [get]
+// @param eid query uint true "Event ID"
+// @param did query uint true "Department ID"
+// @param round query uint true "Round"
+// @produce json
+// @success 200 {object} model.Interviewee
+func getIntervieweeByAdmittedStatus(c echo.Context) error {
+	var status uint
+	status = 4 //Status: 4 纳入组织，5 拒绝
+	did, didErr := utils.IsUnsignedInteger(c.QueryParam("did"))
+	eid, eidErr := utils.IsUnsignedInteger(c.QueryParam("eid"))
+	round, roundErr := utils.IsUnsignedInteger(c.QueryParam("round"))
+
+	if didErr != nil || eidErr != nil || roundErr != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "require uint did, eid and round",
+		})
+	}
+
+	_, departmentErr := model.QueryDepartmentById(did)
+	if departmentErr != nil {
+		return c.JSON(http.StatusNotFound, &utils.Error{
+			Code: "NOT_FOUND",
+			Data: "department not found",
+		})
+	}
+
+	_, eventErr := model.QueryEventByID(eid)
+	if eventErr != nil {
+		return c.JSON(http.StatusNotFound, &utils.Error{
+			Code: "NOT_FOUND",
+			Data: "event not found",
+		})
+	}
+
+	interviewee, intervieweeErr := model.QueryIntervieweeByStatus(did, eid, round, status)
+	if intervieweeErr != nil {
+		return c.JSON(http.StatusNotFound, &utils.Error{
+			Code: "NOT_FOUND",
+			Data: "interviewee not found",
+		})
+	}
+
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: &interviewee,
+	})
+}
+
+// @tags Interviewee
+// @summary Get interviewee of rejected status
+// @router /event/department/round/rejected/interviewee [get]
+// @param eid query uint true "Event ID"
+// @param did query uint true "Department ID"
+// @param did round uint true "Round"
+// @produce json
+// @success 200 {object} model.Interviewee
+func getIntervieweeByRejectedStatus(c echo.Context) error {
+	var status uint
+	status = 5 //Status: 4 纳入组织，5 拒绝
+	did, didErr := utils.IsUnsignedInteger(c.QueryParam("did"))
+	eid, eidErr := utils.IsUnsignedInteger(c.QueryParam("eid"))
+	round, roundErr := utils.IsUnsignedInteger(c.QueryParam("round"))
+
+	if didErr != nil || eidErr != nil || roundErr != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "require uint did, eid and round",
+		})
+	}
+
+	_, departmentErr := model.QueryDepartmentById(did)
+	if departmentErr != nil {
+		return c.JSON(http.StatusNotFound, &utils.Error{
+			Code: "NOT_FOUND",
+			Data: "department not found",
+		})
+	}
+
+	_, eventErr := model.QueryEventByID(eid)
+	if eventErr != nil {
+		return c.JSON(http.StatusNotFound, &utils.Error{
+			Code: "NOT_FOUND",
+			Data: "event not found",
+		})
+	}
+
+	interviewee, intervieweeErr := model.QueryIntervieweeByStatus(did, eid, round, status)
+	if intervieweeErr != nil {
+		return c.JSON(http.StatusNotFound, &utils.Error{
+			Code: "NOT_FOUND",
+			Data: "interviewee not found",
+		})
+	}
+
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: &interviewee,
+	})
 }

@@ -67,7 +67,7 @@ func getAllDepartmentInOrganization(c echo.Context) error {
 	}
 
 	departments, depErr := model.QueryAllDepartmentInOrganization(oid)
-	if errors.Is(depErr, gorm.ErrRecordNotFound){
+	if errors.Is(depErr, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, &utils.Error{
 			Code: "NOT_FOUND",
 			Data: "organization not found",
@@ -78,4 +78,33 @@ func getAllDepartmentInOrganization(c echo.Context) error {
 		Code: "SUCCESS",
 		Data: &departments,
 	})
+}
+
+// @tags Department
+// @summary Get all departments in event
+// @router /event/department/all [get]
+// @param eid query uint true "Event ID"
+// @produce json
+// @success 200 {array} model.Brief
+func getAllDepartmentInEvent(c echo.Context) error {
+	eid, typeErr := utils.IsUnsignedInteger(c.QueryParam("eid"))
+	if typeErr != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "eid need to be an unsigned integer",
+		})
+	}
+	departments, depErr := model.QueryAllDepartmentByEid(eid)
+	if errors.Is(depErr, gorm.ErrRecordNotFound) {
+		return c.JSON(http.StatusNotFound, &utils.Error{
+			Code: "NOT_FOUND",
+			Data: "event not found",
+		})
+	}
+
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: &departments,
+	})
+
 }
