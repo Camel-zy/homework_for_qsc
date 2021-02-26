@@ -1,18 +1,25 @@
 package controller
 
 import (
+	"net/http"
+
 	"git.zjuqsc.com/rop/rop-back-neo/model"
 	"git.zjuqsc.com/rop/rop-back-neo/utils"
-	uuid "github.com/satori/go.uuid"
 	"github.com/labstack/echo/v4"
+	uuid "github.com/satori/go.uuid"
 	"github.com/sirupsen/logrus"
-	"net/http"
 )
+
+type PresignedPost struct {
+	Url    string            `json:"url"`
+	UUID   uuid.UUID         `json:"uuid"`
+	Policy map[string]string `json:"policy"`
+}
 
 // @tags Object
 // @produce json
 func createObject(c echo.Context) error {
-	url, err := model.CreateObject(c.Request().Context(), c.QueryParam("name"))
+	url, formData, uuid, err := model.CreateObject(c.Request().Context(), c.QueryParam("name"))
 	if err != nil {
 		logrus.Error(err)
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
@@ -23,7 +30,11 @@ func createObject(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
-		Data: url.String(),
+		Data: PresignedPost{
+			Url:    url.String(),
+			Policy: formData,
+			UUID:   uuid,
+		},
 	})
 }
 
