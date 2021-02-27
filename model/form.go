@@ -22,7 +22,6 @@ type Form struct {
 type CreateFormRequest struct {
 	Name           string         `json:"Name" validate:"required"`
 	Description    string         `json:"Description" validate:"required"`
-	OrganizationID uint           `json:"oid" validate:"required"`
 	Content        datatypes.JSON `json:"Content" validate:"required"`
 }
 
@@ -34,7 +33,7 @@ type UpdateFormRequest struct {
 	Content     datatypes.JSON `json:"Content"`
 }
 
-func CreateForm(formRequest *CreateFormRequest) (Form, error) {
+func CreateForm(formRequest *Form) (Form, error) {
 	dbForm := Form{}
 	copier.Copy(&dbForm, formRequest)
 	result := gormDb.Create(&dbForm)

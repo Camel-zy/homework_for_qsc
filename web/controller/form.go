@@ -6,6 +6,7 @@ import (
 
 	"git.zjuqsc.com/rop/rop-back-neo/model"
 	"git.zjuqsc.com/rop/rop-back-neo/utils"
+	"github.com/jinzhu/copier"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 )
@@ -14,10 +15,20 @@ import (
 // @summary Create a form
 // @description Create a form
 // @router /form [put]
+// @param oid query uint true "Organization ID"
 // @accept json
 // @param data body model.CreateFormRequest_ true "Form information"
 // @success 200 {object} model.Form_
 func createForm(c echo.Context) error {
+	var oid uint
+	err := echo.QueryParamsBinder(c).MustUint("oid", &oid).BindError()
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "oid needs to be an unsigned integer",
+		})
+	}
+
 	formRequest := model.CreateFormRequest{}
 	if err := c.Bind(&formRequest); err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
@@ -32,7 +43,11 @@ func createForm(c echo.Context) error {
 		})
 	}
 
-	form, err := model.CreateForm(&formRequest)
+	var form model.Form
+	copier.Copy(&form, formRequest)
+	form.OrganizationID = oid
+
+	form, err = model.CreateForm(&form)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "INTERNAL_SERVER_ERR",

@@ -21,7 +21,6 @@ type Form_ struct {
 type CreateFormRequest_ struct {
 	Name           string `json:"Name" validate:"required"`
 	Description    string `json:"Description" validate:"required"`
-	OrganizationID uint   `json:"oid" validate:"required"`
 	Content        string `example:"JSON"`
 }
 

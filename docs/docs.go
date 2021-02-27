@@ -623,6 +623,13 @@ var doc = `{
                 "summary": "Create a form",
                 "parameters": [
                     {
+                        "type": "integer",
+                        "description": "Organization ID",
+                        "name": "oid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
                         "description": "Form information",
                         "name": "data",
                         "in": "body",
