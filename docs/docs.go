@@ -1223,8 +1223,7 @@ var doc = `{
             "type": "object",
             "required": [
                 "Description",
-                "Name",
-                "oid"
+                "Name"
             ],
             "properties": {
                 "Description": {
@@ -1236,9 +1235,6 @@ var doc = `{
                 "content": {
                     "type": "string",
                     "example": "JSON"
-                },
-                "oid": {
-                    "type": "integer"
                 }
             }
         },
