@@ -66,8 +66,8 @@ func addRoutes(e *echo.Echo) {
 	interviewee.POST("/reject", rejectInterviewee)
 
 	form := api.Group("/form")
-	form.PUT("/create", createForm)
-	form.POST("/update", updateForm)
+	form.PUT("", createForm)
+	form.POST("", updateForm)
 	form.GET("", getForm)
 
 	answer := api.Group("/answer")

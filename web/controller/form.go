@@ -13,24 +13,12 @@ import (
 // @tags Form
 // @summary Create a form
 // @description Create a form
-// @router /form/create [put]
+// @router /form [put]
 // @accept json
-// @param oid query uint true "Organization ID"
-// @param data body model.FormApi_ true "Form information"
-// @success 200
+// @param data body model.CreateFormRequest_ true "Form information"
+// @success 200 {object} model.Form_
 func createForm(c echo.Context) error {
-	var oid uint
-	err := echo.QueryParamsBinder(c).
-		MustUint("oid", &oid).
-		BindError()
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "oid need to be an unsigned integer",
-		})
-	}
-
-	formRequest := model.FormRequest{}
+	formRequest := model.CreateFormRequest{}
 	if err := c.Bind(&formRequest); err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
@@ -44,17 +32,17 @@ func createForm(c echo.Context) error {
 		})
 	}
 
-	if fid, err := model.CreateForm(&formRequest, oid); err != nil {
+	form, err := model.CreateForm(&formRequest)
+	if err != nil {
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "INTERNAL_SERVER_ERR",
 			Data: "create form fail",
 		})
-	} else {
-		return c.JSON(http.StatusOK, &utils.Error{
-			Code: "SUCCESS",
-			Data: fid,
-		})
 	}
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: form,
+	})
 }
 
 // @tags Form
@@ -63,8 +51,8 @@ func createForm(c echo.Context) error {
 // @router /form [post]
 // @accept json
 // @param fid query uint true "Form ID"
-// @param data body model.FormApi_ true "Form information"
-// @success 200
+// @param data body model.UpdateFormRequest_ true "Form information"
+// @success 200 {object} model.Form_
 func updateForm(c echo.Context) error {
 	var fid uint
 	err := echo.QueryParamsBinder(c).MustUint("fid", &fid).BindError()
@@ -75,9 +63,15 @@ func updateForm(c echo.Context) error {
 		})
 	}
 
-	formRequest := model.FormRequest{}
+	formRequest := model.UpdateFormRequest{}
 	err = c.Bind(&formRequest)
 	if err != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: err.Error(),
+		})
+	}
+	if err := c.Validate(&formRequest); err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
 			Data: err.Error(),
@@ -131,7 +125,7 @@ func getForm(c echo.Context) error {
 // @description Get a form
 // @router /organization/form/all [get]
 // @param oid query uint true "Organization ID"
-// @success 200 {object} model.Form
+// @success 200 {array} model.Form_
 func getAllFormInOrganization(c echo.Context) error {
 	oid, typeErr := utils.IsUnsignedInteger(c.QueryParam("oid"))
 	if typeErr != nil {

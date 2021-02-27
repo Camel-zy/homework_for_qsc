@@ -612,6 +612,35 @@ var doc = `{
                     }
                 }
             },
+            "put": {
+                "description": "Create a form",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Form"
+                ],
+                "summary": "Create a form",
+                "parameters": [
+                    {
+                        "description": "Form information",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CreateFormRequest_"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Form_"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Update a form",
                 "consumes": [
@@ -635,48 +664,16 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.FormApi_"
+                            "$ref": "#/definitions/model.UpdateFormRequest_"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": ""
-                    }
-                }
-            }
-        },
-        "/form/create": {
-            "put": {
-                "description": "Create a form",
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Form"
-                ],
-                "summary": "Create a form",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Organization ID",
-                        "name": "oid",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "description": "Form information",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
+                        "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.FormApi_"
+                            "$ref": "#/definitions/model.Form_"
                         }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": ""
                     }
                 }
             }
@@ -1135,7 +1132,10 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.Form"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Form_"
+                            }
                         }
                     }
                 }
@@ -1209,6 +1209,29 @@ var doc = `{
                 },
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "model.CreateFormRequest_": {
+            "type": "object",
+            "required": [
+                "Description",
+                "Name",
+                "oid"
+            ],
+            "properties": {
+                "Description": {
+                    "type": "string"
+                },
+                "Name": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string",
+                    "example": "JSON"
+                },
+                "oid": {
+                    "type": "integer"
                 }
             }
         },
@@ -1289,60 +1312,6 @@ var doc = `{
                 },
                 "status": {
                     "description": "1 disabled (default), 2 testing, 3 running",
-                    "type": "integer"
-                }
-            }
-        },
-        "model.Form": {
-            "type": "object",
-            "properties": {
-                "content": {
-                    "type": "string"
-                },
-                "createTime": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "organizationID": {
-                    "type": "integer"
-                },
-                "status": {
-                    "description": "1 pinned, 2 used, 3 unused, 4 abandoned",
-                    "type": "integer"
-                }
-            }
-        },
-        "model.FormApi_": {
-            "type": "object",
-            "properties": {
-                "content": {
-                    "type": "string",
-                    "example": "JSON"
-                },
-                "createTime": {
-                    "type": "string"
-                },
-                "departmentID": {
-                    "type": "integer"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "organizationID": {
-                    "type": "integer"
-                },
-                "status": {
                     "type": "integer"
                 }
             }
@@ -1536,6 +1505,29 @@ var doc = `{
                 },
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "model.UpdateFormRequest_": {
+            "type": "object",
+            "required": [
+                "Content",
+                "Description",
+                "Name",
+                "Status"
+            ],
+            "properties": {
+                "Content": {
+                    "type": "string"
+                },
+                "Description": {
+                    "type": "string"
+                },
+                "Name": {
+                    "type": "string"
+                },
+                "Status": {
+                    "type": "integer"
                 }
             }
         }
