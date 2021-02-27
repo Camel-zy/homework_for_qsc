@@ -51,7 +51,7 @@ build:
     - docker
   script:
     - docker pull $IMAGE_TAG:latest || true
-    - docker build --build-arg CI_JOB_TOKEN --cache-from $IMAGE_TAG:latest -t $IMAGE_TAG:$CI_COMMIT_SHA -t $IMAGE_TAG:latest .
+    - docker build --build-arg REPO_PASSWD=$CI_JOB_TOKEN --build-arg REPO_USER=gitlab-ci-token --cache-from $IMAGE_TAG:latest -t $IMAGE_TAG:$CI_COMMIT_SHA -t $IMAGE_TAG:latest .
     - docker push $IMAGE_TAG:$CI_COMMIT_SHA
     - docker push $IMAGE_TAG:latest
 

@@ -1,6 +1,7 @@
 FROM golang:1.15 AS builder
 
-ARG CI_JOB_TOKEN=$CI_JOB_TOKEN
+ARG REPO_USER=$REPO_USER
+ARG REPO_PASSWD=$REPO_PASSWD
 
 ENV GOPROXY=https://mirrors.aliyun.com/goproxy/,direct \
     GO111MODULE=on \
@@ -10,7 +11,7 @@ ENV GOPROXY=https://mirrors.aliyun.com/goproxy/,direct \
 
 RUN mkdir -p $WORKDIR
 
-RUN git config --global url."https://gitlab-ci-token:${CI_JOB_TOKEN}@git.zjuqsc.com/".insteadOf "https://git.zjuqsc.com/"
+RUN git config --global url."https://${REPO_USER}:${REPO_PASSWD}@git.zjuqsc.com/".insteadOf "https://git.zjuqsc.com/"
 
 COPY go.mod go.sum $WORKDIR
 
