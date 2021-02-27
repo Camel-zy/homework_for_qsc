@@ -181,6 +181,7 @@ func getIntervieweeInEventOfDepartment(c echo.Context) error {
 // @param eid query uint true "Event ID"
 // @param did query uint true "Department ID"
 // @param round query uint true "Round"
+// @param status query uint true "Status"
 // @produce json
 // @success 200 {object} model.Interviewee
 func getIntervieweeByRound(c echo.Context) error {
@@ -220,7 +221,7 @@ func getIntervieweeByRound(c echo.Context) error {
 		})
 	}
 
-	interviewee, intervieweeErr := model.QueryIntervieweeByRound(did, eid, round, status)
+	interviewee, intervieweeErr := model.QueryIntervieweeByRoundAndStatus(did, eid, round, status)
 	if intervieweeErr != nil {
 		return c.JSON(http.StatusNotFound, &utils.Error{
 			Code: "NOT_FOUND",
@@ -272,7 +273,7 @@ func getIntervieweeByAdmittedStatus(c echo.Context) error {
 		})
 	}
 
-	interviewee, intervieweeErr := model.QueryIntervieweeByStatus(did, eid, round, status)
+	interviewee, intervieweeErr := model.QueryIntervieweeByRoundAndStatus(did, eid, round, status)
 	if intervieweeErr != nil {
 		return c.JSON(http.StatusNotFound, &utils.Error{
 			Code: "NOT_FOUND",
@@ -324,7 +325,7 @@ func getIntervieweeByRejectedStatus(c echo.Context) error {
 		})
 	}
 
-	interviewee, intervieweeErr := model.QueryIntervieweeByStatus(did, eid, round, status)
+	interviewee, intervieweeErr := model.QueryIntervieweeByRoundAndStatus(did, eid, round, status)
 	if intervieweeErr != nil {
 		return c.JSON(http.StatusNotFound, &utils.Error{
 			Code: "NOT_FOUND",
