@@ -2,6 +2,7 @@ package model
 
 import (
 	"encoding/json"
+
 	"github.com/jinzhu/copier"
 	"gorm.io/datatypes"
 )
@@ -44,7 +45,7 @@ type AnswerResponse struct {
 	Content   datatypes.JSON
 }
 
-func QueryAnswerById(id uint) (*Answer, error) {
+func QueryAnswerByID(id uint) (*Answer, error) {
 	var dbAnswer Answer
 	result := gormDb.First(&dbAnswer, id)
 	return &dbAnswer, result.Error

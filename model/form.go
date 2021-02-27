@@ -4,28 +4,27 @@ import (
 	"time"
 
 	"github.com/jinzhu/copier"
-	"gorm.io/datatypes"
 )
 
 // Don't forget to modify Form_ if you modify this
 type Form struct {
-	ID             uint           `gorm:"not null;autoIncrement;primaryKey"`
-	Name           string         `gorm:"size:40;not null"`
-	Description    string         `gorm:"not null"`
-	CreateTime     time.Time      `gorm:"size:30;not null"`
-	OrganizationID uint           `gorm:"not null"`
-	DepartmentID   uint           `gorm:"not null"`
-	Status         uint           `gorm:"not null"` // 1 pinned, 2 used, 3 unused, 4 abandoned
-	Content        datatypes.JSON `gorm:"not null"`
+	ID             uint      `gorm:"not null;autoIncrement;primaryKey"`
+	Name           string    `gorm:"size:40;not null"`
+	Description    string    `gorm:"not null"`
+	CreateTime     time.Time `gorm:"size:30;not null"`
+	OrganizationID uint      `gorm:"not null"`
+	DepartmentID   uint      `gorm:"not null"`
+	Status         uint      `gorm:"not null"` // 1 pinned, 2 used, 3 unused, 4 abandoned
+	Content        string    `gorm:"not null"`
 }
 
 // Don't forget to modify FormRequest_ if you modify this
 type FormRequest struct {
-	Name        string         `json:"Name"`
-	Description string         `json:"Description"`
-	CreateTime  time.Time      `json:"CreateTime"`
-	Status      uint           `json:"Status"`
-	Content     datatypes.JSON `json:"Content"`
+	Name        string    `json:"Name"`
+	Description string    `json:"Description"`
+	CreateTime  time.Time `json:"CreateTime"`
+	Status      uint      `json:"Status"`
+	Content     string    `json:"Content"`
 }
 
 // Don't forget to modify FormResponse_ if you modify this
@@ -37,7 +36,7 @@ type FormResponse struct {
 	OrganizationID uint      `json:"OrganizationID" validate:"required"`
 	DepartmentID   uint
 	Status         uint
-	Content        datatypes.JSON
+	Content        string
 }
 
 func CreateForm(formRequest *FormRequest, oid uint, did uint) (uint, error) {

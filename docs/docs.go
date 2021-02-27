@@ -428,6 +428,20 @@ var doc = `{
                 "summary": "Create a form",
                 "parameters": [
                     {
+                        "type": "integer",
+                        "description": "Organization ID",
+                        "name": "oid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Department ID",
+                        "name": "did",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
                         "description": "Form information",
                         "name": "data",
                         "in": "body",
@@ -453,6 +467,13 @@ var doc = `{
                 ],
                 "summary": "Update a form",
                 "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Form ID",
+                        "name": "fid",
+                        "in": "query",
+                        "required": true
+                    },
                     {
                         "description": "Form information",
                         "name": "data",

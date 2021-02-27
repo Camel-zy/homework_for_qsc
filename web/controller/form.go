@@ -14,13 +14,15 @@ import (
 // @summary Create a form
 // @description Create a form
 // @router /form [put]
-// @accept  json
+// @accept json
+// @param oid query uint true "Organization ID"
+// @param did query uint true "Department ID"
 // @param data body model.FormApi_ true "Form information"
 // @success 200
 func createForm(c echo.Context) error {
 	var oid, did uint
 	err := echo.QueryParamsBinder(c).
-		MustUint("eid", &oid).
+		MustUint("oid", &oid).
 		MustUint("did", &did).
 		BindError()
 	if err != nil {
@@ -61,7 +63,8 @@ func createForm(c echo.Context) error {
 // @summary Update a form
 // @description Update a form
 // @router /form [post]
-// @accept  json
+// @accept json
+// @param fid query uint true "Form ID"
 // @param data body model.FormApi_ true "Form information"
 // @success 200
 func updateForm(c echo.Context) error {
