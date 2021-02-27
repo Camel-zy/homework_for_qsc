@@ -156,12 +156,12 @@ func rejectInterviewee(c echo.Context) error {
 
 // @tags Interviewee
 // @summary Get interviewee in event of department
-// @router /event/department/interviewee [get]
+// @router /event/department/interviewee/all [get]
 // @param eid query uint true "Event ID"
 // @param did query uint true "Department ID"
 // @produce json
-// @success 200 {object} model.Interviewee_
-func getIntervieweeInEventOfDepartment(c echo.Context) error {
+// @success 200 {array} model.Interviewee_
+func getAllIntervieweeInEventOfDepartment(c echo.Context) error {
 	eid, eidErr := utils.IsUnsignedInteger(c.QueryParam("eid"))
 	did, didErr := utils.IsUnsignedInteger(c.QueryParam("did"))
 
@@ -187,7 +187,7 @@ func getIntervieweeInEventOfDepartment(c echo.Context) error {
 		})
 	}
 
-	interviewee, intervieweeErr := model.QueryIntervieweeByDidAndEid(did, eid)
+	interviewee, intervieweeErr := model.QueryAllIntervieweeByDidAndEid(did, eid)
 	if intervieweeErr != nil {
 		return c.JSON(http.StatusNotFound, &utils.Error{
 			Code: "NOT_FOUND",
@@ -262,7 +262,7 @@ func getIntervieweeByRound(c echo.Context) error {
 
 // @tags Interviewee
 // @summary Get interviewee of admitted status
-// @router /event/department/round/admitted/interviewee [get]
+// @router /event/department/admitted/interviewee [get]
 // @param eid query uint true "Event ID"
 // @param did query uint true "Department ID"
 // @param round query uint true "Round"
@@ -314,7 +314,7 @@ func getIntervieweeByAdmittedStatus(c echo.Context) error {
 
 // @tags Interviewee
 // @summary Get interviewee of rejected status
-// @router /event/department/round/rejected/interviewee [get]
+// @router /event/department/rejected/interviewee [get]
 // @param eid query uint true "Event ID"
 // @param did query uint true "Department ID"
 // @param round query uint true "Round"

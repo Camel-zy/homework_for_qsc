@@ -66,8 +66,8 @@ func QueryAllJoinedInterviewOfInterview(iid uint) (*[]JoinedInterview, error) {
 	return &dbJoinedInterview, result.Error
 }
 
-func QueryIntervieweeByDidAndEid(did, eid uint) (*Interviewee, error) {
-	var dbInterviewee Interviewee
+func QueryAllIntervieweeByDidAndEid(did, eid uint) (*[]Interviewee, error) {
+	var dbInterviewee []Interviewee
 	result := gormDb.Model(&Interviewee{}).Where(&Interviewee{DepartmentID: did, EventID: eid}).Find(&dbInterviewee)
 	return &dbInterviewee, result.Error
 }
