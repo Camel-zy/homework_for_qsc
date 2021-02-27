@@ -159,48 +159,6 @@ var doc = `{
                 ]
             }
         },
-        "/event/department/admitted/interviewee": {
-            "get": {
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Interviewee"
-                ],
-                "summary": "Get interviewee of admitted status",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Event ID",
-                        "name": "eid",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Department ID",
-                        "name": "did",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Round",
-                        "name": "round",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.Interviewee_"
-                        }
-                    }
-                }
-            }
-        },
         "/event/department/all": {
             "get": {
                 "produces": [
@@ -265,48 +223,6 @@ var doc = `{
                             "items": {
                                 "$ref": "#/definitions/model.Interviewee_"
                             }
-                        }
-                    }
-                }
-            }
-        },
-        "/event/department/rejected/interviewee": {
-            "get": {
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Interviewee"
-                ],
-                "summary": "Get interviewee of rejected status",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Event ID",
-                        "name": "eid",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Department ID",
-                        "name": "did",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Round",
-                        "name": "round",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.Interviewee_"
                         }
                     }
                 }
@@ -437,7 +353,7 @@ var doc = `{
                 }
             }
         },
-        "/event/department/round/interviewee": {
+        "/event/department/round/interviewee/all": {
             "get": {
                 "produces": [
                     "application/json"
@@ -463,15 +379,8 @@ var doc = `{
                     },
                     {
                         "type": "integer",
-                        "description": "Round",
+                        "description": "Round (0为名单总览，1为公海，2为一面，以此类推)",
                         "name": "round",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Status",
-                        "name": "status",
                         "in": "query",
                         "required": true
                     }
@@ -480,7 +389,10 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.Interviewee_"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Interviewee_"
+                            }
                         }
                     }
                 }

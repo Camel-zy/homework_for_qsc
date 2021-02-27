@@ -72,8 +72,8 @@ func QueryAllIntervieweeByDidAndEid(did, eid uint) (*[]Interviewee, error) {
 	return &dbInterviewee, result.Error
 }
 
-func QueryIntervieweeByRoundAndStatus(did, eid, round, status uint) (*Interviewee, error) {
-	var dbInterviewee Interviewee
+func QueryAllIntervieweeByRoundAndStatus(did, eid, round, status uint) (*[]Interviewee, error) {
+	var dbInterviewee []Interviewee
 	result := gormDb.Model(&Interviewee{}).Where(&Interviewee{DepartmentID: did, EventID: eid, Round: round, Status: status}).Find(&dbInterviewee)
 	return &dbInterviewee, result.Error
 }
