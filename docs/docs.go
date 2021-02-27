@@ -749,6 +749,37 @@ var doc = `{
                 ]
             }
         },
+        "/interview/interviewee": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Interviewee"
+                ],
+                "summary": "Get all interviewees in an interview",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Interview ID",
+                        "name": "iid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Interviewee_"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/interviewee/admit": {
             "post": {
                 "tags": [

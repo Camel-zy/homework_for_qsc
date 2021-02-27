@@ -76,6 +76,30 @@ func updateIntervieweeOptions(c echo.Context) error {
 	})
 }
 
+// @tags Interviewee
+// @summary Get all interviewees in an interview
+// @router /interview/interviewee [get]
+// @param iid query uint true "Interview ID"
+// @produce json
+// @success 200 {array} model.Interviewee_
+func getAllInterviewees(c echo.Context) error {
+	var iid uint
+	iid = c.Get("iid").(uint)
+
+	joinedInterview, err := model.QueryAllJoinedInterviewOfInterview(iid)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, &utils.Error{
+			Code: "INTERNAL_SERVER_ERR",
+			Data: "get interviewees failed",
+		})
+	}
+
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: *joinedInterview,
+	})
+}
+
 func modifyIntervieweeTemplate(newStatus uint) func(echo.Context) error {
 	return func(c echo.Context) error {
 		vid := c.Get("vid").(uint)
