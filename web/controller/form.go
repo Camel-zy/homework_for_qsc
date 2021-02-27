@@ -13,22 +13,21 @@ import (
 // @tags Form
 // @summary Create a form
 // @description Create a form
-// @router /form [put]
+// @router /form/create [put]
 // @accept json
 // @param oid query uint true "Organization ID"
 // @param did query uint true "Department ID"
 // @param data body model.FormApi_ true "Form information"
 // @success 200
 func createForm(c echo.Context) error {
-	var oid, did uint
+	var oid uint
 	err := echo.QueryParamsBinder(c).
 		MustUint("oid", &oid).
-		MustUint("did", &did).
 		BindError()
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
-			Data: "oid and did need to be an unsigned integer",
+			Data: "oid need to be an unsigned integer",
 		})
 	}
 
@@ -46,7 +45,7 @@ func createForm(c echo.Context) error {
 		})
 	}
 
-	if fid, err := model.CreateForm(&formRequest, oid, did); err != nil {
+	if fid, err := model.CreateForm(&formRequest, oid); err != nil {
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "INTERNAL_SERVER_ERR",
 			Data: "create form fail",

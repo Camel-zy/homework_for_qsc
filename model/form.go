@@ -13,7 +13,6 @@ type Form struct {
 	Description    string    `gorm:"not null"`
 	CreateTime     time.Time `gorm:"size:30;not null"`
 	OrganizationID uint      `gorm:"not null"`
-	DepartmentID   uint      `gorm:"not null"`
 	Status         uint      `gorm:"not null"` // 1 pinned, 2 used, 3 unused, 4 abandoned
 	Content        string    `gorm:"not null"`
 }
@@ -34,16 +33,14 @@ type FormResponse struct {
 	Description    string    `json:"Description"`
 	CreateTime     time.Time `json:"CreateTime" validate:"required"` // request string must be in RFC 3339 format
 	OrganizationID uint      `json:"OrganizationID" validate:"required"`
-	DepartmentID   uint
 	Status         uint
 	Content        string
 }
 
-func CreateForm(formRequest *FormRequest, oid uint, did uint) (uint, error) {
+func CreateForm(formRequest *FormRequest, oid uint) (uint, error) {
 	dbForm := Form{}
 	copier.Copy(&dbForm, formRequest)
 	dbForm.OrganizationID = oid
-	dbForm.DepartmentID = did
 	result := gormDb.Create(&dbForm)
 	return dbForm.ID, result.Error
 }
