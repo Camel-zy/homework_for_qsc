@@ -28,10 +28,10 @@ type CreateFormRequest struct {
 
 // Don't forget to modify FormRequest_ if you modify this
 type UpdateFormRequest struct {
-	Name        string         `json:"Name" validate:"required"`
-	Description string         `json:"Description" validate:"required"`
-	Status      uint           `json:"Status" validate:"required"`
-	Content     datatypes.JSON `json:"Content" validate:"required"`
+	Name        string         `json:"Name"`
+	Description string         `json:"Description"`
+	Status      uint           `json:"Status"`
+	Content     datatypes.JSON `json:"Content"`
 }
 
 func CreateForm(formRequest *CreateFormRequest) (Form, error) {
