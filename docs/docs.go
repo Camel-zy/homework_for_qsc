@@ -159,6 +159,44 @@ var doc = `{
                 ]
             }
         },
+        "/event/department/admitted/interviewee/all": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Interviewee"
+                ],
+                "summary": "Get interviewee of admitted status",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Event ID",
+                        "name": "eid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Department ID",
+                        "name": "did",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Interviewee_"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/event/department/all": {
             "get": {
                 "produces": [
@@ -199,6 +237,44 @@ var doc = `{
                     "Interviewee"
                 ],
                 "summary": "Get interviewee in event of department",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Event ID",
+                        "name": "eid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Department ID",
+                        "name": "did",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Interviewee_"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/event/department/rejected/interviewee/all": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Interviewee"
+                ],
+                "summary": "Get interviewee of rejected status",
                 "parameters": [
                     {
                         "type": "integer",
