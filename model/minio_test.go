@@ -1,4 +1,4 @@
-package test
+package model
 
 import (
 	"bytes"
@@ -9,21 +9,12 @@ import (
 	"net/http"
 	"testing"
 
-	"git.zjuqsc.com/rop/rop-back-neo/conf"
-	"git.zjuqsc.com/rop/rop-back-neo/model"
-	"gorm.io/driver/postgres"
+	"github.com/stretchr/testify/assert"
 )
 
-func testInit() {
-	conf.Init()
-	model.Connect(postgres.Open(conf.GetDatabaseLoginInfo()))
-	model.CreateTables()
-	model.ConnectObjectStorage()
-}
 func TestPermanentObjectCreateAndDownload(t *testing.T) {
-	testInit()
 	ctx := context.Background()
-	postUrl, policy, uuid, err := model.CreateObject(ctx, "foobar")
+	postUrl, policy, uuid, err := CreateObject(ctx, "foobar")
 	if err != nil {
 		t.Errorf("Fail to create object")
 	}
@@ -45,17 +36,17 @@ func TestPermanentObjectCreateAndDownload(t *testing.T) {
 	req.Header.Add("Content-Type", w.FormDataContentType())
 
 	resp, err := hc.Do(req)
-	if err != nil || resp.StatusCode != 204 {
-		var errorInfo []byte
-		_, _ = resp.Body.Read(errorInfo)
+	assert.Equal(t, resp.StatusCode, 204)
+	if err != nil {
+		errorInfo, _ := ioutil.ReadAll(resp.Body)
 		fmt.Println(errorInfo)
 		t.Errorf("Fail to create object")
 	}
-	err = model.SealObject(ctx, uuid)
-	if err != nil {
+
+	if err = SealObject(ctx, uuid); err != nil {
 		t.Errorf("Fail to get object")
 	}
-	getUrl, err := model.GetObject(ctx, uuid)
+	getUrl, err := GetObject(ctx, uuid)
 	if err != nil {
 		t.Errorf("Fail to get object")
 	}
@@ -68,7 +59,5 @@ func TestPermanentObjectCreateAndDownload(t *testing.T) {
 		t.Errorf("Fail to get object")
 	}
 	gotData, _ := ioutil.ReadAll(resp.Body)
-	if !bytes.Equal(gotData, data) {
-		t.Errorf("Fail to get object")
-	}
+	assert.Equal(t, gotData, data)
 }
