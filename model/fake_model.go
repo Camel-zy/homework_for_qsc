@@ -2,6 +2,8 @@ package model
 
 import (
 	"time"
+
+	uuid "github.com/satori/go.uuid"
 )
 
 // CAUTIOUS: do NOT use this
@@ -57,4 +59,17 @@ type AnswerResponse_ struct {
 	Mobile    string
 	Intention string `example:"JSON"`
 	Content   string `example:"JSON"`
+}
+
+// CAUTIOUS: do NOT use this
+type Interviewee_ struct {
+	ID               uint
+	UUID             uuid.UUID
+	EventID          uint
+	AnswerID         uint
+	DepartmentID     uint
+	IntentRank       uint
+	Round            uint
+	InterviewOptions string`example:"JSON"`
+	Status           uint
 }

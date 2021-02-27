@@ -2,11 +2,12 @@ package controller
 
 import (
 	"errors"
+	"net/http"
+
 	"git.zjuqsc.com/rop/rop-back-neo/model"
 	"git.zjuqsc.com/rop/rop-back-neo/utils"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
-	"net/http"
 )
 
 // @tags Organization
@@ -46,14 +47,14 @@ func getOrganization(c echo.Context) error {
 // @produce json
 // @success 200 {array} model.Brief
 func getAllOrganization(c echo.Context) error {
-	oid, ok := c.Get("uid").(uint)
-	if !ok || oid == 0 {
+	uid, ok := c.Get("uid").(uint)
+	if !ok || uid == 0 {
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "INTERNAL_SERVER_ERR",
 			Data: "get uid error",
 		})
 	}
-	organizations, _ := model.QueryAllOrganization(oid)
+	organizations, _ := model.QueryAllOrganization(uid)
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
 		Data: &organizations,

@@ -9,6 +9,7 @@ import (
 )
 
 // 一个志愿一条记录
+// Don't forget to modify Interviewee_ if you modify this
 type Interviewee struct {
 	ID               uint           `gorm:"not null;autoIncrement;primaryKey"`
 	UUID             uuid.UUID      `gorm:"not null;type:uuid"`

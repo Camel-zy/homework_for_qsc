@@ -25,6 +25,33 @@ var doc = `{
     "basePath": "{{.BasePath}}",
     "paths": {
         "/answer": {
+            "get": {
+                "description": "Get information of an answer by AnswerID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Answer"
+                ],
+                "summary": "Get an answer",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Answer ID",
+                        "name": "aid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Answer_"
+                        }
+                    }
+                }
+            },
             "put": {
                 "description": "Create an answer",
                 "consumes": [
@@ -71,28 +98,6 @@ var doc = `{
                         "description": ""
                     }
                 }
-            }
-        },
-        "/avatar": {
-            "get": {
-                "description": "If everything is fine, the Data field will be a URL, from which you can get the avatar",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Avatar"
-                ],
-                "summary": "Get a URL from which you can get the avatar"
-            },
-            "post": {
-                "description": "You will receive multiple fields in \"Data\" field if the request status is 200 OK\nOne of these fields is \"url\", you are supposed to send a request to this URL\nOther fields need to be set into the multipart/form-data of the request mentioned above\nMeanwhile, you are supposed to set \"Content-Type\" field according to the MIME type of the avatar\nFinally, set \"file\" field with the avatar you are going to upload",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Avatar"
-                ],
-                "summary": "Get the information of uploading avatar"
             }
         },
         "/event": {
@@ -152,6 +157,72 @@ var doc = `{
                         }
                     }
                 ]
+            }
+        },
+        "/event/department/all": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Department"
+                ],
+                "summary": "Get all departments in event",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Event ID",
+                        "name": "eid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Brief"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/event/department/interviewee": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Interviewee"
+                ],
+                "summary": "Get interviewee in event of department",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Event ID",
+                        "name": "eid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Department ID",
+                        "name": "did",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Interviewee_"
+                        }
+                    }
+                }
             }
         },
         "/event/department/round": {
@@ -233,6 +304,48 @@ var doc = `{
                 }
             }
         },
+        "/event/department/round/admitted/interviewee": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Interviewee"
+                ],
+                "summary": "Get interviewee of admitted status",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Event ID",
+                        "name": "eid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Department ID",
+                        "name": "did",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Round",
+                        "name": "round",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Interviewee_"
+                        }
+                    }
+                }
+            }
+        },
         "/event/department/round/interview/all": {
             "get": {
                 "description": "Get brief information of all interviews of the same round in a specific event and department",
@@ -274,6 +387,97 @@ var doc = `{
                             "items": {
                                 "$ref": "#/definitions/model.Brief"
                             }
+                        }
+                    }
+                }
+            }
+        },
+        "/event/department/round/interviewee": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Interviewee"
+                ],
+                "summary": "Get interviewee in event of department by round",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Event ID",
+                        "name": "eid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Department ID",
+                        "name": "did",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Round",
+                        "name": "round",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Status",
+                        "name": "status",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Interviewee_"
+                        }
+                    }
+                }
+            }
+        },
+        "/event/department/round/rejected/interviewee": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Interviewee"
+                ],
+                "summary": "Get interviewee of rejected status",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Event ID",
+                        "name": "eid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Department ID",
+                        "name": "did",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Round",
+                        "name": "round",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Interviewee_"
                         }
                     }
                 }
@@ -417,27 +621,20 @@ var doc = `{
                     }
                 }
             },
-            "put": {
-                "description": "Create a form",
+            "post": {
+                "description": "Update a form",
                 "consumes": [
                     "application/json"
                 ],
                 "tags": [
                     "Form"
                 ],
-                "summary": "Create a form",
+                "summary": "Update a form",
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "Organization ID",
-                        "name": "oid",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Department ID",
-                        "name": "did",
+                        "description": "Form ID",
+                        "name": "fid",
                         "in": "query",
                         "required": true
                     },
@@ -456,21 +653,23 @@ var doc = `{
                         "description": ""
                     }
                 }
-            },
-            "post": {
-                "description": "Update a form",
+            }
+        },
+        "/form/create": {
+            "put": {
+                "description": "Create a form",
                 "consumes": [
                     "application/json"
                 ],
                 "tags": [
                     "Form"
                 ],
-                "summary": "Update a form",
+                "summary": "Create a form",
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "Form ID",
-                        "name": "fid",
+                        "description": "Organization ID",
+                        "name": "oid",
                         "in": "query",
                         "required": true
                     },
@@ -893,6 +1092,32 @@ var doc = `{
                     }
                 }
             }
+        },
+        "/organization/form/all": {
+            "get": {
+                "description": "Get a form",
+                "tags": [
+                    "Form"
+                ],
+                "summary": "Get all forms in organization",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Organization ID",
+                        "name": "oid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Form"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -913,6 +1138,40 @@ var doc = `{
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Answer_": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string",
+                    "example": "JSON"
+                },
+                "eventID": {
+                    "type": "integer"
+                },
+                "formID": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "intention": {
+                    "type": "string",
+                    "example": "JSON"
+                },
+                "mobile": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "zjuid": {
                     "type": "string"
                 }
             }
@@ -1008,6 +1267,33 @@ var doc = `{
                 },
                 "status": {
                     "description": "1 disabled (default), 2 testing, 3 running",
+                    "type": "integer"
+                }
+            }
+        },
+        "model.Form": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "createTime": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "organizationID": {
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "1 pinned, 2 used, 3 unused, 4 abandoned",
                     "type": "integer"
                 }
             }
@@ -1167,6 +1453,39 @@ var doc = `{
                     "items": {
                         "type": "integer"
                     }
+                }
+            }
+        },
+        "model.Interviewee_": {
+            "type": "object",
+            "properties": {
+                "answerID": {
+                    "type": "integer"
+                },
+                "departmentID": {
+                    "type": "integer"
+                },
+                "eventID": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "intentRank": {
+                    "type": "integer"
+                },
+                "interviewOptions": {
+                    "type": "string",
+                    "example": "JSON"
+                },
+                "round": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "uuid": {
+                    "type": "string"
                 }
             }
         },

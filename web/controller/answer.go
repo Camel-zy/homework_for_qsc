@@ -120,7 +120,7 @@ func updateAnswer(c echo.Context) error {
 // @router /answer [get]
 // @param aid query uint true "Answer ID"
 // @produce json
-// @success 200 {object} model.Answer
+// @success 200 {object} model.Answer_
 func getAnswer(c echo.Context) error {
 	var aid uint
 	err := echo.QueryParamsBinder(c).MustUint("aid", &aid).BindError()

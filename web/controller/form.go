@@ -16,7 +16,6 @@ import (
 // @router /form/create [put]
 // @accept json
 // @param oid query uint true "Organization ID"
-// @param did query uint true "Department ID"
 // @param data body model.FormApi_ true "Form information"
 // @success 200
 func createForm(c echo.Context) error {

@@ -3,8 +3,9 @@ package controller
 import (
 	"encoding/json"
 	"errors"
-	"gorm.io/gorm"
 	"net/http"
+
+	"gorm.io/gorm"
 
 	"git.zjuqsc.com/rop/rop-back-neo/model"
 	"git.zjuqsc.com/rop/rop-back-neo/utils"
@@ -135,7 +136,7 @@ func rejectInterviewee(c echo.Context) error {
 // @param eid query uint true "Event ID"
 // @param did query uint true "Department ID"
 // @produce json
-// @success 200 {object} model.Interviewee
+// @success 200 {object} model.Interviewee_
 func getIntervieweeInEventOfDepartment(c echo.Context) error {
 	eid, eidErr := utils.IsUnsignedInteger(c.QueryParam("eid"))
 	did, didErr := utils.IsUnsignedInteger(c.QueryParam("did"))
@@ -183,7 +184,7 @@ func getIntervieweeInEventOfDepartment(c echo.Context) error {
 // @param round query uint true "Round"
 // @param status query uint true "Status"
 // @produce json
-// @success 200 {object} model.Interviewee
+// @success 200 {object} model.Interviewee_
 func getIntervieweeByRound(c echo.Context) error {
 
 	did, didErr := utils.IsUnsignedInteger(c.QueryParam("did"))
@@ -242,7 +243,7 @@ func getIntervieweeByRound(c echo.Context) error {
 // @param did query uint true "Department ID"
 // @param round query uint true "Round"
 // @produce json
-// @success 200 {object} model.Interviewee
+// @success 200 {object} model.Interviewee_
 func getIntervieweeByAdmittedStatus(c echo.Context) error {
 	var status uint
 	status = 4 //Status: 4 纳入组织，5 拒绝
@@ -292,9 +293,9 @@ func getIntervieweeByAdmittedStatus(c echo.Context) error {
 // @router /event/department/round/rejected/interviewee [get]
 // @param eid query uint true "Event ID"
 // @param did query uint true "Department ID"
-// @param did round uint true "Round"
+// @param round query uint true "Round"
 // @produce json
-// @success 200 {object} model.Interviewee
+// @success 200 {object} model.Interviewee_
 func getIntervieweeByRejectedStatus(c echo.Context) error {
 	var status uint
 	status = 5 //Status: 4 纳入组织，5 拒绝
