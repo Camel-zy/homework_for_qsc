@@ -71,7 +71,7 @@ func addRoutes(e *echo.Echo) {
 
 	relation := api.Group("/relation")
 	relation.PUT("/event/form", createEventHasForm)
-	relation.GET("/event/form", getEventHasForm)
+	relation.GET("/event/form", validateEventHasForm)
 	relation.GET("/event/form/all", getAllFormOfEvent)
 
 	form := api.Group("/form")

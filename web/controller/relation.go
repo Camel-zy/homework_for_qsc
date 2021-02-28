@@ -49,8 +49,8 @@ func createEventHasForm(c echo.Context) error {
 }
 
 // @tags Relation
-// @summary Query relation
-// @description Make a relation query
+// @summary Validate relation
+// @description Validate a relation
 // @router /relation/event/form [get]
 // @param fid query uint true "Form ID"
 // @param eid query uint true "Event ID"

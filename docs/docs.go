@@ -1261,7 +1261,7 @@ var doc = `{
         },
         "/relation/event/form": {
             "get": {
-                "description": "Make a validation of the given relation",
+                "description": "Validate a relation",
                 "tags": [
                     "Relation"
                 ],
