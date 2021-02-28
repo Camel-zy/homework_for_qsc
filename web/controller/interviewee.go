@@ -381,3 +381,52 @@ func getAllIntervieweeByRejectedStatus(c echo.Context) error {
 		Data: &interviewee,
 	})
 }
+
+// @tags Interviewee
+// @summary Add an interviewee to an interview
+// @router /interview/interviewee [put]
+// @param iid query uint true "Interview ID"
+// @param vid query uint true "Interviewee ID"
+// @produce json
+// @success 200
+// func createIntervieweeToInterview(c echo.Context) error {
+
+// }
+
+// @tags Interviewee
+// @summary Delete an interviewee from an interview
+// @router /interview/interviewee [delete]
+// @param iid query uint true "Interview ID"
+// @param vid query uint true "Interviewee ID"
+// @produce json
+// @success 200
+func deleteIntervieweeFromInterview(c echo.Context) error {
+	var vid uint
+	err := echo.QueryParamsBinder(c).MustUint("vid", &vid).BindError()
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "vid needs to be an unsigned integer",
+		})
+	}
+
+	iid := c.Get("iid").(uint)
+
+	err = model.DeleteJoinedInterviewByIidAndVid(iid, vid)
+	if err != nil {
+		if errors.Is(err, model.ErrNoRowsAffected) {
+			return c.JSON(http.StatusBadRequest, &utils.Error{
+				Code: "BAD_REQUEST",
+				Data: "find interviewee in interview failed",
+			})
+		}
+		return c.JSON(http.StatusInternalServerError, &utils.Error{
+			Code: "INTERNAL_SERVER_ERR",
+			Data: "delete interviewee from interview failed",
+		})
+	}
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: nil,
+	})
+}

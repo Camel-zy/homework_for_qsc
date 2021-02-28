@@ -30,7 +30,8 @@ type JoinedInterview struct {
 	ID            uint      `gorm:"not null;autoIncrement;primaryKey"`
 	InterviewID   uint      `gorm:"not null"`
 	IntervieweeID uint      `gorm:"not null"`
-	UpdatedTime   time.Time `gorm:"not null"`
+	UpdatedTime   time.Time `gorm:"autoUpdateTime"`
+	Deleted       gorm.DeletedAt
 }
 
 // "Create Hook" of GORM
@@ -57,6 +58,19 @@ func QueryIntervieweeById(id uint) (*Interviewee, error) {
 
 func UpdateJoinedInterview(id uint, newResult uint) error {
 	result := gormDb.Model(&JoinedInterview{ID: id}).Update("result", newResult)
+	return result.Error
+}
+
+func DeleteJoinedInterviewByIidAndVid(iid, vid uint) error {
+	var dbJoinedInterview JoinedInterview
+	result := gormDb.Model(&JoinedInterview{}).Where(&JoinedInterview{InterviewID: iid, IntervieweeID: vid}).Find(&dbJoinedInterview)
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected == 0 {
+		return ErrNoRowsAffected
+	}
+	result = gormDb.Delete(&dbJoinedInterview)
 	return result.Error
 }
 

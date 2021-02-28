@@ -55,9 +55,11 @@ func addRoutes(e *echo.Echo) {
 	event.GET("/department/rejected/interviewee/all", getAllIntervieweeByRejectedStatus)
 	event.GET("/department/all", getAllDepartmentInEvent)
 	interview := api.Group("/interview", middleware.SetInterviewOrganization, middleware.AuthOrganization)
-	interview.GET("/interviewee/all", getAllInterviewees)
 	interview.POST("", updateInterview)
 	interview.GET("", getInterview)
+	// interview.PUT("/interviewee", createIntervieweeToInterview)
+	interview.DELETE("/interviewee", deleteIntervieweeFromInterview)
+	interview.GET("/interviewee/all", getAllInterviewees)
 
 	interviewee := api.Group("/interviewee", middleware.AuthInterviewee)
 	interviewee.POST("/options", updateIntervieweeOptions)
