@@ -260,7 +260,7 @@ func getAllIntervieweeByRound(c echo.Context) error {
 			})
 		}
 	} else {
-		var ret []model.Interviewee
+		ret := make([]model.Interviewee, 0)
 		for i := 1; i < 4; i++ {
 			intervieweeTemp, intervieweeErr := model.QueryAllIntervieweeByRoundAndStatus(did, eid, round, uint(i))
 			if intervieweeErr != nil && !errors.Is(intervieweeErr, gorm.ErrRecordNotFound) {
@@ -278,7 +278,7 @@ func getAllIntervieweeByRound(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
-		Data: &interviewee,
+		Data: interviewee,
 	})
 }
 
