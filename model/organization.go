@@ -29,7 +29,7 @@ This model is still under discussion
 type OrganizationHasUser struct {
 	ID             uint
 	Role           uint `gorm:"default:1"` // 1 department admin, 2 organization admin
-	UserId         uint
+	PassportId     uint
 	OrganizationId uint
 	DepartmentId   uint
 	UpdateTime     time.Time `gorm:"autoUpdateTime"`
@@ -53,7 +53,7 @@ func UpdateOrganizationById(requestOrganization *Organization) error {
 
 func QueryAllOrganization(uid uint) (*[]Brief, error) {
 	var dbOrganizationIds []OrganizationHasUser
-	gormDb.Select("organization_id").Where(&OrganizationHasUser{UserId: uid}).Find(&dbOrganizationIds)
+	gormDb.Select("organization_id").Where(&OrganizationHasUser{PassportId: uid}).Find(&dbOrganizationIds)
 
 	var organizationIds []uint
 	organizationIdsHelperMap := make(map[uint]bool)
@@ -71,7 +71,7 @@ func QueryAllOrganization(uid uint) (*[]Brief, error) {
 }
 
 func UserIsInOrganization(uid uint, oid uint) bool {
-	err := gormDb.First(&OrganizationHasUser{}, OrganizationHasUser{UserId: uid, OrganizationId: oid}).Error
+	err := gormDb.First(&OrganizationHasUser{}, OrganizationHasUser{PassportId: uid, OrganizationId: oid}).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return false
 	} else if err != nil {

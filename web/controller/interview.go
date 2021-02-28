@@ -21,11 +21,11 @@ import (
 // @param data body model.InterviewRequest true "Interview Information"
 // @produce json
 func createInterview(c echo.Context) error {
-	var eid, did, rnd uint
+	var eid, did, round uint
 	err := echo.QueryParamsBinder(c).
 		MustUint("eid", &eid).
 		MustUint("did", &did).
-		MustUint("round", &rnd).
+		MustUint("round", &round).
 		BindError()
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
@@ -48,7 +48,7 @@ func createInterview(c echo.Context) error {
 		})
 	}
 
-	if iid, err := model.CreateInterview(&interviewRequest, eid, did, rnd); err != nil {
+	if iid, err := model.CreateInterview(&interviewRequest, eid, did, round); err != nil {
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "INTERNAL_SERVER_ERR",
 			Data: "create interview fail",
@@ -215,24 +215,24 @@ func getAllInterviewOfDepartmentInEvent(c echo.Context) error {
 // @router /event/department/round/interview/all [get]
 // @param eid query uint true "Event ID"
 // @param did query uint true "Department ID"
-// @param rnd query uint true "Round"
+// @param round query uint true "Round"
 // @produce json
 // @success 200 {array} model.Brief
 func getAllInterviewOfRound(c echo.Context) error {
-	var eid, did, rnd uint
+	var eid, did, round uint
 	err := echo.QueryParamsBinder(c).
 		MustUint("eid", &eid).
 		MustUint("did", &did).
-		MustUint("rnd", &rnd).
+		MustUint("round", &round).
 		BindError()
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
-			Data: "eid, did and rnd need to be an unsigned integer",
+			Data: "eid, did and round need to be an unsigned integer",
 		})
 	}
 
-	interviews, itvErr := model.QueryAllInterviewOfRound(eid, did, rnd)
+	interviews, itvErr := model.QueryAllInterviewOfRound(eid, did, round)
 	if errors.Is(itvErr, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, &utils.Error{
 			Code: "NOT_FOUND",

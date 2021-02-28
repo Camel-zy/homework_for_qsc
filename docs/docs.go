@@ -447,7 +447,7 @@ var doc = `{
                     {
                         "type": "integer",
                         "description": "Round",
-                        "name": "rnd",
+                        "name": "round",
                         "in": "query",
                         "required": true
                     }
