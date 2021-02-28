@@ -80,8 +80,8 @@ var interviewTestCases = []testCase{
 	}, {
 		name: "GetAllInterviewsFromOneExistingEvent",
 		req: req{
-			urlPath:  "/api/event/interview/all",
-			urlQuery: "?eid=1",
+			urlPath:  "/api/event/department/interview/all",
+			urlQuery: "?eid=1&did=1",
 		},
 		resp: resp{
 			statusCode: http.StatusOK,
@@ -90,8 +90,8 @@ var interviewTestCases = []testCase{
 	{
 		name: "GetAllInterviewsFromOneNoneExistingEvent",
 		req: req{
-			urlPath:  "/api/event/interview/all",
-			urlQuery: "?eid=100",
+			urlPath:  "/api/event/department/interview/all",
+			urlQuery: "?eid=100&did=1",
 		},
 		resp: resp{
 			statusCode: http.StatusForbidden,
@@ -99,8 +99,8 @@ var interviewTestCases = []testCase{
 	}, {
 		name: "BadRequest",
 		req: req{
-			urlPath:  "/api/event/interview/all",
-			urlQuery: "?oid=AStupidStringThatMayCrashTheService",
+			urlPath:  "/api/event/department/interview/all",
+			urlQuery: "?oid=AStupidStringThatMayCrashTheService&did=1",
 		},
 		resp: resp{
 			statusCode: http.StatusBadRequest,
