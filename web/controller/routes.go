@@ -44,7 +44,7 @@ func addRoutes(e *echo.Echo) {
 	event.POST("", updateEvent)
 	event.GET("", getEvent)
 	event.GET("/interview", getInterviewInEvent)
-	event.GET("/interview/all", getAllInterviewInEvent)
+	event.GET("/department/interview/all", getAllInterviewOfDepartmentInEvent)
 	event.GET("/department/round/interview/all", getAllInterviewOfRound)
 	event.PUT("/interview", createInterview, middleware.CheckDepartmentInOrganization)
 	event.GET("/department/round", getRoundNumOfJoindEvent)

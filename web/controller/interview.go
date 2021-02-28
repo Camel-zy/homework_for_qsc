@@ -16,7 +16,7 @@ import (
 // @router /event/interview [put]
 // @param eid query uint true "Event ID"
 // @param did query uint true "Department ID"
-// @param rnd query uint true "Round"
+// @param round query uint true "Round"
 // @accept json
 // @param data body model.InterviewRequest true "Interview Information"
 // @produce json
@@ -25,7 +25,7 @@ func createInterview(c echo.Context) error {
 	err := echo.QueryParamsBinder(c).
 		MustUint("eid", &eid).
 		MustUint("did", &did).
-		MustUint("rnd", &rnd).
+		MustUint("round", &rnd).
 		BindError()
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
@@ -177,25 +177,29 @@ func getInterviewInEvent(c echo.Context) error {
 // @tags Interview
 // @summary Get all interviews in event
 // @description Get brief information of all interviews in a specific event
-// @router /event/interview/all [get]
+// @router /event/department/interview/all [get]
 // @param eid query uint true "Event ID"
+// @param did query uint true "Department ID"
 // @produce json
-// @success 200 {array} model.Brief
-func getAllInterviewInEvent(c echo.Context) error {
-	var eid uint
-	err := echo.QueryParamsBinder(c).MustUint("eid", &eid).BindError()
+// @success 200 {array} model.InterviewResponse
+func getAllInterviewOfDepartmentInEvent(c echo.Context) error {
+	var eid, did uint
+	err := echo.QueryParamsBinder(c).
+		MustUint("eid", &eid).
+		MustUint("did", &did).
+		BindError()
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
-			Data: "eid needs to be an unsigned integer",
+			Data: "eid and did needs to be an unsigned integer",
 		})
 	}
 
-	interviews, itvErr := model.QueryAllInterviewInEvent(eid)
-	if errors.Is(itvErr, gorm.ErrRecordNotFound) {
-		return c.JSON(http.StatusNotFound, &utils.Error{
-			Code: "NOT_FOUND",
-			Data: "event not found",
+	interviews, itvErr := model.QueryAllInterviewOfDepartmentInEvent(eid, did)
+	if itvErr != nil && !errors.Is(itvErr, gorm.ErrRecordNotFound) {
+		return c.JSON(http.StatusInternalServerError, &utils.Error{
+			Code: "INTERNAL_SERVER_ERR",
+			Data: "get interviews failed",
 		})
 	}
 

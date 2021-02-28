@@ -219,7 +219,7 @@ func getAllEventInOrganization(c echo.Context) error {
 // @param did query uint true "Department ID"
 // @param eid query uint true "Event ID"
 // @produce json
-// @success 200 {array} uint
+// @success 200 {object} uint
 func getRoundNumOfJoindEvent(c echo.Context) error {
 	var did, eid uint
 	err := echo.QueryParamsBinder(c).

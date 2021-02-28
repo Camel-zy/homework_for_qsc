@@ -228,6 +228,45 @@ var doc = `{
                 }
             }
         },
+        "/event/department/interview/all": {
+            "get": {
+                "description": "Get brief information of all interviews in a specific event",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Interview"
+                ],
+                "summary": "Get all interviews in event",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Event ID",
+                        "name": "eid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Department ID",
+                        "name": "did",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.InterviewResponse"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/event/department/interviewee/all": {
             "get": {
                 "produces": [
@@ -334,10 +373,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "integer"
-                            }
+                            "type": "integer"
                         }
                     }
                 }
@@ -539,7 +575,7 @@ var doc = `{
                     {
                         "type": "integer",
                         "description": "Round",
-                        "name": "rnd",
+                        "name": "round",
                         "in": "query",
                         "required": true
                     },
@@ -553,38 +589,6 @@ var doc = `{
                         }
                     }
                 ]
-            }
-        },
-        "/event/interview/all": {
-            "get": {
-                "description": "Get brief information of all interviews in a specific event",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Interview"
-                ],
-                "summary": "Get all interviews in event",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Event ID",
-                        "name": "eid",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/model.Brief"
-                            }
-                        }
-                    }
-                }
             }
         },
         "/form": {
@@ -1388,10 +1392,6 @@ var doc = `{
                 },
                 "OtherInfo": {
                     "type": "string"
-                },
-                "Round": {
-                    "description": "一面为2，二面为3，以此类推",
-                    "type": "integer"
                 },
                 "StartTime": {
                     "description": "request string must be in RFC 3339 format",

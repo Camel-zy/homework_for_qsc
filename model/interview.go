@@ -34,7 +34,6 @@ type InterviewRequest struct {
 	OtherInfo      string    `json:"OtherInfo"`
 	Location       string    `json:"Location"`
 	MaxInterviewee uint      `json:"MaxInterviewee"`                // default 6
-	Round          uint      `json:"Round"`                         // 一面为2，二面为3，以此类推
 	StartTime      time.Time `json:"StartTime" validate:"required"` // request string must be in RFC 3339 format
 	EndTime        time.Time `json:"EndTime" validate:"required"`   // request string must be in RFC 3339 format
 }
@@ -94,6 +93,12 @@ func QueryAllInterviewInEvent(eid uint) (*[]Brief, error) {
 		return nil, findEventError
 	}
 	result := gormDb.Model(&Interview{}).Where(&Interview{EventID: eid}).Find(&dbInterview)
+	return &dbInterview, result.Error
+}
+
+func QueryAllInterviewOfDepartmentInEvent(eid, did uint) (*[]InterviewResponse, error) {
+	var dbInterview []InterviewResponse
+	result := gormDb.Model(&Interview{}).Where(&Interview{EventID: eid, DepartmentID: did}).Find(&dbInterview)
 	return &dbInterview, result.Error
 }
 
