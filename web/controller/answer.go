@@ -14,7 +14,7 @@ import (
 
 // @tags Answer
 // @summary Create an answer
-// @description Create an answer
+// @description Create an answer, while also create interviewees
 // @router /answer [put]
 // @accept  json
 // @param fid query uint true "Form ID"
@@ -22,7 +22,7 @@ import (
 // @param eid query uint true "Event ID"
 // @param data body model.AnswerRequest_ true "Answer information"
 // @success 200
-func updateAnswer(c echo.Context) error {
+func createAnswer(c echo.Context) error {
 	var fid, eid uint
 	var zjuid string
 	err := echo.QueryParamsBinder(c).

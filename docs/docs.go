@@ -53,7 +53,7 @@ var doc = `{
                 }
             },
             "put": {
-                "description": "Create an answer",
+                "description": "Create an answer, while also create interviewees",
                 "consumes": [
                     "application/json"
                 ],
@@ -934,88 +934,6 @@ var doc = `{
                         "schema": {
                             "$ref": "#/definitions/model.MessageCostAPI"
                         }
-                    }
-                }
-            }
-        },
-		"/object/create": {
-            "post": {
-                "description": "Get a url and necessary policy for object uploading",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Object"
-                ],
-                "summary": "Get a url and necessary policy for object uploading",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Object name",
-                        "name": "name",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "Code": "SUCCESS",
-                        "Data": {
-                            "$ref": "#/definitions/controller.PresignedPost"
-                        }
-                    }
-                }
-            }
-        },
-        "/object/seal": {
-            "post": {
-                "description": "Mark an object as successfully uploaded, ready for downloading",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Object"
-                ],
-                "summary": "Mark an object as successfully uploaded, ready for downloading",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Object uuid",
-                        "name": "uuid",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "Code": "SUCCESS",
-                    }
-                }
-            }
-        },
-        "/object/get": {
-            "get": {
-                "description": "Get a url for object downloading",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Object"
-                ],
-                "summary": "Get a url for object downloading",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Object uuid",
-                        "name": "uuid",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "Code": "SUCCESS",
-                        "Data": "some url"
                     }
                 }
             }
