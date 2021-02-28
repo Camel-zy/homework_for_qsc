@@ -11,21 +11,23 @@ import (
 )
 
 const (
-	intervieweeTimeChecked = 1 // 已确认本轮面试时间或正在面试
-	intervieweeRoundPassed = 2 // 本轮通过
-	intervieweeMessageSent = 3 // 已发送下轮分配短信，面试者未进行选择
-	intervieweeOrgAccepted = 4 // 纳入组织
-	intervieweeOrgRejected = 5 // 拒绝
-	intervieweeNextRoundNoTime = 6 // 已发送下轮分配短信，但面试者选择没有合适的下轮面试时间
+	IntervieweeStart           = 0 // 不要使用
+	IntervieweeTimeChecked     = 1 // 已确认本轮面试时间或正在面试
+	IntervieweeRoundPassed     = 2 // 本轮通过
+	IntervieweeMessageSent     = 3 // 已发送下轮分配短信，面试者未进行选择
+	IntervieweeOrgAdmitted     = 4 // 纳入组织
+	IntervieweeOrgRejected     = 5 // 拒绝
+	IntervieweeNextRoundNoTime = 6 // 已发送下轮分配短信，但面试者选择没有合适的下轮面试时间
+	IntervieweeEnd             = 7 // 不要使用
 )
 
 // 一个志愿一条记录
 // Don't forget to modify Interviewee_ if you modify this
 type Interviewee struct {
-	ID               uint           `gorm:"not null;autoIncrement;primaryKey"`
-	UUID             uuid.UUID      `gorm:"not null;type:uuid"`
-	EventID          uint           `gorm:"not null"`
-	AnswerID         uint           `gorm:"not null"`
+	ID               uint      `gorm:"not null;autoIncrement;primaryKey"`
+	UUID             uuid.UUID `gorm:"not null;type:uuid"`
+	EventID          uint      `gorm:"not null"`
+	AnswerID         uint      `gorm:"not null"`
 	Answer           Answer
 	DepartmentID     uint           `gorm:"not null"`           // 志愿部门
 	IntentRank       uint           `gorm:"not null;default:0"` // 第几志愿

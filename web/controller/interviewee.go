@@ -122,7 +122,7 @@ func modifyIntervieweeTemplate(newStatus uint) func(echo.Context) error {
 				Data: "update interviewee fail",
 			})
 		}
-		if newStatus == 4 {
+		if newStatus == model.IntervieweeOrgRejected {
 			_, err = utils.SendMessage(vid, 3)
 			if err != nil {
 				logrus.Errorf("send reject message fail(vid=%v): %v", vid, err)
@@ -145,7 +145,7 @@ func modifyIntervieweeTemplate(newStatus uint) func(echo.Context) error {
 // @param vid query uint true "Interviewee ID"
 // @success 200
 func admitInterviewee(c echo.Context) error {
-	return modifyIntervieweeTemplate(4)(c)
+	return modifyIntervieweeTemplate(model.IntervieweeOrgAdmitted)(c)
 }
 
 // @tags Interviewee
@@ -154,7 +154,7 @@ func admitInterviewee(c echo.Context) error {
 // @param vid query uint true "Interviewee ID"
 // @success 200
 func nextInterviewee(c echo.Context) error {
-	return modifyIntervieweeTemplate(2)(c)
+	return modifyIntervieweeTemplate(model.IntervieweeRoundPassed)(c)
 }
 
 // @tags Interviewee
@@ -163,7 +163,7 @@ func nextInterviewee(c echo.Context) error {
 // @param vid query uint true "Interviewee ID"
 // @success 200
 func rejectInterviewee(c echo.Context) error {
-	return modifyIntervieweeTemplate(5)(c)
+	return modifyIntervieweeTemplate(model.IntervieweeOrgRejected)(c)
 }
 
 // @tags Interviewee
@@ -261,16 +261,18 @@ func getAllIntervieweeByRound(c echo.Context) error {
 		}
 	} else {
 		ret := make([]model.Interviewee, 0)
-		for i := 1; i < 4; i++ {
-			intervieweeTemp, intervieweeErr := model.QueryAllIntervieweeByRoundAndStatus(did, eid, round, uint(i))
-			if intervieweeErr != nil && !errors.Is(intervieweeErr, gorm.ErrRecordNotFound) {
-				return c.JSON(http.StatusInternalServerError, &utils.Error{
-					Code: "INTERNAL_SERVER_ERR",
-					Data: "get interviewee failed",
-				})
-			}
-			if intervieweeTemp != nil {
-				ret = append(ret, *intervieweeTemp...)
+		for i := model.IntervieweeStart + 1; i < model.IntervieweeEnd; i++ {
+			if i != model.IntervieweeOrgAdmitted && i != model.IntervieweeOrgRejected {
+				intervieweeTemp, intervieweeErr := model.QueryAllIntervieweeByRoundAndStatus(did, eid, round, uint(i))
+				if intervieweeErr != nil && !errors.Is(intervieweeErr, gorm.ErrRecordNotFound) {
+					return c.JSON(http.StatusInternalServerError, &utils.Error{
+						Code: "INTERNAL_SERVER_ERR",
+						Data: "get interviewee failed",
+					})
+				}
+				if intervieweeTemp != nil {
+					ret = append(ret, *intervieweeTemp...)
+				}
 			}
 		}
 		interviewee = &ret
@@ -290,8 +292,6 @@ func getAllIntervieweeByRound(c echo.Context) error {
 // @produce json
 // @success 200 {array} model.Interviewee_
 func getAllIntervieweeByAdmittedStatus(c echo.Context) error {
-	var status uint
-	status = 4 //Status: 4 纳入组织，5 拒绝
 	did, didErr := utils.IsUnsignedInteger(c.QueryParam("did"))
 	eid, eidErr := utils.IsUnsignedInteger(c.QueryParam("eid"))
 
@@ -318,7 +318,7 @@ func getAllIntervieweeByAdmittedStatus(c echo.Context) error {
 		})
 	}
 
-	interviewee, intervieweeErr := model.QueryAllIntervieweeByStatus(did, eid, status)
+	interviewee, intervieweeErr := model.QueryAllIntervieweeByStatus(did, eid, model.IntervieweeOrgAdmitted)
 	if intervieweeErr != nil && !errors.Is(intervieweeErr, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, &utils.Error{
 			Code: "NOT_FOUND",
@@ -340,8 +340,6 @@ func getAllIntervieweeByAdmittedStatus(c echo.Context) error {
 // @produce json
 // @success 200 {array} model.Interviewee_
 func getAllIntervieweeByRejectedStatus(c echo.Context) error {
-	var status uint
-	status = 5 //Status: 4 纳入组织，5 拒绝
 	did, didErr := utils.IsUnsignedInteger(c.QueryParam("did"))
 	eid, eidErr := utils.IsUnsignedInteger(c.QueryParam("eid"))
 
@@ -368,7 +366,7 @@ func getAllIntervieweeByRejectedStatus(c echo.Context) error {
 		})
 	}
 
-	interviewee, intervieweeErr := model.QueryAllIntervieweeByStatus(did, eid, status)
+	interviewee, intervieweeErr := model.QueryAllIntervieweeByStatus(did, eid, model.IntervieweeOrgRejected)
 	if intervieweeErr != nil && !errors.Is(intervieweeErr, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, &utils.Error{
 			Code: "NOT_FOUND",
