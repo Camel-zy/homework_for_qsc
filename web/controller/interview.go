@@ -68,7 +68,7 @@ func createInterview(c echo.Context) error {
 // @param iid query uint true "Interview ID"
 // @accept json
 // @param data body model.InterviewRequest false "Interview Information"
-// @produce json
+// @success 200
 func updateInterview(c echo.Context) error {
 	var iid uint
 	err := echo.QueryParamsBinder(c).MustUint("iid", &iid).BindError()

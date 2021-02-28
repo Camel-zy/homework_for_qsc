@@ -722,9 +722,6 @@ var doc = `{
                 "consumes": [
                     "application/json"
                 ],
-                "produces": [
-                    "application/json"
-                ],
                 "tags": [
                     "Interview"
                 ],
@@ -745,7 +742,12 @@ var doc = `{
                             "$ref": "#/definitions/model.InterviewRequest"
                         }
                     }
-                ]
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
             }
         },
         "/interview/interviewee": {
