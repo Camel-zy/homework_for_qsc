@@ -111,6 +111,7 @@ func updateForm(c echo.Context) error {
 // @description Get a form
 // @router /form [get]
 // @param fid query uint true "Form ID"
+// @param eid query uint true "Event ID"
 // @success 200 {object} model.Form_
 func getForm(c echo.Context) error {
 	var fid, eid uint
@@ -131,7 +132,7 @@ func getForm(c echo.Context) error {
 			Data: "event doesn't exist",
 		})
 	}
-	_, itvErr = model.QueryRelation(fid, eid)
+	_, itvErr = model.QueryEventHasForm(fid, eid)
 	if errors.Is(itvErr, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, &utils.Error{
 			Code: "BAD_REQUEST",
