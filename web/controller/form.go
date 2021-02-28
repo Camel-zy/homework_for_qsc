@@ -113,14 +113,37 @@ func updateForm(c echo.Context) error {
 // @param fid query uint true "Form ID"
 // @success 200 {object} model.Form_
 func getForm(c echo.Context) error {
-	fid, typeErr := utils.IsUnsignedInteger(c.QueryParam("fid"))
-	if typeErr != nil {
+	var fid, eid uint
+	err := echo.QueryParamsBinder(c).
+		MustUint("fid", &fid).
+		MustUint("eid", &eid).
+		BindError()
+	if err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
-			Data: "fid need to be an unsigned integer",
+			Data: "fid, eid needs to be an unsigned integer",
 		})
 	}
-
+	event, itvErr := model.QueryEventByID(eid)
+	if errors.Is(itvErr, gorm.ErrRecordNotFound) {
+		return c.JSON(http.StatusNotFound, &utils.Error{
+			Code: "NOT_FOUND",
+			Data: "event doesn't exist",
+		})
+	}
+	_, itvErr = model.QueryRelation(fid, eid)
+	if errors.Is(itvErr, gorm.ErrRecordNotFound) {
+		return c.JSON(http.StatusNotFound, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "form and event aren't relative",
+		})
+	}
+	if event.Status != 3 {
+		return c.JSON(http.StatusNotFound, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "event isn't running",
+		})
+	}
 	form, itvErr := model.QueryFormById(fid)
 	if errors.Is(itvErr, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, &utils.Error{
@@ -128,7 +151,6 @@ func getForm(c echo.Context) error {
 			Data: "form not found",
 		})
 	}
-
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
 		Data: &form,

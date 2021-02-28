@@ -49,6 +49,7 @@ func CreateTables() {
 		&JoinedDepartment{},
 		&Event{},
 		&Interview{},
+		&Relation{},
 		&Form{},
 		&Answer{},
 		&Interviewee{},
