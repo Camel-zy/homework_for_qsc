@@ -54,12 +54,14 @@ func addRoutes(e *echo.Echo) {
 	event.GET("/department/admitted/interviewee/all", getAllIntervieweeByAdmittedStatus)
 	event.GET("/department/rejected/interviewee/all", getAllIntervieweeByRejectedStatus)
 	event.GET("/department/all", getAllDepartmentInEvent)
+
 	interview := api.Group("/interview", middleware.SetInterviewOrganization, middleware.AuthOrganization)
 	interview.POST("", updateInterview)
 	interview.GET("", getInterview)
 	// interview.PUT("/interviewee", createIntervieweeToInterview)
 	interview.DELETE("/interviewee", deleteIntervieweeFromInterview)
 	interview.GET("/interviewee/all", getAllInterviewees)
+	api.POST("/interview/selected", handleSelectInterview)
 
 	interviewee := api.Group("/interviewee", middleware.AuthInterviewee)
 	interviewee.POST("/options", updateIntervieweeOptions)
@@ -69,7 +71,7 @@ func addRoutes(e *echo.Echo) {
 
 	relation := api.Group("/relation")
 	relation.PUT("/EventHasForm", createEventHasForm)
-	relation.GET("/EventHasForm", getEventHasForm)
+	relation.GET("/EventHasForm", validateEventHasForm)
 
 	form := api.Group("/form")
 	form.PUT("", createForm)

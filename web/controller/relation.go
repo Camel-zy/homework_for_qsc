@@ -49,12 +49,12 @@ func createEventHasForm(c echo.Context) error {
 }
 
 // @tags Relation
-// @summary Query relation
-// @description Make a relation query
+// @summary Validate relation
+// @description Make a validation of the given relation
 // @router /relation/EventHasForm [get]
 // @param fid query uint true "Form ID"
 // @param eid query uint true "Event ID"
-func getEventHasForm(c echo.Context) error {
+func validateEventHasForm(c echo.Context) error {
 	var fid, eid uint
 	err := echo.QueryParamsBinder(c).
 		MustUint("fid", &fid).
