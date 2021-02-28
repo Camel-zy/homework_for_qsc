@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"encoding/json"
 	"errors"
 	"net/http"
 	"sort"
@@ -38,6 +39,7 @@ func createAnswer(c echo.Context) error {
 	}
 
 	answerRequest := model.AnswerRequest{}
+	answer := model.Answer{}
 	if err := c.Bind(&answerRequest); err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
@@ -49,7 +51,8 @@ func createAnswer(c echo.Context) error {
 			Data: err.Error(),
 		})
 	}
-	if newIntention, err := SortIntention(&answerRequest.Intention); err != nil {
+	newIntention, err := SortIntention(&answerRequest.Intention)
+	if err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
 			Data: err.Error(),
@@ -59,12 +62,23 @@ func createAnswer(c echo.Context) error {
 			Code: "BAD_REQUEST",
 			Data: "no valid intention has been found",
 		})
-	} else {
-		answerRequest.Intention = *newIntention
 	}
 
+	jsonIntention, err := json.Marshal(*newIntention)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, &utils.Error{
+			Code: "INTERNAL_SERVER_ERR",
+			Data: "marshal intention failed",
+		})
+	}
+
+	answer.Name = answerRequest.Name
+	answer.Intention = jsonIntention
+	answer.Mobile = answerRequest.Mobile
+	answer.Content =  answerRequest.Content
+
 	if _, err := model.QueryAnswer(fid, zjuid, eid); err == nil {
-		if suberr := model.UpdateAnswer(&answerRequest, fid, zjuid, eid); suberr != nil {
+		if subErr := model.UpdateAnswer(&answer, fid, zjuid, eid); subErr != nil {
 			return c.JSON(http.StatusInternalServerError, &utils.Error{
 				Code: "INTERNAL_SERVER_ERR",
 				Data: "update answer failed",
@@ -81,7 +95,7 @@ func createAnswer(c echo.Context) error {
 		})
 	}
 
-	aid, err := model.CreateAnswer(&answerRequest, fid, zjuid, eid)
+	aid, err := model.CreateAnswer(&answer, fid, zjuid, eid)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
 			Code: "INTERNAL_SERVER_ERR",
@@ -91,7 +105,7 @@ func createAnswer(c echo.Context) error {
 
 	var oneOfTheIntervieweeID uint // 具体是哪一个不重要，只需要其中一个提取 Interviewee 信息就好
 
-	for _, v := range answerRequest.Intention {
+	for _, v := range *newIntention {
 		interviewee := model.Interviewee{
 			EventID:      eid,
 			AnswerID:     aid,
@@ -154,12 +168,16 @@ func getAnswer(c echo.Context) error {
 	})
 }
 
-func SortIntention(origArray *[]model.Intention) (*[]model.Intention, error) {
+func SortIntention(origArray *[]model.IntentionRequest) (*[]model.Intention, error) {
 	var newIntention []model.Intention
 	hasRank := false
 	for _, v := range *origArray {
-		if v.DepartmentID != 0 {
-			newIntention = append(newIntention, v)
+		did, err := utils.IsUnsignedInteger(v.DepartmentID)
+		if err != nil {
+			return nil, errors.New("did cannot be converted to an unsigned integer")
+		}
+		if did != 0 {
+			newIntention = append(newIntention, model.Intention{DepartmentID: did, IntentRank: v.IntentRank})
 		}
 		if v.IntentRank != 0 {
 			hasRank = true
