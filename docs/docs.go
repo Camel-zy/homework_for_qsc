@@ -1190,6 +1190,11 @@ var doc = `{
     "definitions": {
         "model.AnswerRequest_": {
             "type": "object",
+            "required": [
+                "content",
+                "mobile",
+                "name"
+            ],
             "properties": {
                 "content": {
                     "type": "string",

@@ -46,10 +46,10 @@ type Answer_ struct {
 
 // CAUTIOUS: do NOT use this
 type AnswerRequest_ struct {
-	Name      string
-	Mobile    string
+	Name      string    `validate:"required"`
+	Mobile    string    `validate:"required"`
 	Intention []Intention
-	Content   string `example:"JSON"`
+	Content   string `validate:"required" example:"JSON"`
 }
 
 // CAUTIOUS: do NOT use this
