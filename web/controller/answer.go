@@ -89,6 +89,8 @@ func createAnswer(c echo.Context) error {
 		})
 	}
 
+	var oneOfTheIntervieweeID uint // 具体是哪一个不重要，只需要其中一个提取 Interviewee 信息就好
+
 	for _, v := range answerRequest.Intention {
 		interviewee := model.Interviewee{
 			EventID:      eid,
@@ -96,7 +98,7 @@ func createAnswer(c echo.Context) error {
 			DepartmentID: v.DepartmentID,
 			IntentRank:   v.IntentRank,
 		}
-		_, err := model.CreateInterviewee(&interviewee)
+		oneOfTheIntervieweeID, err = model.CreateInterviewee(&interviewee)
 		if err != nil {
 			logrus.Error(err)
 			return c.JSON(http.StatusInternalServerError, &utils.Error{
@@ -106,7 +108,15 @@ func createAnswer(c echo.Context) error {
 		}
 	}
 
-	// TODO(TO/GA): Send SMS
+	// TODO(TO/GA): test
+	_, err = utils.SendMessage(oneOfTheIntervieweeID, 0)
+	if err != nil {
+		logrus.Errorf("send form submission confirmation message fail(vid=%v): %v", oneOfTheIntervieweeID, err)
+		return c.JSON(http.StatusInternalServerError, &utils.Error{
+			Code: "INTERNAL_SERVER_ERR",
+			Data: "send message fail",
+		})
+	}
 
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
