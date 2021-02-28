@@ -2,11 +2,12 @@ package controller
 
 import (
 	"errors"
+	"net/http"
+
 	"git.zjuqsc.com/rop/rop-back-neo/model"
 	"git.zjuqsc.com/rop/rop-back-neo/utils"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
-	"net/http"
 )
 
 // @tags Relation
@@ -53,7 +54,7 @@ func createEventHasForm(c echo.Context) error {
 // @router /relation/EventHasForm [get]
 // @param fid query uint true "Form ID"
 // @param eid query uint true "Event ID"
-// @success 200 {object} model.Relation_
+// @success 200
 func getEventHasForm(c echo.Context) error {
 	var fid, eid uint
 	err := echo.QueryParamsBinder(c).

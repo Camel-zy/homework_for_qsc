@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"encoding/json"
 	"errors"
 	"net/http"
 
@@ -8,6 +9,7 @@ import (
 	"git.zjuqsc.com/rop/rop-back-neo/utils"
 	"github.com/jinzhu/copier"
 	"github.com/labstack/echo/v4"
+	uuid "github.com/satori/go.uuid"
 	"gorm.io/gorm"
 )
 
@@ -183,5 +185,60 @@ func getAllFormInOrganization(c echo.Context) error {
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
 		Data: &forms,
+	})
+}
+
+// @tags Form
+// @summary Get all interview options of interviewee
+// @router /form/interviewee/interview/all [get]
+// @param uuid query string true "Interviewee's UUID"
+// @success 200 {array} model.InterviewResponse
+func getAllInterviewOfInterviewee(c echo.Context) error {
+	uuid, err := uuid.FromString(c.QueryParam("uuid"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "can't parse uuid",
+		})
+	}
+	interviewee, err := model.QueryIntervieweeByUUID(uuid)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return c.JSON(http.StatusNotFound, &utils.Error{
+				Code: "NOT_FOUND",
+				Data: "interviewee not found",
+			})
+		}
+	}
+
+	interview := make([]model.InterviewResponse, 0)
+	var interviewOptions []interface{}
+	err = json.Unmarshal(interviewee.InterviewOptions, &interviewOptions)
+	for _, v := range interviewOptions {
+		iid := uint(v.(float64))
+		temp, err := model.QueryInterviewByID(iid)
+		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+			return c.JSON(http.StatusInternalServerError, &utils.Error{
+				Code: "INTERNAL_SERVER_ERR",
+				Data: "get interviews fail",
+			})
+		}
+		NowInterviewee, err := model.QueryNumberOfIntervieweesInInterviewByInterviewID(iid)
+		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+			return c.JSON(http.StatusInternalServerError, &utils.Error{
+				Code: "INTERNAL_SERVER_ERR",
+				Data: "get interviews fail",
+			})
+		}
+		if NowInterviewee < int64(temp.MaxInterviewee) {
+			var tempInterview model.InterviewResponse
+			copier.Copy(&tempInterview, &temp)
+			interview = append(interview, tempInterview)
+		}
+	}
+
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: &interview,
 	})
 }

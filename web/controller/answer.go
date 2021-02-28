@@ -108,7 +108,6 @@ func createAnswer(c echo.Context) error {
 		}
 	}
 
-	// TODO(TO/GA): test
 	_, err = utils.SendMessage(oneOfTheIntervieweeID, 0)
 	if err != nil {
 		logrus.Errorf("send form submission confirmation message fail(vid=%v): %v", oneOfTheIntervieweeID, err)

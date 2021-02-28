@@ -1,8 +1,9 @@
 package model
 
 import (
-	"gorm.io/gorm/clause"
 	"time"
+
+	"gorm.io/gorm/clause"
 
 	uuid "github.com/satori/go.uuid"
 	"gorm.io/datatypes"
@@ -58,6 +59,12 @@ func QueryIntervieweeById(id uint) (*Interviewee, error) {
 	return &dbInterviewee, result.Error
 }
 
+func QueryIntervieweeByUUID(uuid uuid.UUID) (*Interviewee, error) {
+	var dbInterviewee Interviewee
+	result := gormDb.Where(&Interviewee{UUID: uuid}).First(&dbInterviewee)
+	return &dbInterviewee, result.Error
+}
+
 func UpdateJoinedInterview(id uint, newResult uint) error {
 	result := gormDb.Model(&JoinedInterview{ID: id}).Update("result", newResult)
 	return result.Error
@@ -98,4 +105,10 @@ func QueryAllIntervieweeByRoundAndStatus(did, eid, round, status uint) (*[]Inter
 	var dbInterviewee []Interviewee
 	result := gormDb.Preload(clause.Associations).Model(&Interviewee{}).Where(&Interviewee{DepartmentID: did, EventID: eid, Round: round, Status: status}).Find(&dbInterviewee)
 	return &dbInterviewee, result.Error
+}
+
+func QueryNumberOfIntervieweesInInterviewByInterviewID(vid uint) (int64, error) {
+	var number int64
+	result := gormDb.Model(&JoinedInterview{}).Where(&JoinedInterview{InterviewID: vid}).Count(&number)
+	return number, result.Error
 }

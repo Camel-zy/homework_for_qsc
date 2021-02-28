@@ -74,17 +74,13 @@ func GenerateText(messageTemplateID uint, interviewee *model.Interviewee, answer
 		}
 	}
 
-	// InterviewID
-	if messageTemplateID == 1 || messageTemplateID == 2 {
-		// interview, itvErr := model.QueryInterviewByID(interviewee.)
-		interview, itvErr := model.QueryInterviewByIntervieweeAndRound(interviewee.ID, interviewee.Round)
+	if strings.Contains(templateText, "#interview#") {
+		templateText = strings.ReplaceAll(templateText, "#interview#", roundName[interviewee.Round + 1])
+	}
 
-		if strings.Contains(templateText, "#interview#") {
-			if itvErr != nil {
-				return nil, itvErr
-			}
-			templateText = strings.ReplaceAll(templateText, "#interview#", roundName[interview.Round])
-		}
+	// InterviewID
+	if messageTemplateID == 2 {
+		interview, itvErr := model.QueryInterviewByIntervieweeAndRound(interviewee.ID, interviewee.Round)
 
 		if strings.Contains(templateText, "#time#") {
 			if itvErr != nil {

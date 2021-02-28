@@ -605,6 +605,13 @@ var doc = `{
                         "name": "fid",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Event ID",
+                        "name": "eid",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -684,6 +691,34 @@ var doc = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/model.Form_"
+                        }
+                    }
+                }
+            }
+        },
+        "/form/interviewee/interview/all": {
+            "get": {
+                "tags": [
+                    "Form"
+                ],
+                "summary": "Get all interview options of interviewee",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Interviewee's UUID",
+                        "name": "uuid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.InterviewResponse"
+                            }
                         }
                     }
                 }
@@ -1182,6 +1217,64 @@ var doc = `{
                                 "$ref": "#/definitions/model.Form_"
                             }
                         }
+                    }
+                }
+            }
+        },
+        "/relation/EventHasForm": {
+            "get": {
+                "description": "Make a relation query",
+                "tags": [
+                    "Relation"
+                ],
+                "summary": "Query relation",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Form ID",
+                        "name": "fid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Event ID",
+                        "name": "eid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            },
+            "put": {
+                "description": "Create a relation",
+                "tags": [
+                    "Relation"
+                ],
+                "summary": "Create a relation",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Form ID",
+                        "name": "fid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Event ID",
+                        "name": "eid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
                     }
                 }
             }
