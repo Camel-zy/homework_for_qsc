@@ -430,3 +430,15 @@ func deleteIntervieweeFromInterview(c echo.Context) error {
 		Data: nil,
 	})
 }
+
+func handleSelectInterview(c echo.Context) error {
+	var uuid string
+	var iid uint
+	var noTime bool
+	echo.QueryParamsBinder(c).
+		MustString("uuid", &uuid).
+		MustUint("iid", &iid).
+		Bool("noTime", &noTime)
+
+	return nil // FIXME(RalXY): complete this
+}

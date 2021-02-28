@@ -10,6 +10,15 @@ import (
 	"gorm.io/gorm"
 )
 
+const (
+	intervieweeTimeChecked = 1 // 已确认本轮面试时间或正在面试
+	intervieweeRoundPassed = 2 // 本轮通过
+	intervieweeMessageSent = 3 // 已发送下轮分配短信，面试者未进行选择
+	intervieweeOrgAccepted = 4 // 纳入组织
+	intervieweeOrgRejected = 5 // 拒绝
+	intervieweeNextRoundNoTime = 6 // 已发送下轮分配短信，但面试者选择没有合适的下轮面试时间
+)
+
 // 一个志愿一条记录
 // Don't forget to modify Interviewee_ if you modify this
 type Interviewee struct {
@@ -22,7 +31,7 @@ type Interviewee struct {
 	IntentRank       uint           `gorm:"not null;default:0"` // 第几志愿
 	Round            uint           `gorm:"not null;default:1"` // 公海为1，一面为2，以此类推
 	InterviewOptions datatypes.JSON // 发送选择面试场次的短信用
-	Status           uint           `gorm:"not null; default:2"` // 1 已确认本轮面试时间/正在面试，2 本轮通过，3 已发送下轮分配短信，4 纳入组织，5 拒绝
+	Status           uint           `gorm:"not null; default:2"` // 1 已确认本轮面试时间/正在面试，2 本轮通过，3 已发送下轮分配短信，4 纳入组织，5 拒绝, 6 面试者选择没有合适的下轮面试时间
 }
 
 type IntervieweeRequest struct {
@@ -68,6 +77,10 @@ func QueryIntervieweeByUUID(uuid uuid.UUID) (*Interviewee, error) {
 func UpdateJoinedInterview(id uint, newResult uint) error {
 	result := gormDb.Model(&JoinedInterview{ID: id}).Update("result", newResult)
 	return result.Error
+}
+
+func CreateJoinedInterview(uuid string, iid uint) {
+	// FIXME(RalXY): complete this
 }
 
 func DeleteJoinedInterviewByIidAndVid(iid, vid uint) error {
