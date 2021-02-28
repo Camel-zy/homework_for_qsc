@@ -1,6 +1,7 @@
 package model
 
 import (
+	"gorm.io/gorm/clause"
 	"time"
 
 	uuid "github.com/satori/go.uuid"
@@ -15,6 +16,7 @@ type Interviewee struct {
 	UUID             uuid.UUID      `gorm:"not null;type:uuid"`
 	EventID          uint           `gorm:"not null"`
 	AnswerID         uint           `gorm:"not null"`
+	Answer           Answer
 	DepartmentID     uint           `gorm:"not null"`           // 志愿部门
 	IntentRank       uint           `gorm:"not null;default:0"` // 第几志愿
 	Round            uint           `gorm:"not null;default:1"` // 公海为1，一面为2，以此类推
@@ -82,18 +84,18 @@ func QueryAllJoinedInterviewOfInterview(iid uint) (*[]JoinedInterview, error) {
 
 func QueryAllIntervieweeByDidAndEid(did, eid uint) (*[]Interviewee, error) {
 	var dbInterviewee []Interviewee
-	result := gormDb.Model(&Interviewee{}).Where(&Interviewee{DepartmentID: did, EventID: eid}).Find(&dbInterviewee)
+	result := gormDb.Preload(clause.Associations).Model(&Interviewee{}).Where(&Interviewee{DepartmentID: did, EventID: eid}).Find(&dbInterviewee)
 	return &dbInterviewee, result.Error
 }
 
 func QueryAllIntervieweeByStatus(did, eid, status uint) (*[]Interviewee, error) {
 	var dbInterviewee []Interviewee
-	result := gormDb.Model(&Interviewee{}).Where(&Interviewee{DepartmentID: did, EventID: eid, Status: status}).Find(&dbInterviewee)
+	result := gormDb.Preload(clause.Associations).Model(&Interviewee{}).Where(&Interviewee{DepartmentID: did, EventID: eid, Status: status}).Find(&dbInterviewee)
 	return &dbInterviewee, result.Error
 }
 
 func QueryAllIntervieweeByRoundAndStatus(did, eid, round, status uint) (*[]Interviewee, error) {
 	var dbInterviewee []Interviewee
-	result := gormDb.Model(&Interviewee{}).Where(&Interviewee{DepartmentID: did, EventID: eid, Round: round, Status: status}).Find(&dbInterviewee)
+	result := gormDb.Preload(clause.Associations).Model(&Interviewee{}).Where(&Interviewee{DepartmentID: did, EventID: eid, Round: round, Status: status}).Find(&dbInterviewee)
 	return &dbInterviewee, result.Error
 }
