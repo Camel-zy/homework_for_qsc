@@ -3,8 +3,9 @@ package controller
 import (
 	"encoding/json"
 	"errors"
-	uuid "github.com/satori/go.uuid"
 	"net/http"
+
+	uuid "github.com/satori/go.uuid"
 
 	"gorm.io/gorm"
 
@@ -489,7 +490,6 @@ func handleSelectInterview(c echo.Context) error {
 		})
 	}
 
-	// FIXME(TO/GA): Fix this
 	_, err = utils.SendMessage(interviewee.ID, 2)
 	if err != nil {
 		logrus.Errorf("send interview selection confermation message fail(vid=%v): %v", interviewee.ID, err)
