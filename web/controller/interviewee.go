@@ -5,6 +5,8 @@ import (
 	"errors"
 	"net/http"
 
+	uuid "github.com/satori/go.uuid"
+
 	"gorm.io/gorm"
 
 	"git.zjuqsc.com/rop/rop-back-neo/model"
@@ -429,14 +431,74 @@ func deleteIntervieweeFromInterview(c echo.Context) error {
 	})
 }
 
+// @tags Interviewee
+// @summary Submit the selected interview
+// @router /interview/selected [post]
+// @param uuid query string true "UUID"
+// @param iid query uint true "Interview ID"
+// @param no_time query bool false "Set this to true if the interviewee chose that he has no time"
+// @produce json
+// @success 200
 func handleSelectInterview(c echo.Context) error {
-	var uuid string
-	var iid uint
+	var uuidString string
 	var noTime bool
 	echo.QueryParamsBinder(c).
-		MustString("uuid", &uuid).
-		MustUint("iid", &iid).
-		Bool("noTime", &noTime)
+		MustString("uuid", &uuidString).
+		Bool("no_time", &noTime)
+	uuID := uuid.FromStringOrNil(uuidString)
 
-	return nil // FIXME(RalXY): complete this
+	if noTime {
+		err := model.UpdateIntervieweeByUuid(&model.Interviewee{Status: model.IntervieweeNextRoundNoTime}, uuID)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, &utils.Error{
+				Code: "INTERNAL_SERVER_ERR",
+				Data: `set status to "no time" failed`,
+			})
+		}
+		return c.JSON(http.StatusOK, &utils.Error{
+			Code: "SUCCESS",
+			Data: nil,
+		})
+	}
+
+	var iid uint
+	echo.QueryParamsBinder(c).MustUint("iid", &iid)
+	interviewee, err := model.QueryIntervieweeByUUID(uuID)
+	if err != nil {
+		return c.JSON(http.StatusNotFound, &utils.Error{
+			Code: "NOT_FOUND",
+			Data: "uuid not found",
+		})
+	}
+
+	err = model.UpdateIntervieweeByUuid(&model.Interviewee{
+		Status: model.IntervieweeTimeChecked, Round: interviewee.Round + 1}, uuID)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, &utils.Error{
+			Code: "INTERNAL_SERVER_ERR",
+			Data: "set status and update round failed",
+		})
+	}
+
+	err = model.CreateJoinedInterview(iid, interviewee.ID)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, &utils.Error{
+			Code: "INTERNAL_SERVER_ERR",
+			Data: "create joined interview failed",
+		})
+	}
+
+	_, err = utils.SendMessage(interviewee.ID, 2)
+	if err != nil {
+		logrus.Errorf("send interview selection confermation message fail(vid=%v): %v", interviewee.ID, err)
+		return c.JSON(http.StatusInternalServerError, &utils.Error{
+			Code: "INTERNAL_SERVER_ERR",
+			Data: "send message failed",
+		})
+	}
+
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: nil,
+	})
 }

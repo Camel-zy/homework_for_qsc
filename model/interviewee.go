@@ -64,6 +64,12 @@ func UpdateInterviewee(interviewee *Interviewee, vid uint) error {
 	return result.Error
 }
 
+func UpdateIntervieweeByUuid(interviewee *Interviewee, uuid uuid.UUID) error {
+	result := gormDb.Model(&Interviewee{}).
+		Where(&Interviewee{UUID: uuid}).Updates(interviewee)
+	return result.Error
+}
+
 func QueryIntervieweeById(id uint) (*Interviewee, error) {
 	var dbInterviewee Interviewee
 	result := gormDb.First(&dbInterviewee, id)
@@ -81,8 +87,9 @@ func UpdateJoinedInterview(id uint, newResult uint) error {
 	return result.Error
 }
 
-func CreateJoinedInterview(uuid string, iid uint) {
-	// FIXME(RalXY): complete this
+func CreateJoinedInterview(iid, vid uint) error {
+	result := gormDb.Create(&JoinedInterview{InterviewID: iid, IntervieweeID: vid})
+	return result.Error
 }
 
 func DeleteJoinedInterviewByIidAndVid(iid, vid uint) error {

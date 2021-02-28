@@ -848,6 +848,44 @@ var doc = `{
                 }
             }
         },
+        "/interview/selected": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Interviewee"
+                ],
+                "summary": "Submit the selected interview",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "UUID",
+                        "name": "uuid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Interview ID",
+                        "name": "iid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Set this to true if the interviewee chose that he has no time",
+                        "name": "no_time",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/interviewee/admit": {
             "post": {
                 "tags": [
@@ -1223,11 +1261,11 @@ var doc = `{
         },
         "/relation/event/form": {
             "get": {
-                "description": "Make a relation query",
+                "description": "Make a validation of the given relation",
                 "tags": [
                     "Relation"
                 ],
-                "summary": "Query relation",
+                "summary": "Validate relation",
                 "parameters": [
                     {
                         "type": "integer",
