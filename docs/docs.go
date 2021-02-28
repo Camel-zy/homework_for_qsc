@@ -458,7 +458,7 @@ var doc = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/model.Brief"
+                                "$ref": "#/definitions/model.InterviewResponse"
                             }
                         }
                     }

@@ -102,8 +102,8 @@ func QueryAllInterviewOfDepartmentInEvent(eid, did uint) (*[]InterviewResponse, 
 	return &dbInterview, result.Error
 }
 
-func QueryAllInterviewOfRound(eid uint, did uint, rnd uint) (*[]Brief, error) {
-	var dbInterview []Brief
+func QueryAllInterviewOfRound(eid uint, did uint, rnd uint) (*[]InterviewResponse, error) {
+	var dbInterview []InterviewResponse
 	if findEventError := gormDb.First(&Event{}, eid).Error; findEventError != nil {
 		return nil, findEventError
 	}

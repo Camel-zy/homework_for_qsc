@@ -217,7 +217,7 @@ func getAllInterviewOfDepartmentInEvent(c echo.Context) error {
 // @param did query uint true "Department ID"
 // @param round query uint true "Round"
 // @produce json
-// @success 200 {array} model.Brief
+// @success 200 {array} model.InterviewResponse
 func getAllInterviewOfRound(c echo.Context) error {
 	var eid, did, round uint
 	err := echo.QueryParamsBinder(c).
