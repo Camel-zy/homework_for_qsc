@@ -1310,6 +1310,28 @@ var doc = `{
                         "description": ""
                     }
                 }
+            },
+            "delete": {
+                "tags": [
+                    "Relation"
+                ],
+                "summary": "Delete relation",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Form ID",
+                        "name": "fid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Event ID",
+                        "name": "eid",
+                        "in": "query",
+                        "required": true
+                    }
+                ]
             }
         },
         "/relation/event/form/all": {

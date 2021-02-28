@@ -44,7 +44,7 @@ func createEventHasForm(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
-		Data: relation,
+		Data: *relation,
 	})
 }
 
@@ -63,7 +63,7 @@ func validateEventHasForm(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
-			Data: "fid, eid needs to be an unsigned integer",
+			Data: "fid, eid needs to be unsigned integers",
 		})
 	}
 	_, err = model.QueryEventHasForm(fid, eid)
@@ -80,6 +80,45 @@ func validateEventHasForm(c echo.Context) error {
 }
 
 // @tags Relation
+// @summary Delete relation
+// @router /relation/event/form [delete]
+// @param fid query uint true "Form ID"
+// @param eid query uint true "Event ID"
+func deleteEventHasForm(c echo.Context) error {
+	var fid, eid uint
+	err := echo.QueryParamsBinder(c).
+		MustUint("fid", &fid).
+		MustUint("eid", &eid).
+		BindError()
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "fid, eid needs to be unsigned integers",
+		})
+	}
+
+	err = model.DeleteEventHasForm(fid, eid)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return c.JSON(http.StatusNotFound, &utils.Error{
+				Code: "NOT_FOUND",
+				Data: "not found the target to delete",
+			})
+		}
+		return c.JSON(http.StatusInternalServerError, &utils.Error{
+			Code: "INTERNAL_SERVER_ERR",
+			Data: "delete relation failed",
+		})
+	}
+
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: "delete relation success",
+	})
+
+}
+
+// @tags Relation
 // @summary Query all forms in event
 // @router /relation/event/form/all [get]
 // @param eid query uint true "Event ID"
@@ -92,7 +131,7 @@ func getAllFormOfEvent(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
-			Data: "eid needs to be an unsigned integer",
+			Data: "fid, eid needs to be unsigned integers",
 		})
 	}
 

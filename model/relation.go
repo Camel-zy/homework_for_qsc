@@ -6,19 +6,27 @@ type EventHasForm struct {
 	ID      uint `gorm:"not null;autoIncrement;primaryKey"`
 	FormID  uint `gorm:"not null"`
 	EventID uint `gorm:"not null"`
+	Deleted gorm.DeletedAt
 }
 
-func CreateEventHasForm(fid uint, eid uint) (EventHasForm, error) {
+func CreateEventHasForm(fid uint, eid uint) (*EventHasForm, error) {
 	dbEventHasForm := EventHasForm{}
 	dbEventHasForm.FormID = fid
 	dbEventHasForm.EventID = eid
 	result := gormDb.Create(&dbEventHasForm)
-	return dbEventHasForm, result.Error
+	return &dbEventHasForm, result.Error
 }
 func QueryEventHasForm(fid uint, eid uint) (*EventHasForm, error) {
 	var dbEventHasForm EventHasForm
 	result := gormDb.Where(&EventHasForm{FormID: fid, EventID: eid}).First(&dbEventHasForm)
 	return &dbEventHasForm, result.Error
+}
+
+func DeleteEventHasForm(fid, eid uint) error {
+	result := gormDb.
+		Where(&EventHasForm{FormID: fid, EventID: eid}).
+		Delete(&EventHasForm{})
+	return result.Error
 }
 
 func QueryAllFormByEventID(eid uint) (*[]Form, error) {
