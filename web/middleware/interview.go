@@ -1,10 +1,11 @@
 package middleware
 
 import (
+	"net/http"
+
 	"git.zjuqsc.com/rop/rop-back-neo/model"
 	"git.zjuqsc.com/rop/rop-back-neo/utils"
 	"github.com/labstack/echo/v4"
-	"net/http"
 )
 
 func CheckDepartmentInOrganization(next echo.HandlerFunc) echo.HandlerFunc {
@@ -63,6 +64,7 @@ func SetInterviewOrganization(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		c.Set("oid", interview.Event.OrganizationID)
+		c.Set("iid", iid)
 
 		return next(c)
 	}

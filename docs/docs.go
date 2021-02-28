@@ -748,7 +748,7 @@ var doc = `{
                 ]
             }
         },
-        "/interview/interviewee": {
+        "/interview/interviewee/all": {
             "get": {
                 "produces": [
                     "application/json"

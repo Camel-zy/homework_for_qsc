@@ -78,7 +78,7 @@ func updateIntervieweeOptions(c echo.Context) error {
 
 // @tags Interviewee
 // @summary Get all interviewees in an interview
-// @router /interview/interviewee [get]
+// @router /interview/interviewee/all [get]
 // @param iid query uint true "Interview ID"
 // @produce json
 // @success 200 {array} model.Interviewee_
@@ -94,9 +94,21 @@ func getAllInterviewees(c echo.Context) error {
 		})
 	}
 
+	var interviewee []model.Interviewee
+	for _, v := range *joinedInterview {
+		itv, itvErr := model.QueryIntervieweeById(v.IntervieweeID)
+		if itvErr != nil {
+			return c.JSON(http.StatusInternalServerError, &utils.Error{
+				Code: "INTERNAL_SERVER_ERR",
+				Data: "get interviewees failed",
+			})
+		}
+		interviewee = append(interviewee, *itv)
+	}
+
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
-		Data: *joinedInterview,
+		Data: &interviewee,
 	})
 }
 
