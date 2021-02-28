@@ -1567,9 +1567,6 @@ var doc = `{
         },
         "model.Intention": {
             "type": "object",
-            "required": [
-                "department_id"
-            ],
             "properties": {
                 "department_id": {
                     "type": "integer"

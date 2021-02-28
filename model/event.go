@@ -82,7 +82,7 @@ func QueryAllEventInOrganization(oid uint) (*[]Brief, error) {
 	return &dbEvent, result.Error
 }
 
-func QueryRoundNumOfJoindEvent(did uint, eid uint) (uint, error) {
+func QueryRoundNumOfJoinedEvent(did uint, eid uint) (uint, error) {
 	var dbJoinedEvent JoinedEvent
 	result := gormDb.Model(&JoinedEvent{}).Where(&JoinedEvent{DepartmentID: did, EventID: eid}).First(&dbJoinedEvent)
 	return dbJoinedEvent.RoundNum, result.Error

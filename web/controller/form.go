@@ -127,13 +127,14 @@ func getForm(c echo.Context) error {
 			Data: "fid, eid needs to be an unsigned integer",
 		})
 	}
-	event, itvErr := model.QueryEventByID(eid)
+	_, itvErr := model.QueryEventByID(eid)  // event, itvErr := model.QueryEventByID(eid)
 	if errors.Is(itvErr, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, &utils.Error{
 			Code: "NOT_FOUND",
 			Data: "event doesn't exist",
 		})
 	}
+	/*
 	_, itvErr = model.QueryEventHasForm(fid, eid)
 	if errors.Is(itvErr, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, &utils.Error{
@@ -147,6 +148,7 @@ func getForm(c echo.Context) error {
 			Data: "event isn't running",
 		})
 	}
+	 */
 	form, itvErr := model.QueryFormById(fid)
 	if errors.Is(itvErr, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, &utils.Error{

@@ -19,20 +19,20 @@ type Answer struct {
 
 // Don't forget to modify AnswerRequest_ if you modify this
 type AnswerRequest struct {
-	Name      string         `json:"Name" validate:"required"`
-	Mobile    string         `json:"Mobile" validate:"required"`
-	Intention []IntentionRequest    `json:"Intention"`
-	Content   datatypes.JSON `json:"Content" validate:"required"`
+	Name      string             `json:"Name" validate:"required"`
+	Mobile    string             `json:"Mobile" validate:"required"`
+	Intention []IntentionRequest `json:"Intention"`
+	Content   datatypes.JSON     `json:"Content" validate:"required"`
 }
 
 type Intention struct {
-	DepartmentID uint `json:"department_id" validate:"required"`
+	DepartmentID uint `json:"department_id"`
 	IntentRank   uint `json:"intent_rank"` // this feature hasn't been implemented
 }
 
 type IntentionRequest struct {
-	DepartmentID string `json:"department_id"`
-	IntentRank   uint `json:"intent_rank"` // this feature hasn't been implemented
+	DepartmentName string `json:"department_name" validate:"required"`
+	IntentRank     uint   `json:"intent_rank"` // this feature hasn't been implemented
 }
 
 // Don't forget to modify AnswerResponse_ if you modify this

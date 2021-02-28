@@ -241,7 +241,7 @@ func getRoundNumOfJoindEvent(c echo.Context) error {
 		})
 	}
 
-	RoundNum, numErr := model.QueryRoundNumOfJoindEvent(did, eid)
+	RoundNum, numErr := model.QueryRoundNumOfJoinedEvent(did, eid)
 	if errors.Is(numErr, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, &utils.Error{
 			Code: "NOT_FOUND",

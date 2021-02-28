@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"sort"
 
@@ -51,7 +52,7 @@ func createAnswer(c echo.Context) error {
 			Data: err.Error(),
 		})
 	}
-	newIntention, err := SortIntention(&answerRequest.Intention)
+	newIntention, err := HandleIntention(&answerRequest.Intention, eid)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
@@ -168,17 +169,20 @@ func getAnswer(c echo.Context) error {
 	})
 }
 
-func SortIntention(origArray *[]model.IntentionRequest) (*[]model.Intention, error) {
+func HandleIntention(origArray *[]model.IntentionRequest, eid uint) (*[]model.Intention, error) {
 	var newIntention []model.Intention
 	hasRank := false
+	event, err := model.QueryEventByID(eid)
+	if err != nil {
+		return nil, errors.New("event not found")
+	}
+	brief, err := model.QueryAllDepartmentInOrganization(event.OrganizationID)
 	for _, v := range *origArray {
-		did, err := utils.IsUnsignedInteger(v.DepartmentID)
+		did, err := FindDidByName(brief, v.DepartmentName)
 		if err != nil {
-			return nil, errors.New("did cannot be converted to an unsigned integer")
+			return nil, err
 		}
-		if did != 0 {
-			newIntention = append(newIntention, model.Intention{DepartmentID: did, IntentRank: v.IntentRank})
-		}
+		newIntention = append(newIntention, model.Intention{DepartmentID: did, IntentRank: v.IntentRank})
 		if v.IntentRank != 0 {
 			hasRank = true
 		}
@@ -196,4 +200,14 @@ func SortIntention(origArray *[]model.IntentionRequest) (*[]model.Intention, err
 		}
 	}
 	return &newIntention, nil
+}
+
+func FindDidByName(brief *[]model.Brief, name string) (did uint, err error) {
+	for _, v := range *brief {
+		if name == v.Name {
+			return v.ID, nil
+		}
+	}
+	return 0, errors.New(
+		fmt.Sprintf(`department named "%s" has not been found in the current event`, name))
 }
