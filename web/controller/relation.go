@@ -13,7 +13,7 @@ import (
 // @tags Relation
 // @summary Create a relation
 // @description Create a relation
-// @router /relation/EventHasForm [put]
+// @router /relation/event/form [put]
 // @param fid query uint true "Form ID"
 // @param eid query uint true "Event ID"
 // @success 200
@@ -51,7 +51,7 @@ func createEventHasForm(c echo.Context) error {
 // @tags Relation
 // @summary Query relation
 // @description Make a relation query
-// @router /relation/EventHasForm [get]
+// @router /relation/event/form [get]
 // @param fid query uint true "Form ID"
 // @param eid query uint true "Event ID"
 func getEventHasForm(c echo.Context) error {
@@ -73,8 +73,38 @@ func getEventHasForm(c echo.Context) error {
 			Data: "relation not found",
 		})
 	}
-	return c.JSON(http.StatusNotFound, &utils.Error{
+	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
 		Data: "relation exists",
+	})
+}
+
+// @tags Relation
+// @summary Query all forms in event
+// @router /relation/event/form/all [get]
+// @param eid query uint true "Event ID"
+// @success 200 {array} uint model.Form
+func getAllFormOfEvent(c echo.Context) error {
+	var eid uint
+	err := echo.QueryParamsBinder(c).
+		MustUint("eid", &eid).
+		BindError()
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "eid needs to be an unsigned integer",
+		})
+	}
+
+	forms, err := model.QueryAllFormByEventID(eid)
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return c.JSON(http.StatusInternalServerError, &utils.Error{
+			Code: "INTERNAL_SERVER_ERR",
+			Data: "get relations failed",
+		})
+	}
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: &forms,
 	})
 }

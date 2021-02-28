@@ -1221,7 +1221,7 @@ var doc = `{
                 }
             }
         },
-        "/relation/EventHasForm": {
+        "/relation/event/form": {
             "get": {
                 "description": "Make a relation query",
                 "tags": [
@@ -1270,6 +1270,34 @@ var doc = `{
                 "responses": {
                     "200": {
                         "description": ""
+                    }
+                }
+            }
+        },
+        "/relation/event/form/all": {
+            "get": {
+                "tags": [
+                    "Relation"
+                ],
+                "summary": "Query all forms in event",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Event ID",
+                        "name": "eid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        }
                     }
                 }
             }
