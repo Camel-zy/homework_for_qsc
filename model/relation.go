@@ -1,12 +1,23 @@
 package model
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
+)
 
 type EventHasForm struct {
 	ID      uint `gorm:"not null;autoIncrement;primaryKey"`
 	FormID  uint `gorm:"not null"`
+	Form    Form
 	EventID uint `gorm:"not null"`
 	Deleted gorm.DeletedAt
+}
+
+type EventHasFormResponse struct {
+	ID      uint
+	FormID  uint
+	Form    Form_
+	EventID uint
 }
 
 func CreateEventHasForm(fid uint, eid uint) (*EventHasForm, error) {
@@ -19,6 +30,12 @@ func CreateEventHasForm(fid uint, eid uint) (*EventHasForm, error) {
 func QueryEventHasForm(fid uint, eid uint) (*EventHasForm, error) {
 	var dbEventHasForm EventHasForm
 	result := gormDb.Where(&EventHasForm{FormID: fid, EventID: eid}).First(&dbEventHasForm)
+	return &dbEventHasForm, result.Error
+}
+
+func QueryEventHasFormByEid(eid uint) (*[]EventHasForm, error) {
+	var dbEventHasForm []EventHasForm
+	result := gormDb.Preload(clause.Associations).Where(&EventHasForm{EventID: eid}).Find(&dbEventHasForm)
 	return &dbEventHasForm, result.Error
 }
 

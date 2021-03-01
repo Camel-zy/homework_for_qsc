@@ -163,6 +163,31 @@ func getForm(c echo.Context) error {
 }
 
 // @tags Form
+// @summary Get all form relations in eid
+// @router /form/all [get]
+// @param eid query uint true "Event ID"
+// @success 200 {array} model.EventHasFormResponse
+func getFormInEvent(c echo.Context) error {
+	var eid uint
+	err := echo.QueryParamsBinder(c).
+		MustUint("eid", &eid).
+		BindError()
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "eid needs to be an unsigned integer",
+		})
+	}
+
+	eventHasForm, err := model.QueryEventHasFormByEid(eid)
+
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: &eventHasForm,
+	})
+}
+
+// @tags Form
 // @summary Get all forms in organization
 // @description Get a form
 // @router /organization/form/all [get]

@@ -11,7 +11,7 @@ import (
 type Form struct {
 	ID             uint           `gorm:"not null;autoIncrement;primaryKey"`
 	Name           string         `gorm:"size:40;not null"`
-	Description    string         `gorm:"not null"`
+	Description    string
 	CreateTime     time.Time      `gorm:"autoCreateTime"`
 	OrganizationID uint           `gorm:"not null"`
 	Status         uint           `gorm:"not null;default:2"` // 1 pinned, 2 used, 3 unused, 4 abandoned
@@ -20,9 +20,9 @@ type Form struct {
 
 // Don't forget to modify CreateFormRequest_ if you modify this
 type CreateFormRequest struct {
-	Name           string         `json:"Name" validate:"required"`
-	Description    string         `json:"Description" validate:"required"`
-	Content        datatypes.JSON `json:"Content" validate:"required"`
+	Name        string         `json:"Name" validate:"required"`
+	Description string         `json:"Description" validate:"required"`
+	Content     datatypes.JSON `json:"Content" validate:"required"`
 }
 
 // Don't forget to modify FormRequest_ if you modify this

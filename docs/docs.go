@@ -696,6 +696,34 @@ var doc = `{
                 }
             }
         },
+        "/form/all": {
+            "get": {
+                "tags": [
+                    "Form"
+                ],
+                "summary": "Get all form relations in eid",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Event ID",
+                        "name": "eid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.EventHasFormResponse"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/form/interviewee/interview/all": {
             "get": {
                 "tags": [
@@ -1473,6 +1501,23 @@ var doc = `{
                     "type": "string"
                 },
                 "organizationID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.EventHasFormResponse": {
+            "type": "object",
+            "properties": {
+                "eventID": {
+                    "type": "integer"
+                },
+                "form": {
+                    "$ref": "#/definitions/model.Form_"
+                },
+                "formID": {
+                    "type": "integer"
+                },
+                "id": {
                     "type": "integer"
                 }
             }
