@@ -117,33 +117,3 @@ func deleteEventHasForm(c echo.Context) error {
 	})
 
 }
-
-// @tags Relation
-// @summary Query all forms in event
-// @router /relation/event/form/all [get]
-// @param eid query uint true "Event ID"
-// @success 200 {array} uint model.Form
-func getAllFormOfEvent(c echo.Context) error {
-	var eid uint
-	err := echo.QueryParamsBinder(c).
-		MustUint("eid", &eid).
-		BindError()
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "fid, eid needs to be unsigned integers",
-		})
-	}
-
-	forms, err := model.QueryAllFormByEventID(eid)
-	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-		return c.JSON(http.StatusInternalServerError, &utils.Error{
-			Code: "INTERNAL_SERVER_ERR",
-			Data: "get relations failed",
-		})
-	}
-	return c.JSON(http.StatusOK, &utils.Error{
-		Code: "SUCCESS",
-		Data: &forms,
-	})
-}

@@ -46,21 +46,4 @@ func DeleteEventHasForm(fid, eid uint) error {
 	return result.Error
 }
 
-func QueryAllFormByEventID(eid uint) (*[]Form, error) {
-	var dbEventHasForm []EventHasForm
-	result := gormDb.Model(&EventHasForm{}).Where(&EventHasForm{EventID: eid}).Find(&dbEventHasForm)
-	form := make([]Form, 0)
-	for _, v := range dbEventHasForm {
-		tmp, err := QueryFormById(v.FormID)
-		if err != nil {
-			if err == gorm.ErrRecordNotFound {
-				return nil, ErrInternalError
-			}
-			return nil, err
-		}
-		form = append(form, *tmp)
-	}
-	return &form, result.Error
-}
-
 //DeleteEventHasForm required in the nearest future

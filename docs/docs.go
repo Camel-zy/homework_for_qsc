@@ -1361,34 +1361,6 @@ var doc = `{
                     }
                 ]
             }
-        },
-        "/relation/event/form/all": {
-            "get": {
-                "tags": [
-                    "Relation"
-                ],
-                "summary": "Query all forms in event",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Event ID",
-                        "name": "eid",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "integer"
-                            }
-                        }
-                    }
-                }
-            }
         }
     },
     "definitions": {
