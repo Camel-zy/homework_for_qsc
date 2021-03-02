@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"net/http"
 	"sort"
+	"strconv"
+	"strings"
 
 	"git.zjuqsc.com/rop/rop-back-neo/model"
 	"git.zjuqsc.com/rop/rop-back-neo/utils"
@@ -40,7 +42,6 @@ func createAnswer(c echo.Context) error {
 	}
 
 	answerRequest := model.AnswerRequest{}
-	answer := model.Answer{}
 	if err := c.Bind(&answerRequest); err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
@@ -52,7 +53,7 @@ func createAnswer(c echo.Context) error {
 			Data: err.Error(),
 		})
 	}
-	newIntention, err := HandleIntention(&answerRequest.Intention, eid)
+	newIntention, err := handleIntention(&answerRequest.Intention, eid)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
@@ -73,10 +74,26 @@ func createAnswer(c echo.Context) error {
 		})
 	}
 
-	answer.Name = answerRequest.Name
-	answer.Intention = jsonIntention
-	answer.Mobile = answerRequest.Mobile
-	answer.Content =  answerRequest.Content
+	_, err = strconv.ParseUint(answerRequest.Mobile, 10, 64)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "mobile number must be all numbers",
+		})
+	}
+	if len(answerRequest.Mobile) != 11 || !strings.HasPrefix(answerRequest.Mobile, "1") {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "mobile number is invalid",
+		})
+	}
+
+	answer := model.Answer{
+		Name: answerRequest.Name,
+		Intention: jsonIntention,
+		Mobile: answerRequest.Mobile,
+		Content: answerRequest.Content,
+	}
 
 	if _, err := model.QueryAnswer(fid, zjuid, eid); err == nil {
 		if subErr := model.UpdateAnswer(&answer, fid, zjuid, eid); subErr != nil {
@@ -169,7 +186,7 @@ func getAnswer(c echo.Context) error {
 	})
 }
 
-func HandleIntention(origArray *[]model.IntentionRequest, eid uint) (*[]model.Intention, error) {
+func handleIntention(origArray *[]model.IntentionRequest, eid uint) (*[]model.Intention, error) {
 	var newIntention []model.Intention
 	hasRank := false
 	event, err := model.QueryEventByID(eid)
