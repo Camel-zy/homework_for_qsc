@@ -77,13 +77,13 @@ func addRoutes(e *echo.Echo) {
 	form := api.Group("/form")
 	form.PUT("", createForm)
 	form.POST("", updateForm)
-	form.GET("", getForm)
+	e.GET("/api/form", getForm)
 	form.GET("/all", getFormInEvent)
-	api.GET("/form/interviewee/interview/all", getAllInterviewOfInterviewee);
+	api.GET("/form/interviewee/interview/all", getAllInterviewOfInterviewee)
 
 	answer := api.Group("/answer")
 	answer.GET("", getAnswer)
-	answer.PUT("", createAnswer)
+	e.PUT("/api/answer", createAnswer)
 
 	// TODO(TO/GA): Delete it
 	message := api.Group("/message", middleware.GetOrganizationIdFromParam, middleware.AuthOrganization)

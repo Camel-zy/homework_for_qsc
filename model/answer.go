@@ -55,7 +55,7 @@ func QueryAnswerByID(id uint) (*Answer, error) {
 
 func QueryAnswer(fid uint, zjuid string, eid uint) (*AnswerResponse, error) {
 	var dbAnswer AnswerResponse
-	result := gormDb.Model(&Answer{FormID: fid, ZJUid: zjuid, EventID: eid}).First(&dbAnswer)
+	result := gormDb.Model(&Answer{}).Where(&Answer{FormID: fid, ZJUid: zjuid, EventID: eid}).First(&dbAnswer)
 	return &dbAnswer, result.Error
 }
 

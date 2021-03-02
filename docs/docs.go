@@ -701,7 +701,7 @@ var doc = `{
                 "tags": [
                     "Form"
                 ],
-                "summary": "Get all form relations in eid",
+                "summary": "Get all form relations in event",
                 "parameters": [
                     {
                         "type": "integer",

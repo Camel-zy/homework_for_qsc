@@ -163,7 +163,7 @@ func getForm(c echo.Context) error {
 }
 
 // @tags Form
-// @summary Get all form relations in eid
+// @summary Get all form relations in event
 // @router /form/all [get]
 // @param eid query uint true "Event ID"
 // @success 200 {array} model.EventHasFormResponse
