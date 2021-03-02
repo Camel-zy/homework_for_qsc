@@ -40,7 +40,7 @@ func QueryUserByZJUid(zjuId string) (*User, error) {
 }
 
 func UpdateUserByZJUid(requestUser *User) error {
-	result := gormDb.Model(&User{ZJUid: requestUser.ZJUid}).Updates(requestUser)
+	result := gormDb.Model(&User{}).Where(&User{ZJUid: requestUser.ZJUid}).Updates(requestUser)
 	return result.Error
 }
 

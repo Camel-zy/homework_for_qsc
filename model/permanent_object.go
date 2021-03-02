@@ -41,13 +41,17 @@ func CreateObject(ctx context.Context, objectName string) (url *url.URL, formDat
 }
 
 func SealObject(ctx context.Context, uuid uuid.UUID) error {
-	result := gormDb.Model(&PermanentObject{}).Where("UUID = ?", uuid.String()).Updates(&PermanentObject{Finished: true})
+	result := gormDb.Model(&PermanentObject{}).
+		Where("UUID = ?", uuid.String()).
+		Updates(&PermanentObject{Finished: true})
 	return result.Error
 }
 
 func GetObject(ctx context.Context, uuid uuid.UUID) (presignedURL *url.URL, err error) {
 	var permanentObject PermanentObject
-	result := gormDb.Model(&PermanentObject{UUID: uuid}).Where("UUID = ?", uuid.String()).First(&permanentObject)
+	result := gormDb.Model(&PermanentObject{}).
+		Where("UUID = ?", uuid.String()).
+		First(&permanentObject)
 	if result.Error != nil {
 		logrus.Error(err)
 		return nil, err
