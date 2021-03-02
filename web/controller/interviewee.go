@@ -210,7 +210,7 @@ func getAllIntervieweeInEventOfDepartment(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
-		Data: &interviewee,
+		Data: interviewee,
 	})
 }
 
@@ -330,7 +330,7 @@ func getAllIntervieweeByAdmittedStatus(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
-		Data: &interviewee,
+		Data: interviewee,
 	})
 }
 
@@ -378,7 +378,7 @@ func getAllIntervieweeByRejectedStatus(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
-		Data: &interviewee,
+		Data: interviewee,
 	})
 }
 

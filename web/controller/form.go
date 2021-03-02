@@ -158,7 +158,7 @@ func getForm(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
-		Data: &form,
+		Data: form,
 	})
 }
 
@@ -183,7 +183,7 @@ func getFormInEvent(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
-		Data: &eventHasForm,
+		Data: eventHasForm,
 	})
 }
 
@@ -211,7 +211,7 @@ func getAllFormInOrganization(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
-		Data: &forms,
+		Data: forms,
 	})
 }
 

@@ -128,7 +128,7 @@ func getInterview(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
-		Data: &interview,
+		Data: interview,
 	})
 }
 
@@ -170,7 +170,7 @@ func getInterviewInEvent(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
-		Data: &interview,
+		Data: interview,
 	})
 }
 
@@ -205,7 +205,7 @@ func getAllInterviewOfDepartmentInEvent(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
-		Data: &interviews,
+		Data: interviews,
 	})
 }
 
@@ -242,6 +242,6 @@ func getAllInterviewOfRound(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
-		Data: &interviews,
+		Data: interviews,
 	})
 }

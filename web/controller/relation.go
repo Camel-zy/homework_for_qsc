@@ -44,7 +44,7 @@ func createEventHasForm(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
-		Data: *relation,
+		Data: relation,
 	})
 }
 

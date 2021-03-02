@@ -46,7 +46,7 @@ func getDepartmentInOrganization(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
-		Data: &department,
+		Data: department,
 	})
 }
 
@@ -76,7 +76,7 @@ func getAllDepartmentInOrganization(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
-		Data: &departments,
+		Data: departments,
 	})
 }
 
@@ -104,7 +104,7 @@ func getAllDepartmentInEvent(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
-		Data: &departments,
+		Data: departments,
 	})
 
 }

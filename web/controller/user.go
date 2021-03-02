@@ -28,7 +28,7 @@ func getUser(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
-		Data: &user,
+		Data: user,
 	})
 }
 
@@ -36,6 +36,6 @@ func getAllUser(c echo.Context) error {
 	users, _ := model.QueryAllUser()
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
-		Data: &users,
+		Data: users,
 	})
 }

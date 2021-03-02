@@ -134,7 +134,7 @@ func getEvent(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
-		Data: &event,
+		Data: event,
 	})
 }
 
@@ -177,7 +177,7 @@ func getEventInOrganization(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
-		Data: &event,
+		Data: event,
 	})
 }
 
@@ -208,7 +208,7 @@ func getAllEventInOrganization(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
-		Data: &events,
+		Data: events,
 	})
 }
 

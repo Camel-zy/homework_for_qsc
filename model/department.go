@@ -77,7 +77,7 @@ func QueryAllDepartmentByEid(eid uint) (*[]Brief, error) {
 	var dbDepartment []Brief
 
 	if findEventErr := gormDb.First(&Event{}, eid).Error; findEventErr != nil {
-		return nil, findEventErr
+		return &dbDepartment, findEventErr
 	}
 
 	result := gormDb.Model(&JoinedEvent{}).Where(&JoinedEvent{EventID: eid}).Find(&dbDepartment)
