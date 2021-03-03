@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"strings"
@@ -36,7 +37,23 @@ func GenerateText(messageTemplateID uint, interviewee *model.Interviewee, answer
 		}
 
 		if strings.Contains(templateText, "#intent#") {
-			// templateText = strings.ReplaceAll(templateText, "#intent#", answer.Intention) // TODO(TO/GA): decode it
+			var intentions []model.Intention
+			unmarshalErr := json.Unmarshal(answer.Intention, &intentions)
+			if unmarshalErr != nil {
+				return nil, unmarshalErr
+			}
+			var intent string
+			for _, v := range intentions {
+				department, departmentErr := model.QueryDepartmentById(v.DepartmentID)
+				if departmentErr != nil {
+					return nil, departmentErr
+				}
+				if len(intent) != 0 {
+					intent += "，"
+				}
+				intent += department.Name
+			}
+			templateText = strings.ReplaceAll(templateText, "#intent#", intent) // TODO(TO/GA): test it
 		}
 	}
 
