@@ -58,6 +58,7 @@ func addRoutes(e *echo.Echo) {
 	interview := api.Group("/interview", middleware.SetInterviewOrganization, middleware.AuthOrganization)
 	interview.POST("", updateInterview)
 	interview.GET("", getInterview)
+	interview.DELETE("", deleteInterview)
 	// interview.PUT("/interviewee", createIntervieweeToInterview)
 	interview.DELETE("/interviewee", deleteIntervieweeFromInterview)
 	interview.GET("/interviewee/all", getAllInterviewees)

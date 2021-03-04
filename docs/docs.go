@@ -826,6 +826,21 @@ var doc = `{
                         "description": ""
                     }
                 }
+            },
+            "delete": {
+                "tags": [
+                    "Interview"
+                ],
+                "summary": "Delete interview",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Interview ID",
+                        "name": "iid",
+                        "in": "query",
+                        "required": true
+                    }
+                ]
             }
         },
         "/interview/interviewee": {

@@ -133,6 +133,54 @@ func getInterview(c echo.Context) error {
 }
 
 // @tags Interview
+// @summary Delete interview
+// @router /interview [delete]
+// @param iid query uint true "Interview ID"
+func deleteInterview(c echo.Context) error {
+	var iid uint
+	err := echo.QueryParamsBinder(c).MustUint("iid", &iid).BindError()
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "iid needs to be an unsigned integer",
+		})
+	}
+
+	joinedInterview, err := model.QueryAllJoinedInterviewOfInterview(iid)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, &utils.Error{
+			Code: "INTERNAL_SERVER_ERR",
+			Data: "get interview failed",
+		})
+	}
+	if len(*joinedInterview) != 0 {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "can't delete interview with interviewees participated",
+		})
+	}
+
+	err = model.DeleteInterview(iid)
+	if err != nil {
+		if errors.Is(err, model.ErrNoRowsAffected) {
+			return c.JSON(http.StatusNotFound, &utils.Error{
+				Code: "NOT_FOUND",
+				Data: "form not found",
+			})
+		}
+		return c.JSON(http.StatusInternalServerError, &utils.Error{
+			Code: "INTERNAL_SERVER_ERR",
+			Data: "delete form failed",
+		})
+	}
+
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: "delete form success",
+	})
+}
+
+// @tags Interview
 // @summary Get interview in event
 // @description Get information of an interview in a specific event
 // @router /event/interview [get]

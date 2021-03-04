@@ -26,6 +26,7 @@ type Interview struct {
 	StartTime          time.Time `gorm:"not null"`
 	EndTime            time.Time `gorm:"not null"`
 	UpdatedTime        time.Time `gorm:"autoUpdateTime"`
+	Deleted            gorm.DeletedAt
 }
 
 type InterviewRequest struct {
@@ -120,4 +121,15 @@ func QueryInterviewByIntervieweeAndRound(vid uint, rnd uint) (*Interview, error)
 		return nil, gorm.ErrRecordNotFound
 	}
 	return &dbInterview, nil
+}
+
+func DeleteInterview(iid uint) error {
+	result := gormDb.Delete(&Interview{}, iid)
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected == 0 {
+		return ErrNoRowsAffected
+	}
+	return nil
 }
