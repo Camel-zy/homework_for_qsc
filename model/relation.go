@@ -43,7 +43,13 @@ func DeleteEventHasForm(fid, eid uint) error {
 	result := gormDb.
 		Where(&EventHasForm{FormID: fid, EventID: eid}).
 		Delete(&EventHasForm{})
-	return result.Error
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected == 0 {
+		return ErrNoRowsAffected
+	}
+	return nil
 }
 
 //DeleteEventHasForm required in the nearest future

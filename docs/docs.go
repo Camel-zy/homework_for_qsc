@@ -694,6 +694,21 @@ var doc = `{
                         }
                     }
                 }
+            },
+            "delete": {
+                "tags": [
+                    "Form"
+                ],
+                "summary": "Delete a form",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Form ID",
+                        "name": "fid",
+                        "in": "query",
+                        "required": true
+                    }
+                ]
             }
         },
         "/form/all": {

@@ -109,6 +109,40 @@ func updateForm(c echo.Context) error {
 }
 
 // @tags Form
+// @summary Delete a form
+// @router /form [delete]
+// @param fid query uint true "Form ID"
+func deleteForm(c echo.Context) error {
+	var fid uint
+	err := echo.QueryParamsBinder(c).MustUint("fid", &fid).BindError()
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, &utils.Error{
+			Code: "BAD_REQUEST",
+			Data: "fid needs to be an unsigned integer",
+		})
+	}
+
+	err = model.DeleteForm(fid)
+	if err != nil {
+		if errors.Is(err, model.ErrNoRowsAffected) {
+			return c.JSON(http.StatusNotFound, &utils.Error{
+				Code: "NOT_FOUND",
+				Data: "form not found",
+			})
+		}
+		return c.JSON(http.StatusInternalServerError, &utils.Error{
+			Code: "INTERNAL_SERVER_ERR",
+			Data: "delete form failed",
+		})
+	}
+
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: "delete form success",
+	})
+}
+
+// @tags Form
 // @summary Get a form
 // @description Get a form
 // @router /form [get]

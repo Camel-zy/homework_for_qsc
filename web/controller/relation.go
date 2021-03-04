@@ -99,10 +99,10 @@ func deleteEventHasForm(c echo.Context) error {
 
 	err = model.DeleteEventHasForm(fid, eid)
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
+		if errors.Is(err, model.ErrNoRowsAffected) {
 			return c.JSON(http.StatusNotFound, &utils.Error{
 				Code: "NOT_FOUND",
-				Data: "not found the target to delete",
+				Data: "relation not found",
 			})
 		}
 		return c.JSON(http.StatusInternalServerError, &utils.Error{

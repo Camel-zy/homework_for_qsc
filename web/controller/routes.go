@@ -77,6 +77,7 @@ func addRoutes(e *echo.Echo) {
 	form := api.Group("/form")
 	form.PUT("", createForm)
 	form.POST("", updateForm)
+	form.DELETE("", deleteForm)
 	e.GET("/api/form", getForm)
 	form.GET("/all", getFormInEvent)
 	api.GET("/form/interviewee/interview/all", getAllInterviewOfInterviewee)

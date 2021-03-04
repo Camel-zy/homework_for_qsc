@@ -5,17 +5,19 @@ import (
 
 	"github.com/jinzhu/copier"
 	"gorm.io/datatypes"
+	"gorm.io/gorm"
 )
 
 // Don't forget to modify Form_ if you modify this
 type Form struct {
-	ID             uint           `gorm:"not null;autoIncrement;primaryKey"`
-	Name           string         `gorm:"size:40;not null"`
+	ID             uint   `gorm:"not null;autoIncrement;primaryKey"`
+	Name           string `gorm:"size:40;not null"`
 	Description    string
 	CreateTime     time.Time      `gorm:"autoCreateTime"`
 	OrganizationID uint           `gorm:"not null"`
 	Status         uint           `gorm:"not null;default:2"` // 1 pinned, 2 used, 3 unused, 4 abandoned
 	Content        datatypes.JSON `gorm:"not null"`
+	Deleted        gorm.DeletedAt
 }
 
 // Don't forget to modify CreateFormRequest_ if you modify this
@@ -68,4 +70,15 @@ func QueryAllFormByOid(oid uint) (*[]Form, error) {
 
 	result := gormDb.Model(&Form{}).Where(&Form{OrganizationID: oid}).Find(&dbForm)
 	return &dbForm, result.Error
+}
+
+func DeleteForm(fid uint) error {
+	result := gormDb.Delete(&Form{}, fid)
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected == 0 {
+		return ErrNoRowsAffected
+	}
+	return nil
 }
