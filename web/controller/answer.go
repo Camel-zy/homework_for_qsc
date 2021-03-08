@@ -173,11 +173,8 @@ func getAnswer(c echo.Context) error {
 	}
 
 	answer, aswErr := model.QueryAnswerByID(aid)
-	if errors.Is(aswErr, gorm.ErrRecordNotFound) {
-		return c.JSON(http.StatusNotFound, &utils.Error{
-			Code: "NOT_FOUND",
-			Data: "answer not found",
-		})
+	if aswErr != nil {
+		return utils.GetApiReturnNotFoundOrInternalError(c, "answer", aswErr)
 	}
 
 	return c.JSON(http.StatusOK, &utils.Error{

@@ -40,11 +40,8 @@ func getDepartmentInOrganization(c echo.Context) error {
 	}
 
 	department, err := model.QueryDepartmentByIdUnderOrganization(oid, did)
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return c.JSON(http.StatusNotFound, &utils.Error{
-			Code: "NOT_FOUND",
-			Data: "department not found",
-		})
+	if err != nil {
+		return utils.GetApiReturnNotFoundOrInternalError(c, "department", err)
 	}
 
 	return c.JSON(http.StatusOK, &utils.Error{

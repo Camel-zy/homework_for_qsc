@@ -1071,7 +1071,7 @@ var doc = `{
         },
         "/object/create": {
             "post": {
-                "description": "Get a URL and necessary policy for object uploading\nSend a POST request to the URL given by the response of this API,\nwhile you need to set the given policies into the request headers",
+                "description": "Get a URL and necessary policies for object uploading\nSend a POST request to the URL given by the response of this API,\nwhile you need to set the given policies into the request headers respectively",
                 "produces": [
                     "application/json"
                 ],
