@@ -42,7 +42,7 @@ func CreateObject(ctx context.Context, objectName string) (url *url.URL, formDat
 
 func SealObject(ctx context.Context, uuid uuid.UUID) error {
 	result := gormDb.Model(&PermanentObject{}).
-		Where("UUID = ?", uuid.String()).
+		Where(&PermanentObject{UUID: uuid}).
 		Updates(&PermanentObject{Finished: true})
 	return result.Error
 }
@@ -50,14 +50,14 @@ func SealObject(ctx context.Context, uuid uuid.UUID) error {
 func GetObject(ctx context.Context, uuid uuid.UUID) (presignedURL *url.URL, err error) {
 	var permanentObject PermanentObject
 	result := gormDb.Model(&PermanentObject{}).
-		Where("UUID = ?", uuid.String()).
+		Where(&PermanentObject{UUID: uuid}).
 		First(&permanentObject)
 	if result.Error != nil {
 		logrus.Error(err)
 		return nil, err
 	}
 	if !permanentObject.Finished {
-		err := fmt.Errorf("Object with uuid %s does not exist or is not ready", uuid)
+		err := fmt.Errorf("object with uuid %s does not exist or is not ready", uuid)
 		logrus.Error(err)
 		return nil, err
 	}

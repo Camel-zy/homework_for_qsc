@@ -1069,6 +1069,82 @@ var doc = `{
                 }
             }
         },
+        "/object/create": {
+            "post": {
+                "description": "Get a URL and necessary policy for object uploading\nSend a POST request to the URL given by the response of this API,\nwhile you need to set the given policies into the request headers",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Object"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Object name",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.PresignedPost"
+                        }
+                    }
+                }
+            }
+        },
+        "/object/get": {
+            "get": {
+                "description": "Get a url for object downloading",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Object"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Object UUID",
+                        "name": "uuid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/object/seal": {
+            "post": {
+                "description": "Mark an object as successfully uploaded, ready for downloading\nYou need to send a request to this API after you've successfully uploaded an object",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Object"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Object UUID",
+                        "name": "uuid",
+                        "in": "query",
+                        "required": true
+                    }
+                ]
+            }
+        },
         "/organization": {
             "get": {
                 "description": "Get information of a specific organization",
@@ -1394,6 +1470,23 @@ var doc = `{
         }
     },
     "definitions": {
+        "controller.PresignedPost": {
+            "type": "object",
+            "properties": {
+                "policy": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "url": {
+                    "type": "string"
+                },
+                "uuid": {
+                    "type": "string"
+                }
+            }
+        },
         "model.AnswerRequest_": {
             "type": "object",
             "required": [

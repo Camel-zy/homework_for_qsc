@@ -12,12 +12,18 @@ import (
 
 type PresignedPost struct {
 	Url    string            `json:"url"`
-	UUID   uuid.UUID         `json:"uuid"`
+	UUID   string            `json:"uuid"`
 	Policy map[string]string `json:"policy"`
 }
 
 // @tags Object
+// @router /object/create [post]
+// @description Get a URL and necessary policies for object uploading
+// @description Send a POST request to the URL given by the response of this API,
+// @description while you need to set the given policies into the request headers respectively
+// @param name query string true "Object name"
 // @produce json
+// @success 200 {object} PresignedPost
 func createObject(c echo.Context) error {
 	url, formData, uuid, err := model.CreateObject(c.Request().Context(), c.QueryParam("name"))
 	if err != nil {
@@ -33,12 +39,16 @@ func createObject(c echo.Context) error {
 		Data: PresignedPost{
 			Url:    url.String(),
 			Policy: formData,
-			UUID:   uuid,
+			UUID:   uuid.String(),
 		},
 	})
 }
 
 // @tags Object
+// @router /object/seal [post]
+// @description Mark an object as successfully uploaded, ready for downloading
+// @description You need to send a request to this API after you've successfully uploaded an object
+// @param uuid query string true "Object UUID"
 // @produce json
 func sealObject(c echo.Context) error {
 	uuid, err := uuid.FromString(c.QueryParam("uuid"))
@@ -64,7 +74,11 @@ func sealObject(c echo.Context) error {
 }
 
 // @tags Object
+// @router /object/get [get]
+// @description Get a url for object downloading
+// @param uuid query string true "Object UUID"
 // @produce json
+// @success 200 {string} string URL
 func getObject(c echo.Context) error {
 	uuid, err := uuid.FromString(c.QueryParam("uuid"))
 	if err != nil {
