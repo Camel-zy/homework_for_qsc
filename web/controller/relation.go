@@ -7,7 +7,6 @@ import (
 	"git.zjuqsc.com/rop/rop-back-neo/model"
 	"git.zjuqsc.com/rop/rop-back-neo/utils"
 	"github.com/labstack/echo/v4"
-	"gorm.io/gorm"
 )
 
 // @tags Relation
@@ -67,12 +66,10 @@ func validateEventHasForm(c echo.Context) error {
 		})
 	}
 	_, err = model.QueryEventHasForm(fid, eid)
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return c.JSON(http.StatusNotFound, &utils.Error{
-			Code: "NOT_FOUND",
-			Data: "relation not found",
-		})
+	if err != nil {
+		return utils.GetApiReturnNotFoundOrInternalError(c, "relation", err)
 	}
+
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
 		Data: "relation exists",
