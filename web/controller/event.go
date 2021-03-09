@@ -126,10 +126,7 @@ func getEvent(c echo.Context) error {
 
 	event, evtErr := model.QueryEventByID(eid)
 	if errors.Is(evtErr, gorm.ErrRecordNotFound) {
-		return c.JSON(http.StatusNotFound, &utils.Error{
-			Code: "NOT_FOUND",
-			Data: "event not found",
-		})
+		return utils.ReturnNotFound(c, "event")
 	}
 
 	return c.JSON(http.StatusOK, &utils.Error{
@@ -161,18 +158,12 @@ func getEventInOrganization(c echo.Context) error {
 
 	_, orgErr := model.QueryOrganizationById(oid)
 	if errors.Is(orgErr, gorm.ErrRecordNotFound) {
-		return c.JSON(http.StatusNotFound, &utils.Error{
-			Code: "NOT_FOUND",
-			Data: "organization not found",
-		})
+		return utils.ReturnNotFound(c, "organization")
 	}
 
 	event, evtErr := model.QueryEventByIDInOrganization(oid, eid)
 	if errors.Is(evtErr, gorm.ErrRecordNotFound) {
-		return c.JSON(http.StatusNotFound, &utils.Error{
-			Code: "NOT_FOUND",
-			Data: "event not found",
-		})
+		return utils.ReturnNotFound(c, "event")
 	}
 
 	return c.JSON(http.StatusOK, &utils.Error{
@@ -200,10 +191,7 @@ func getAllEventInOrganization(c echo.Context) error {
 
 	events, evtErr := model.QueryAllEventInOrganization(oid)
 	if errors.Is(evtErr, gorm.ErrRecordNotFound) {
-		return c.JSON(http.StatusNotFound, &utils.Error{
-			Code: "NOT_FOUND",
-			Data: "organization not found",
-		})
+		return utils.ReturnNotFound(c, "organization")
 	}
 
 	return c.JSON(http.StatusOK, &utils.Error{
@@ -235,10 +223,7 @@ func getRoundNumOfJoindEvent(c echo.Context) error {
 
 	_, evtErr := model.QueryEventByID(eid)
 	if errors.Is(evtErr, gorm.ErrRecordNotFound) {
-		return c.JSON(http.StatusNotFound, &utils.Error{
-			Code: "NOT_FOUND",
-			Data: "event not found",
-		})
+		return utils.ReturnNotFound(c, "event")
 	}
 
 	RoundNum, numErr := model.QueryRoundNumOfJoinedEvent(did, eid)

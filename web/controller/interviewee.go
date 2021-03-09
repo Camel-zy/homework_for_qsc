@@ -188,25 +188,16 @@ func getAllIntervieweeInEventOfDepartment(c echo.Context) error {
 
 	_, eventErr := model.QueryEventByID(eid)
 	if errors.Is(eventErr, gorm.ErrRecordNotFound) {
-		return c.JSON(http.StatusNotFound, &utils.Error{
-			Code: "NOT_FOUND",
-			Data: "event not found",
-		})
+		return utils.ReturnNotFound(c, "event")
 	}
 	_, departmentErr := model.QueryDepartmentById(did)
 	if errors.Is(departmentErr, gorm.ErrRecordNotFound) {
-		return c.JSON(http.StatusNotFound, &utils.Error{
-			Code: "NOT_FOUND",
-			Data: "department not found",
-		})
+		return utils.ReturnNotFound(c, "department")
 	}
 
 	interviewee, intervieweeErr := model.QueryAllIntervieweeByDidAndEid(did, eid)
 	if intervieweeErr != nil {
-		return c.JSON(http.StatusNotFound, &utils.Error{
-			Code: "NOT_FOUND",
-			Data: "interviewee not found",
-		})
+		return utils.ReturnNotFound(c, "interviewee")
 	}
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
@@ -237,18 +228,12 @@ func getAllIntervieweeByRound(c echo.Context) error {
 
 	_, departmentErr := model.QueryDepartmentById(did)
 	if departmentErr != nil {
-		return c.JSON(http.StatusNotFound, &utils.Error{
-			Code: "NOT_FOUND",
-			Data: "department not found",
-		})
+		return utils.ReturnNotFound(c, "department")
 	}
 
 	_, eventErr := model.QueryEventByID(eid)
 	if eventErr != nil {
-		return c.JSON(http.StatusNotFound, &utils.Error{
-			Code: "NOT_FOUND",
-			Data: "event not found",
-		})
+		return utils.ReturnNotFound(c, "event")
 	}
 
 	var interviewee *[]model.Interviewee
@@ -306,26 +291,17 @@ func getAllIntervieweeByAdmittedStatus(c echo.Context) error {
 
 	_, departmentErr := model.QueryDepartmentById(did)
 	if departmentErr != nil {
-		return c.JSON(http.StatusNotFound, &utils.Error{
-			Code: "NOT_FOUND",
-			Data: "department not found",
-		})
+		return utils.ReturnNotFound(c, "department")
 	}
 
 	_, eventErr := model.QueryEventByID(eid)
 	if eventErr != nil {
-		return c.JSON(http.StatusNotFound, &utils.Error{
-			Code: "NOT_FOUND",
-			Data: "event not found",
-		})
+		return utils.ReturnNotFound(c, "event")
 	}
 
 	interviewee, intervieweeErr := model.QueryAllIntervieweeByStatus(did, eid, model.IntervieweeOrgAdmitted)
 	if intervieweeErr != nil && !errors.Is(intervieweeErr, gorm.ErrRecordNotFound) {
-		return c.JSON(http.StatusNotFound, &utils.Error{
-			Code: "NOT_FOUND",
-			Data: "interviewee not found",
-		})
+		return utils.ReturnNotFound(c, "interviewee")
 	}
 
 	return c.JSON(http.StatusOK, &utils.Error{
@@ -354,26 +330,17 @@ func getAllIntervieweeByRejectedStatus(c echo.Context) error {
 
 	_, departmentErr := model.QueryDepartmentById(did)
 	if departmentErr != nil {
-		return c.JSON(http.StatusNotFound, &utils.Error{
-			Code: "NOT_FOUND",
-			Data: "department not found",
-		})
+		return utils.ReturnNotFound(c, "department")
 	}
 
 	_, eventErr := model.QueryEventByID(eid)
 	if eventErr != nil {
-		return c.JSON(http.StatusNotFound, &utils.Error{
-			Code: "NOT_FOUND",
-			Data: "event not found",
-		})
+		return utils.ReturnNotFound(c, "event")
 	}
 
 	interviewee, intervieweeErr := model.QueryAllIntervieweeByStatus(did, eid, model.IntervieweeOrgRejected)
 	if intervieweeErr != nil && !errors.Is(intervieweeErr, gorm.ErrRecordNotFound) {
-		return c.JSON(http.StatusNotFound, &utils.Error{
-			Code: "NOT_FOUND",
-			Data: "interviewee not found",
-		})
+		return utils.ReturnNotFound(c, "interviewee")
 	}
 
 	return c.JSON(http.StatusOK, &utils.Error{
@@ -381,17 +348,6 @@ func getAllIntervieweeByRejectedStatus(c echo.Context) error {
 		Data: interviewee,
 	})
 }
-
-// @tags Interviewee
-// @summary Add an interviewee to an interview
-// @router /interview/interviewee [put]
-// @param iid query uint true "Interview ID"
-// @param vid query uint true "Interviewee ID"
-// @produce json
-// @success 200
-// func createIntervieweeToInterview(c echo.Context) error {
-
-// }
 
 // @tags Interviewee
 // @summary Delete an interviewee from an interview
@@ -465,10 +421,7 @@ func handleSelectInterview(c echo.Context) error {
 	echo.QueryParamsBinder(c).MustUint("iid", &iid)
 	interviewee, err := model.QueryIntervieweeByUUID(uuID)
 	if err != nil {
-		return c.JSON(http.StatusNotFound, &utils.Error{
-			Code: "NOT_FOUND",
-			Data: "uuid not found",
-		})
+		return utils.ReturnNotFound(c, "uuid")
 	}
 
 	err = model.UpdateIntervieweeByUuid(&model.Interviewee{

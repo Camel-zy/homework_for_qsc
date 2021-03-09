@@ -37,3 +37,11 @@ func GetApiReturnNotFoundOrInternalError(c echo.Context, name string, err error)
 		return errors.New(fmt.Sprintf("get %s failed", name))
 	}
 }
+
+func ReturnNotFound(c echo.Context, name string) error {
+	_ = c.JSON(http.StatusNotFound, &Error{
+		Code: "NOT_FOUND",
+		Data: fmt.Sprintf("%s not found", name),
+	})
+	return errors.New(fmt.Sprintf("%s not found", name))
+}
