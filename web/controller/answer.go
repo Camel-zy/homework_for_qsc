@@ -45,7 +45,7 @@ func createAnswer(c echo.Context) error {
 	if err := c.Bind(&answerRequest); err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
-			Data: err.Error(),
+			Data: "there are some errors with the parameters",
 		})
 	} else if err = c.Validate(&answerRequest); err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
@@ -74,17 +74,11 @@ func createAnswer(c echo.Context) error {
 		})
 	}
 
-	_, err = strconv.ParseUint(answerRequest.Mobile, 10, 64)
+	err = isMobileNumberInvalid(answerRequest.Mobile)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
-			Data: "mobile number must be all numbers",
-		})
-	}
-	if len(answerRequest.Mobile) != 11 || !strings.HasPrefix(answerRequest.Mobile, "1") {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "mobile number is invalid",
+			Data: err.Error(),
 		})
 	}
 
@@ -224,4 +218,16 @@ func FindDidByName(brief *[]model.Brief, name string) (did uint, err error) {
 	}
 	return 0, errors.New(
 		fmt.Sprintf(`department named "%s" has not been found in the current event`, name))
+}
+
+func isMobileNumberInvalid(mobile string) error {
+	_, err := strconv.ParseUint(mobile, 10, 64)
+	if err != nil {
+		return errors.New("mobile number must be all numbers")
+	}
+	if len(mobile) != 11 || !strings.HasPrefix(mobile, "1") {
+		return errors.New("mobile number is invalid")
+	}
+
+	return nil
 }

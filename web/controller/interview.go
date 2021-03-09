@@ -73,10 +73,7 @@ func updateInterview(c echo.Context) error {
 	var iid uint
 	err := echo.QueryParamsBinder(c).MustUint("iid", &iid).BindError()
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "iid needs to be an unsigned integer",
-		})
+		return utils.ReturnBadRequestForRequiredUint(c, "iid")
 	}
 
 	interviewRequest := model.InterviewRequest{}
@@ -112,10 +109,7 @@ func getInterview(c echo.Context) error {
 	var iid uint
 	err := echo.QueryParamsBinder(c).MustUint("iid", &iid).BindError()
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "iid needs to be an unsigned integer",
-		})
+		return utils.ReturnBadRequestForRequiredUint(c, "iid")
 	}
 
 	interview, itvErr := model.QueryInterviewByID(iid)
@@ -140,10 +134,7 @@ func deleteInterview(c echo.Context) error {
 	var iid uint
 	err := echo.QueryParamsBinder(c).MustUint("iid", &iid).BindError()
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "iid needs to be an unsigned integer",
-		})
+		return utils.ReturnBadRequestForRequiredUint(c, "iid")
 	}
 
 	joinedInterview, err := model.QueryAllJoinedInterviewOfInterview(iid)
@@ -197,7 +188,7 @@ func getInterviewInEvent(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
-			Data: "eid and iid need to be an unsigned integer",
+			Data: "eid and iid need to be unsigned integers",
 		})
 	}
 
@@ -239,7 +230,7 @@ func getAllInterviewOfDepartmentInEvent(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
-			Data: "eid and did needs to be an unsigned integer",
+			Data: "eid and did needs to be unsigned integers",
 		})
 	}
 

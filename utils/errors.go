@@ -24,11 +24,7 @@ func IsUnsignedInteger(input string) (uint, error) {
 
 func GetApiReturnNotFoundOrInternalError(c echo.Context, name string, err error) error {
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		_ = c.JSON(http.StatusNotFound, &Error{
-			Code: "NOT_FOUND",
-			Data: fmt.Sprintf("%s not found", name),
-		})
-		return errors.New(fmt.Sprintf("%s not found", name))
+		return ReturnNotFound(c, name)
 	} else {
 		_ = c.JSON(http.StatusInternalServerError, &Error{
 			Code: "INTERNAL_SERVER_ERR",
@@ -44,4 +40,12 @@ func ReturnNotFound(c echo.Context, name string) error {
 		Data: fmt.Sprintf("%s not found", name),
 	})
 	return errors.New(fmt.Sprintf("%s not found", name))
+}
+
+func ReturnBadRequestForRequiredUint(c echo.Context, name string) error {
+	_ = c.JSON(http.StatusBadRequest, &Error{
+		Code: "BAD_REQUEST",
+		Data: fmt.Sprintf("%s needs to be unsigned integer", name),
+	})
+	return errors.New(fmt.Sprintf("%s needs to be unsigned integer", name))
 }
