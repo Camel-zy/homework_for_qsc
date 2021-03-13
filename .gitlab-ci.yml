@@ -7,16 +7,23 @@ services:
 stages:
   - scan
   - build
-  - deploy
 
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
-  IMAGE_TAG: harbor.zjuqsc.com/rop/rop2020
-  SERVICE_NAME: rop2020-back
+  HOST: harbor.zjuqsc.com
+  REPO: rop-neo/rop-neo-service
 
 # if docker command present, run docker login
 before_script:
   - which docker && docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD harbor.zjuqsc.com
+
+  # black magic to generate new tag (as well as retrive the latest tag for cache)
+  - 'TAGDATE=`date +%Y%m%d`; OLDTAGS=$(wget -q -O- --header "Authorization: $(echo -n "$DOCKER_USERNAME:$DOCKER_PASSWORD" | base64)" https://$HOST/v2/$REPO/tags/list | sed -e "s:{\"name\"\:\"$REPO\",\"tags\"\:\[\(.*\)\]}:\1:" -e "s/\"//g"); LATEST_OLDTAG=$(echo $OLDTAGS | sed -e "s/,/\\n/g" | sort -ur | grep -E "^$TAGDATE" | head -n 1 || true); LATEST_TAG=$(echo $OLDTAGS | sed -e "s/,/\\n/g" | sort -ur | head -n 1 || true); TAGVERSION=1; [[ ! -z $LATEST_OLDTAG ]] && TAGVERSION=$(($LATEST_OLDTAG % 100 + 1)); [[ ${#TAGVERSION} -lt 2 ]] && TAGVERSION=0$TAGVERSION; TAG=$TAGDATE$TAGVERSION'
+  - FULLTAG=$HOST/$REPO:$TAG
+  - CACHETAG=$HOST/$REPO:$LATEST_TAG
+
+  # generate docker-build cache args
+  - '[[ ! -z $LATEST_TAG ]] && CACHE_ARGS="--cache-from $CACHETAG" || CACHE_ARGS='
 
 sonarqube-check:
   stage: scan
@@ -50,16 +57,13 @@ build:
   tags:
     - docker
   script:
-    - docker pull $IMAGE_TAG:latest || true
-    - docker build --build-arg REPO_PASSWD=$CI_JOB_TOKEN --build-arg REPO_USER=gitlab-ci-token --cache-from $IMAGE_TAG:latest -t $IMAGE_TAG:$CI_COMMIT_SHA -t $IMAGE_TAG:latest .
-    - docker push $IMAGE_TAG:$CI_COMMIT_SHA
-    - docker push $IMAGE_TAG:latest
+    # pull cache (if available)
+    - '[[ -z $LATEST_TAG ]] && echo Building $FULLTAG without cache || (echo Building $FULLTAG cached from $CACHETAG && docker pull $CACHETAG || true)'
 
-deploy:
-  only:
-    - release
-  stage: deploy
-  tags:
-    - deploy
-  script:
-    - docker stack deploy --with-registry-auth --compose-file=docker-compose.yml ${SERVICE_NAME}
+    # build image
+    - docker build $CACHE_ARGS -t $FULLTAG -t $HOST/$REPO:latest --build-arg REPO_PASSWD=$CI_JOB_TOKEN --build-arg REPO_USER=gitlab-ci-token .
+
+    # push image
+    - docker push $FULLTAG
+    - docker push $HOST/$REPO:latest
+
