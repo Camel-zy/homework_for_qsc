@@ -10,6 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// 一轮面试 以面试者确认开始
 const (
 	IntervieweeStart           = 0 // 不要使用
 	IntervieweeTimeChecked     = 1 // 已确认本轮面试时间或正在面试

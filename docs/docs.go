@@ -1809,6 +1809,7 @@ var doc = `{
                     "type": "integer"
                 },
                 "departmentID": {
+                    "description": "志愿部门",
                     "type": "integer"
                 },
                 "eventID": {
@@ -1818,16 +1819,19 @@ var doc = `{
                     "type": "integer"
                 },
                 "intentRank": {
+                    "description": "第几志愿",
                     "type": "integer"
                 },
                 "interviewOptions": {
-                    "type": "string",
-                    "example": "JSON"
+                    "description": "发送选择面试场次的短信用",
+                    "type": "string"
                 },
                 "round": {
+                    "description": "公海为1，一面为2，以此类推",
                     "type": "integer"
                 },
                 "status": {
+                    "description": "1 已确认本轮面试时间/正在面试，2 本轮通过，3 已发送下轮分配短信，4 纳入组织，5 拒绝, 6 面试者选择没有合适的下轮面试时间",
                     "type": "integer"
                 },
                 "uuid": {

@@ -19,9 +19,9 @@ type Form_ struct {
 
 // CAUTIOUS: do NOT use this
 type CreateFormRequest_ struct {
-	Name           string `json:"Name" validate:"required"`
-	Description    string `json:"Description" validate:"required"`
-	Content        string `example:"JSON"`
+	Name        string `json:"Name" validate:"required"`
+	Description string `json:"Description" validate:"required"`
+	Content     string `example:"JSON"`
 }
 
 type UpdateFormRequest_ struct {
@@ -46,8 +46,8 @@ type Answer_ struct {
 
 // CAUTIOUS: do NOT use this
 type AnswerRequest_ struct {
-	Name      string    `validate:"required"`
-	Mobile    string    `validate:"required"`
+	Name      string `validate:"required"`
+	Mobile    string `validate:"required"`
 	Intention []Intention
 	Content   string `validate:"required" example:"JSON"`
 }
@@ -70,9 +70,9 @@ type Interviewee_ struct {
 	UUID             uuid.UUID
 	EventID          uint
 	AnswerID         uint
-	DepartmentID     uint
-	IntentRank       uint
-	Round            uint
-	InterviewOptions string `example:"JSON"`
-	Status           uint
+	DepartmentID     uint   // 志愿部门
+	IntentRank       uint   // 第几志愿
+	Round            uint   // 公海为1，一面为2，以此类推
+	InterviewOptions string // 发送选择面试场次的短信用
+	Status           uint   // 1 已确认本轮面试时间/正在面试，2 本轮通过，3 已发送下轮分配短信，4 纳入组织，5 拒绝, 6 面试者选择没有合适的下轮面试时间
 }

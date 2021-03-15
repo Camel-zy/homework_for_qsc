@@ -176,10 +176,13 @@ func rejectInterviewee(c echo.Context) error {
 // @produce json
 // @success 200 {array} model.Interviewee_
 func getAllIntervieweeInEventOfDepartment(c echo.Context) error {
-	eid, eidErr := utils.IsUnsignedInteger(c.QueryParam("eid"))
-	did, didErr := utils.IsUnsignedInteger(c.QueryParam("did"))
+	var eid, did uint
+	err := echo.QueryParamsBinder(c).
+		MustUint("eid", &eid).
+		MustUint("did", &did).
+		BindError()
 
-	if eidErr != nil || didErr != nil {
+	if err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
 			Data: "require uint eid and did",
@@ -214,12 +217,14 @@ func getAllIntervieweeInEventOfDepartment(c echo.Context) error {
 // @produce json
 // @success 200 {array} model.Interviewee_
 func getAllIntervieweeByRound(c echo.Context) error {
+	var eid, did, round uint
+	err := echo.QueryParamsBinder(c).
+		MustUint("eid", &eid).
+		MustUint("did", &did).
+		MustUint("round", &round).
+		BindError()
 
-	did, didErr := utils.IsUnsignedInteger(c.QueryParam("did"))
-	eid, eidErr := utils.IsUnsignedInteger(c.QueryParam("eid"))
-	round, roundErr := utils.IsUnsignedInteger(c.QueryParam("round"))
-
-	if didErr != nil || eidErr != nil || roundErr != nil {
+	if err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
 			Data: "require uint did, eid, round",
@@ -279,10 +284,13 @@ func getAllIntervieweeByRound(c echo.Context) error {
 // @produce json
 // @success 200 {array} model.Interviewee_
 func getAllIntervieweeByAdmittedStatus(c echo.Context) error {
-	did, didErr := utils.IsUnsignedInteger(c.QueryParam("did"))
-	eid, eidErr := utils.IsUnsignedInteger(c.QueryParam("eid"))
+	var eid, did uint
+	err := echo.QueryParamsBinder(c).
+		MustUint("eid", &eid).
+		MustUint("did", &did).
+		BindError()
 
-	if didErr != nil || eidErr != nil {
+	if err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
 			Data: "require uint did, eid",
@@ -318,10 +326,13 @@ func getAllIntervieweeByAdmittedStatus(c echo.Context) error {
 // @produce json
 // @success 200 {array} model.Interviewee_
 func getAllIntervieweeByRejectedStatus(c echo.Context) error {
-	did, didErr := utils.IsUnsignedInteger(c.QueryParam("did"))
-	eid, eidErr := utils.IsUnsignedInteger(c.QueryParam("eid"))
+	var eid, did uint
+	err := echo.QueryParamsBinder(c).
+		MustUint("eid", &eid).
+		MustUint("did", &did).
+		BindError()
 
-	if didErr != nil || eidErr != nil {
+	if err != nil {
 		return c.JSON(http.StatusBadRequest, &utils.Error{
 			Code: "BAD_REQUEST",
 			Data: "require uint did, eid",
