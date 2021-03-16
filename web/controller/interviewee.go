@@ -392,6 +392,23 @@ func deleteIntervieweeFromInterview(c echo.Context) error {
 			Data: "delete interviewee from interview failed",
 		})
 	}
+
+	interviewee, err := model.QueryIntervieweeById(vid)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, &utils.Error{
+			Code: "INTERNAL_SERVER_ERR",
+			Data: "find interviewee failed",
+		})
+	}
+	interviewee.Round--;
+	err = model.UpdateInterviewee(interviewee, vid)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, &utils.Error{
+			Code: "INTERNAL_SERVER_ERR",
+			Data: "find interviewee failed",
+		})
+	}
+
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
 		Data: nil,
