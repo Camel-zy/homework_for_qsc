@@ -26,11 +26,7 @@ func GetApiReturnNotFoundOrInternalError(c echo.Context, name string, err error)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return ReturnNotFound(c, name)
 	} else {
-		_ = c.JSON(http.StatusInternalServerError, &Error{
-			Code: "INTERNAL_SERVER_ERR",
-			Data: fmt.Sprintf("get %s failed", name),
-		})
-		return errors.New(fmt.Sprintf("get %s failed", name))
+		return ReturnInternalError(c, name)
 	}
 }
 
@@ -42,10 +38,31 @@ func ReturnNotFound(c echo.Context, name string) error {
 	return errors.New(fmt.Sprintf("%s not found", name))
 }
 
-func ReturnBadRequestForRequiredUint(c echo.Context, name string) error {
+func ReturnInternalError(c echo.Context, names ...string) error {
+	errorString := "get "
+	for _, name := range names {
+		errorString = errorString + name + " "
+	}
+	errorString += "failed"
+
+	_ = c.JSON(http.StatusInternalServerError, &Error{
+		Code: "INTERNAL_SERVER_ERR",
+		Data: errorString,
+	})
+
+	return errors.New(errorString)
+}
+
+func ReturnBadRequestForRequiredUint(c echo.Context, names ...string) error {
+	errorString := ""
+	for _, name := range names {
+		errorString = errorString + name + " "
+	}
+	errorString += "needs to be unsigned integer"
+
 	_ = c.JSON(http.StatusBadRequest, &Error{
 		Code: "BAD_REQUEST",
-		Data: fmt.Sprintf("%s needs to be unsigned integer", name),
+		Data: errorString,
 	})
-	return errors.New(fmt.Sprintf("%s needs to be unsigned integer", name))
+	return errors.New(errorString)
 }
