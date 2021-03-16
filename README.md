@@ -92,6 +92,8 @@ rpc:
   timeout: 1000              # milliseconds, including executing time
   app_id:                    # consult the admin for this
   app_key:                   # consult the admin for this
+message:
+  base_url: https://rop.zjuqsc.com/form?UUID= # url for interview selection form
 ```
 
 If you set `passport.enable` false, you will be in a superuser testing mode. 

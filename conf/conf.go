@@ -25,6 +25,7 @@ func Init() {
 		"passport": {"enable", "is_secure_mode", "app_id", "app_secret", "api_name"},
 		"jwt": {"issuer", "max_age", "secret_key"},
 		"rpc": {"enable", "endpoint", "timeout", "app_id", "app_key"},
+		"message": {"base_url"},
 	}
 
 	for k, v := range confItems {

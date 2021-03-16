@@ -10,6 +10,7 @@ import (
 	"git.zjuqsc.com/rop/rop-back-neo/rpc"
 	SMSService "git.zjuqsc.com/rop/rop-sms/gRPC"
 	"github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 	"gorm.io/gorm"
 )
 
@@ -117,7 +118,7 @@ func GenerateText(messageTemplateID uint, interviewee *model.Interviewee, answer
 	// WTF
 	{
 		if strings.Contains(templateText, "#url#") {
-			// TODO(TO/GA): finish
+			templateText = strings.ReplaceAll(templateText, "#url#", viper.GetString("message.base_url") + interviewee.UUID.String())
 		}
 	}
 
