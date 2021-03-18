@@ -18,12 +18,12 @@ import (
 // @produce json
 // @success 200 {object} model.OrganizationApi
 func getOrganization(c echo.Context) error {
-	oid, typeErr := utils.IsUnsignedInteger(c.QueryParam("oid"))
-	if typeErr != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "oid need to be an unsigned integer"},
-			)
+	var oid uint
+	err := echo.QueryParamsBinder(c).
+		MustUint("oid", &oid).
+		BindError()
+	if err != nil {
+		return utils.ReturnBadRequestForRequiredUint(c, "oid")
 	}
 
 	organization, orgErr := model.QueryOrganizationById(oid)

@@ -14,6 +14,7 @@ type Error struct {
 	Data  interface{}  `json:"data"`
 }
 
+// Legacy: Do not use this function any more!
 func IsUnsignedInteger(input string) (uint, error) {
 	if convertedInt, err := strconv.ParseUint(input, 10, 64); err != nil {
 		return 0, errors.New("not an unsigned integer")
@@ -58,7 +59,7 @@ func ReturnBadRequestForRequiredUint(c echo.Context, names ...string) error {
 	for _, name := range names {
 		errorString = errorString + name + " "
 	}
-	errorString += "needs to be unsigned integer"
+	errorString += "need to be unsigned integer"
 
 	_ = c.JSON(http.StatusBadRequest, &Error{
 		Code: "BAD_REQUEST",

@@ -25,10 +25,7 @@ func getDepartmentInOrganization(c echo.Context) error {
 		BindError()
 
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "oid and did need to be an unsigned integer",
-		})
+		return utils.ReturnBadRequestForRequiredUint(c, "oid", "did")
 	}
 
 	_, err = model.QueryOrganizationById(oid)
@@ -63,10 +60,7 @@ func getAllDepartmentInOrganization(c echo.Context) error {
 		MustUint("oid", &oid).
 		BindError()
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "oid need to be an unsigned integer",
-		})
+		return utils.ReturnBadRequestForRequiredUint(c, "oid")
 	}
 
 	departments, err := model.QueryAllDepartmentInOrganization(oid)
@@ -102,10 +96,7 @@ func getAllDepartmentInEvent(c echo.Context) error {
 		MustUint("eid", &eid).
 		BindError()
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "eid need to be an unsigned integer",
-		})
+		return utils.ReturnBadRequestForRequiredUint(c, "eid")
 	}
 
 	departments, err := model.QueryAllDepartmentByEid(eid)

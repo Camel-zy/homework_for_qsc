@@ -10,12 +10,12 @@ import (
 )
 
 func getUser(c echo.Context) error {
-	uid, typeErr := utils.IsUnsignedInteger(c.QueryParam("uid"))
-	if typeErr != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "uid need to be an unsigned integer",
-		})
+	var uid uint
+	err := echo.QueryParamsBinder(c).
+		MustUint("uid", &uid).
+		BindError()
+	if err != nil {
+		return utils.ReturnBadRequestForRequiredUint(c, "uid")
 	}
 
 	user, usrErr := model.QueryUserById(uid);

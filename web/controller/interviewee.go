@@ -27,10 +27,7 @@ func updateIntervieweeOptions(c echo.Context) error {
 	var vid uint
 	err := echo.QueryParamsBinder(c).MustUint("vid", &vid).BindError()
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "vid needs to be an unsigned integer",
-		})
+		return utils.ReturnBadRequestForRequiredUint(c, "vid")
 	}
 
 	var intervieweeRequest model.IntervieweeRequest
@@ -183,10 +180,7 @@ func getAllIntervieweeInEventOfDepartment(c echo.Context) error {
 		BindError()
 
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "require uint eid and did",
-		})
+		return utils.ReturnBadRequestForRequiredUint(c, "eid", "did")
 	}
 
 	_, eventErr := model.QueryEventByID(eid)
@@ -225,10 +219,7 @@ func getAllIntervieweeByRound(c echo.Context) error {
 		BindError()
 
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "require uint did, eid, round",
-		})
+		return utils.ReturnBadRequestForRequiredUint(c, "eid", "did", "round")
 	}
 
 	_, departmentErr := model.QueryDepartmentById(did)
@@ -291,10 +282,7 @@ func getAllIntervieweeByAdmittedStatus(c echo.Context) error {
 		BindError()
 
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "require uint did, eid",
-		})
+		return utils.ReturnBadRequestForRequiredUint(c, "did", "eid")
 	}
 
 	_, departmentErr := model.QueryDepartmentById(did)
@@ -333,10 +321,7 @@ func getAllIntervieweeByRejectedStatus(c echo.Context) error {
 		BindError()
 
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "require uint did, eid",
-		})
+		return utils.ReturnBadRequestForRequiredUint(c, "uid", "did")
 	}
 
 	_, departmentErr := model.QueryDepartmentById(did)
@@ -371,10 +356,7 @@ func deleteIntervieweeFromInterview(c echo.Context) error {
 	var vid uint
 	err := echo.QueryParamsBinder(c).MustUint("vid", &vid).BindError()
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "vid needs to be an unsigned integer",
-		})
+		return utils.ReturnBadRequestForRequiredUint(c, "vid")
 	}
 
 	iid := c.Get("iid").(uint)

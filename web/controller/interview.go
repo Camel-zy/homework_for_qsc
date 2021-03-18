@@ -28,10 +28,7 @@ func createInterview(c echo.Context) error {
 		MustUint("round", &round).
 		BindError()
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "eid, did and rnd need to be an unsigned integer",
-		})
+		return utils.ReturnBadRequestForRequiredUint(c, "eid", "did", "round")
 	}
 
 	interviewRequest := model.InterviewRequest{}
@@ -186,10 +183,7 @@ func getInterviewInEvent(c echo.Context) error {
 		MustUint("iid", &iid).
 		BindError()
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "eid and iid need to be unsigned integers",
-		})
+		return utils.ReturnBadRequestForRequiredUint(c, "eid", "iid")
 	}
 
 	_, evtErr := model.QueryEventByID(eid)
@@ -228,10 +222,7 @@ func getAllInterviewOfDepartmentInEvent(c echo.Context) error {
 		MustUint("did", &did).
 		BindError()
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "eid and did needs to be unsigned integers",
-		})
+		return utils.ReturnBadRequestForRequiredUint(c, "eid", "did")
 	}
 
 	interviews, itvErr := model.QueryAllInterviewOfDepartmentInEvent(eid, did)
@@ -265,10 +256,7 @@ func getAllInterviewOfRound(c echo.Context) error {
 		MustUint("round", &round).
 		BindError()
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "eid, did and round need to be an unsigned integer",
-		})
+		return utils.ReturnBadRequestForRequiredUint(c, "eid", "did", "round")
 	}
 
 	interviews, itvErr := model.QueryAllInterviewOfRound(eid, did, round)

@@ -9,12 +9,12 @@ import (
 
 func SetEventOrganization(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		eid, err := utils.IsUnsignedInteger(c.QueryParam("eid"))
+		var eid uint
+		err := echo.QueryParamsBinder(c).
+			MustUint("eid", &eid).
+			BindError()
 		if err != nil {
-			return c.JSON(http.StatusBadRequest, &utils.Error{
-				Code: "BAD_REQUEST",
-				Data: "eid need to be an unsigned integer",
-			})
+			return utils.ReturnBadRequestForRequiredUint(c, "eid")
 		}
 		c.Set("eid", eid)
 		event, err := model.QueryEventByID(eid)

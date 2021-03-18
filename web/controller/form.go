@@ -23,12 +23,11 @@ import (
 // @success 200 {object} model.Form_
 func createForm(c echo.Context) error {
 	var oid uint
-	err := echo.QueryParamsBinder(c).MustUint("oid", &oid).BindError()
+	err := echo.QueryParamsBinder(c).
+		MustUint("oid", &oid).
+		BindError()
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "oid needs to be an unsigned integer",
-		})
+		return utils.ReturnBadRequestForRequiredUint(c, "oid")
 	}
 
 	formRequest := model.CreateFormRequest{}
@@ -72,12 +71,11 @@ func createForm(c echo.Context) error {
 // @success 200 {object} model.Form_
 func updateForm(c echo.Context) error {
 	var fid uint
-	err := echo.QueryParamsBinder(c).MustUint("fid", &fid).BindError()
+	err := echo.QueryParamsBinder(c).
+		MustUint("fid", &fid).
+		BindError()
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "fid needs to be an unsigned integer",
-		})
+		return utils.ReturnBadRequestForRequiredUint(c, "fid")
 	}
 
 	formRequest := model.UpdateFormRequest{}
@@ -114,12 +112,11 @@ func updateForm(c echo.Context) error {
 // @param fid query uint true "Form ID"
 func deleteForm(c echo.Context) error {
 	var fid uint
-	err := echo.QueryParamsBinder(c).MustUint("fid", &fid).BindError()
+	err := echo.QueryParamsBinder(c).
+		MustUint("fid", &fid).
+		BindError()
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "fid needs to be an unsigned integer",
-		})
+		return utils.ReturnBadRequestForRequiredUint(c, "fid")
 	}
 
 	err = model.DeleteForm(fid)
@@ -156,10 +153,7 @@ func getForm(c echo.Context) error {
 		MustUint("eid", &eid).
 		BindError()
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "fid, eid needs to be an unsigned integer",
-		})
+		return utils.ReturnBadRequestForRequiredUint(c, "fid", "eid")
 	}
 	_, itvErr := model.QueryEventByID(eid)  // event, itvErr := model.QueryEventByID(eid)
 	if errors.Is(itvErr, gorm.ErrRecordNotFound) {
@@ -207,10 +201,7 @@ func getFormInEvent(c echo.Context) error {
 		MustUint("eid", &eid).
 		BindError()
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "eid needs to be an unsigned integer",
-		})
+		return utils.ReturnBadRequestForRequiredUint(c, "eid")
 	}
 
 	eventHasForm, err := model.QueryEventHasFormByEid(eid)
@@ -228,12 +219,12 @@ func getFormInEvent(c echo.Context) error {
 // @param oid query uint true "Organization ID"
 // @success 200 {array} model.Form_
 func getAllFormInOrganization(c echo.Context) error {
-	oid, typeErr := utils.IsUnsignedInteger(c.QueryParam("oid"))
-	if typeErr != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "oid need to be an unsigned integer",
-		})
+	var oid uint
+	err := echo.QueryParamsBinder(c).
+		MustUint("oid", &oid).
+		BindError()
+	if err != nil {
+		return utils.ReturnBadRequestForRequiredUint(c, "oid")
 	}
 	forms, formErr := model.QueryAllFormByOid(oid)
 	if errors.Is(formErr, gorm.ErrRecordNotFound) {

@@ -23,10 +23,7 @@ func createEventHasForm(c echo.Context) error {
 		MustUint("eid", &eid).
 		BindError()
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "fid, eid needs to be an unsigned integer",
-		})
+		return utils.ReturnBadRequestForRequiredUint(c, "fid", "eid")
 	}
 	if _, err := model.QueryEventHasForm(fid, eid); err == nil {
 		return c.JSON(http.StatusOK, &utils.Error{
@@ -60,10 +57,7 @@ func validateEventHasForm(c echo.Context) error {
 		MustUint("eid", &eid).
 		BindError()
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "fid, eid needs to be unsigned integers",
-		})
+		return utils.ReturnBadRequestForRequiredUint(c, "fid", "eid")
 	}
 	_, err = model.QueryEventHasForm(fid, eid)
 	if err != nil {
@@ -88,10 +82,7 @@ func deleteEventHasForm(c echo.Context) error {
 		MustUint("eid", &eid).
 		BindError()
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "fid, eid needs to be unsigned integers",
-		})
+		return utils.ReturnBadRequestForRequiredUint(c, "fid", "eid")
 	}
 
 	err = model.DeleteEventHasForm(fid, eid)

@@ -22,10 +22,7 @@ func createEvent(c echo.Context) error {
 	var oid uint
 	err := echo.QueryParamsBinder(c).MustUint("oid", &oid).BindError()
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "oid needs to be an unsigned integer",
-		})
+		return utils.ReturnBadRequestForRequiredUint(c, "oid")
 	}
 
 	eventRequest := model.EventRequest{}
@@ -73,10 +70,7 @@ func updateEvent(c echo.Context) error {
 	var eid uint
 	err := echo.QueryParamsBinder(c).MustUint("eid", &eid).BindError()
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "eid needs to be an unsigned integer",
-		})
+		return utils.ReturnBadRequestForRequiredUint(c, "eid")
 	}
 
 	eventRequest := model.EventRequest{}
@@ -118,10 +112,7 @@ func getEvent(c echo.Context) error {
 	var eid uint
 	err := echo.QueryParamsBinder(c).MustUint("eid", &eid).BindError()
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "eid needs to be an unsigned integer",
-		})
+		return utils.ReturnBadRequestForRequiredUint(c, "eid")
 	}
 
 	event, evtErr := model.QueryEventByID(eid)
@@ -150,10 +141,7 @@ func getEventInOrganization(c echo.Context) error {
 		MustUint("oid", &oid).
 		BindError()
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "oid and eid need to be an unsigned integer",
-		})
+		return utils.ReturnBadRequestForRequiredUint(c, "oid", "eid")
 	}
 
 	_, orgErr := model.QueryOrganizationById(oid)
@@ -183,10 +171,7 @@ func getAllEventInOrganization(c echo.Context) error {
 	var oid uint
 	err := echo.QueryParamsBinder(c).MustUint("oid", &oid).BindError()
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "oid needs to be an unsigned integer",
-		})
+		return utils.ReturnBadRequestForRequiredUint(c, "oid")
 	}
 
 	events, evtErr := model.QueryAllEventInOrganization(oid)
@@ -215,10 +200,7 @@ func getRoundNumOfJoindEvent(c echo.Context) error {
 		MustUint("eid", &eid).
 		BindError()
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "did and eid need to be an unsigned integer",
-		})
+		return utils.ReturnBadRequestForRequiredUint(c, "did", "eid")
 	}
 
 	_, evtErr := model.QueryEventByID(eid)
@@ -256,10 +238,7 @@ func updateRoundNumOfJoinedEvent(c echo.Context) error {
 		MustUint("newRoundNum", &newRoundNum).
 		BindError()
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "did, eid and newRoundNum need to be an unsigned integer",
-		})
+		return utils.ReturnBadRequestForRequiredUint(c, "did", "eid", "newRoundNum")
 	}
 
 	if err = model.UpdateRoundNumOfJoinedEvent(did, eid, newRoundNum); err != nil {

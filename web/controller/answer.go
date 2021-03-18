@@ -35,10 +35,7 @@ func createAnswer(c echo.Context) error {
 		MustUint("eid", &eid).
 		BindError()
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "fid, zjuid, eid needs to be an unsigned integer",
-		})
+		return utils.ReturnBadRequestForRequiredUint(c, "fid", "zjuid", "eid")
 	}
 
 	answerRequest := model.AnswerRequest{}
@@ -160,10 +157,7 @@ func getAnswer(c echo.Context) error {
 	var aid uint
 	err := echo.QueryParamsBinder(c).MustUint("aid", &aid).BindError()
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, &utils.Error{
-			Code: "BAD_REQUEST",
-			Data: "aid needs to be an unsigned integer",
-		})
+		return utils.ReturnBadRequestForRequiredUint(c, "aid")
 	}
 
 	answer, aswErr := model.QueryAnswerByID(aid)

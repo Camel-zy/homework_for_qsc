@@ -42,10 +42,7 @@ func GetOrganizationIdFromParam(next echo.HandlerFunc) echo.HandlerFunc {
 			MustUint("oid", &oid).
 			BindError()
 		if err != nil {
-			return c.JSON(http.StatusBadRequest, &utils.Error{
-				Code: "BAD_REQUEST",
-				Data: "oid needs to be set correctly",
-			})
+			return utils.ReturnBadRequestForRequiredUint(c, "oid")
 		}
 		/*
 		oid, err := utils.IsUnsignedInteger(c.QueryParam("oid"))

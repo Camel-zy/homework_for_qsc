@@ -11,12 +11,11 @@ import (
 func CheckDepartmentInOrganization(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var did uint
-		err := echo.QueryParamsBinder(c).MustUint("did", &did).BindError()
+		err := echo.QueryParamsBinder(c).
+			MustUint("did", &did).
+			BindError()
 		if err != nil {
-			return c.JSON(http.StatusBadRequest, &utils.Error{
-				Code: "BAD_REQUEST",
-				Data: "did needs to be an unsigned integer",
-			})
+			return utils.ReturnBadRequestForRequiredUint(c, "did")
 		}
 
 		oid, ok := c.Get("oid").(uint)  // assume it has been set by the previous procedure
@@ -44,10 +43,7 @@ func SetInterviewOrganization(next echo.HandlerFunc) echo.HandlerFunc {
 		var iid uint
 		err := echo.QueryParamsBinder(c).MustUint("iid", &iid).BindError()
 		if err != nil {
-			return c.JSON(http.StatusBadRequest, &utils.Error{
-				Code: "BAD_REQUEST",
-				Data: "iid needs to be an unsigned integer",
-			})
+			return utils.ReturnBadRequestForRequiredUint(c, "iid")
 		}
 
 		interview, err := model.QueryInterviewByIDWithPreload(iid)

@@ -15,10 +15,7 @@ func AuthInterviewee(next echo.HandlerFunc) echo.HandlerFunc {
 		var vid uint
 		err := echo.QueryParamsBinder(c).MustUint("vid", &vid).BindError()
 		if err != nil {
-			return c.JSON(http.StatusBadRequest, &utils.Error{
-				Code: "BAD_REQUEST",
-				Data: "vid needs to be an unsigned integer",
-			})
+			return utils.ReturnBadRequestForRequiredUint(c, "vid")
 		}
 
 		interviewee, err := model.QueryIntervieweeById(vid)
