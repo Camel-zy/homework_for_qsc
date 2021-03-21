@@ -60,7 +60,7 @@ func updateIntervieweeOptions(c echo.Context) error {
 		})
 	}
 
-	_, err = utils.SendMessage(vid, 1)
+	text, err := utils.SendMessage(vid, 1)
 	if err != nil {
 		logrus.Errorf("send reject message fail(vid=%v): %v", vid, err)
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
@@ -71,7 +71,7 @@ func updateIntervieweeOptions(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
-		Data: "",
+		Data: text,         // TODO(RalXYZ): Remove this
 	})
 }
 
@@ -121,8 +121,10 @@ func modifyIntervieweeTemplate(newStatus uint) func(echo.Context) error {
 				Data: "update interviewee fail",
 			})
 		}
+
+		var text *string         // TODO(RalXYZ): Remove this
 		if newStatus == model.IntervieweeOrgRejected {
-			_, err = utils.SendMessage(vid, 3)
+			text, err = utils.SendMessage(vid, 3)
 			if err != nil {
 				logrus.Errorf("send reject message fail(vid=%v): %v", vid, err)
 				return c.JSON(http.StatusInternalServerError, &utils.Error{
@@ -133,7 +135,7 @@ func modifyIntervieweeTemplate(newStatus uint) func(echo.Context) error {
 		}
 		return c.JSON(http.StatusOK, &utils.Error{
 			Code: "SUCCESS",
-			Data: "update interviewee success",
+			Data: text,         // TODO(RalXYZ): Remove this
 		})
 	}
 }
@@ -155,7 +157,7 @@ func admitInterviewee(c echo.Context) error {
 func nextInterviewee(c echo.Context) error {
 	vid := c.Get("vid").(uint)
 
-	_, err := utils.SendMessage(vid, 1)
+	text, err := utils.SendMessage(vid, 1)
 	if err != nil {
 		logrus.Errorf("send reject message fail(vid=%v): %v", vid, err)
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
@@ -174,7 +176,7 @@ func nextInterviewee(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
-		Data: "update interviewee status 2 -> 3 success",
+		Data: text,         // TODO(RalXYZ): Remove this
 	})
 }
 
@@ -473,7 +475,7 @@ func handleSelectInterview(c echo.Context) error {
 		})
 	}
 
-	_, err = utils.SendMessage(interviewee.ID, 2)
+	text, err := utils.SendMessage(interviewee.ID, 2)
 	if err != nil {
 		logrus.Errorf("send interview selection confermation message fail(vid=%v): %v", interviewee.ID, err)
 		return c.JSON(http.StatusInternalServerError, &utils.Error{
@@ -484,6 +486,6 @@ func handleSelectInterview(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, &utils.Error{
 		Code: "SUCCESS",
-		Data: nil,
+		Data: text,         // TODO(RalXYZ): Remove this
 	})
 }

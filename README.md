@@ -87,12 +87,13 @@ jwt:
   max_age: 600               # seconds
   secret_key:                # set this by yourself
 rpc:
-  enable: false   # this must be set true in production environment!!!
+  enable: true   # this must be set true in production environment!!!
   endpoint: 127.0.0.1:50051
   timeout: 1000              # milliseconds, including executing time
   app_id:                    # consult the admin for this
   app_key:                   # consult the admin for this
 message:
+  test: false
   base_url: https://rop.zjuqsc.com/form?UUID= # url for interview selection form
 ```
 

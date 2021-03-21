@@ -158,6 +158,10 @@ func SendMessage(vid uint, messageTemplateID uint) (*string, error) {
 
 	fmt.Printf("send to %v\n%v\n", answer.Mobile, *text) // TODO(TO/GA): delete it
 
+	if viper.GetBool("message.test") {
+		return text, nil
+	}
+
 	reply, replyErr := rpc.Sms.SendMsgByText(&SMSService.MsgReq{
 		Mobile: answer.Mobile,
 		Text:   *text,
