@@ -153,7 +153,29 @@ func admitInterviewee(c echo.Context) error {
 // @param vid query uint true "Interviewee ID"
 // @success 200
 func nextInterviewee(c echo.Context) error {
-	return modifyIntervieweeTemplate(model.IntervieweeRoundPassed)(c)
+	vid := c.Get("vid").(uint)
+
+	_, err := utils.SendMessage(vid, 1)
+	if err != nil {
+		logrus.Errorf("send reject message fail(vid=%v): %v", vid, err)
+		return c.JSON(http.StatusInternalServerError, &utils.Error{
+			Code: "INTERNAL_SERVER_ERR",
+			Data: "send message fail",
+		})
+	}
+
+	err = model.UpdateInterviewee(&model.Interviewee{Status: model.IntervieweeMessageSent}, vid)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, &utils.Error{
+			Code: "INTERNAL_SERVER_ERR",
+			Data: "update interviewee status 2 -> 3 fail",
+		})
+	}
+
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: "update interviewee status 2 -> 3 success",
+	})
 }
 
 // @tags Interviewee
