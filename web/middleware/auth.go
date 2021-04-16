@@ -3,6 +3,8 @@ package middleware
 import (
 	"encoding/json"
 	"errors"
+	"git.zjuqsc.com/rop/rop-back-neo/model"
+	"gorm.io/gorm"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -20,7 +22,7 @@ const jwtName = "qsc_rop_jwt"
 const qp2glSesstokName = "qp2gl_sesstok"
 const qp2glSesstokSecureName = "qp2gl_sesstok_secure"
 
-type AuthResult struct {
+type PassportAuthResult struct {
 	Err  int   `json:"err"`
 	Uid  uint  `json:"uid"`
 }
@@ -51,19 +53,34 @@ func Auth(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		/* step two: request for authentication from QSC Passport service */
-		var authResult *AuthResult
+		var authResult *PassportAuthResult
 		if viper.GetBool("passport.enable") {
 			authResult, err = authByQscPassport(c)
 			if err != nil {
 				return err
 			}
 		} else {
-			authResult = &AuthResult{Err: 0, Uid: 1}
+			authResult = &PassportAuthResult{Err: 0, Uid: 1}
 		}
 
 		/* step three: generate JWT and set it into cookie field */
-		jwtString, timeWhenGen, err := utils.GenerateJwt(authResult.Uid)
-		c.Set("uid", authResult.Uid)
+		dbUser, err := model.QueryUser(&model.User{PassportId: authResult.Uid})
+		if err != nil {
+			if errors.Is(gorm.ErrRecordNotFound, err) {
+				c.JSON(http.StatusUnauthorized, &utils.Error{
+					Code: "USER_NOT_FOUND",
+					Data: "user has valid Passport account but did not registered in ROP",
+				})
+				return err
+			}
+			c.JSON(http.StatusInternalServerError, &utils.Error{
+				Code: "JWT_GEN_FAILED",
+				Data: "error occurs when generating ROP JWT",
+			})
+			return err
+		}
+		jwtString, timeWhenGen, err := utils.GenerateJwt(dbUser.ID)
+		c.Set("uid", dbUser.ID)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, &utils.Error{
 				Code: "JWT_GEN_FAILED",
@@ -91,7 +108,7 @@ The cookie strings and the request format are also defined by QSC Passport.
 You are strongly recommended to read the manual of QSC Passport first,
 or you may find it EXTREMELY difficult to understand this function.
  */
-func authByQscPassport(c echo.Context) (*AuthResult, error) {
+func authByQscPassport(c echo.Context) (*PassportAuthResult, error) {
 	/* check security mode from configuration file */
 	isSecureMode := viper.GetBool("passport.is_secure_mode")
 
@@ -147,7 +164,7 @@ func authByQscPassport(c echo.Context) (*AuthResult, error) {
 	}
 
 	/* get the value of key "err" from the JSON response */
-	authResult := AuthResult{}
+	authResult := PassportAuthResult{}
 	jsonErr := json.Unmarshal(body, &authResult)
 	if jsonErr != nil {
 		logrus.Error(jsonErr)

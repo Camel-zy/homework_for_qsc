@@ -14,10 +14,11 @@ func CreateDatabaseRows() {
 			ID: uint(1),
 			Name: "testing_user",
 			ZJUid: "3190102333",
+			PassportId: uint(1),
 		},
 		&model.OrganizationHasUser{
 			ID:             uint(1),
-			PassportId:     uint(1),
+			UserID:         uint(1),
 			OrganizationId: uint(1),
 			DepartmentId:   uint(1),
 		},

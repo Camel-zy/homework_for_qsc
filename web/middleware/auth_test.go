@@ -3,11 +3,13 @@ package middleware
 import (
 	"bytes"
 	"fmt"
+	"git.zjuqsc.com/rop/rop-back-neo/model"
 	"git.zjuqsc.com/rop/rop-back-neo/test"
 	"git.zjuqsc.com/rop/rop-back-neo/utils"
 	"github.com/labstack/echo/v4"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
+	"gorm.io/driver/sqlite"
 	"math/rand"
 	"net/http"
 	"net/url"
@@ -31,6 +33,11 @@ const qp2glSesstokInvalid = "MockTokenInvalid"
 const qp2glSesstokSecureInvalid = "MockSecureTokenInvalid"
 
 func TestMain(m *testing.M) {
+	/* open a sqlite in-memory database */
+	model.Connect(sqlite.Open("file::memory:?cache=shared"))
+	model.CreateTables()
+	test.CreateDatabaseRows()
+
 	viper.Set("passport.enable", true)
 	mockPassport(mockQscPassportService)
 
@@ -90,8 +97,8 @@ func mockPassport(mockQscPassportFunction func(c echo.Context) error) {
 
 /* A mocked QSC Passport service for go test */
 func mockQscPassportService(c echo.Context) error {
-	success := &AuthResult{Err: 0, Uid: 1}
-	failed := &AuthResult{Err: 1}
+	success := &PassportAuthResult{Err: 0, Uid: 1}
+	failed := &PassportAuthResult{Err: 1}
 	if v := c.QueryParam("token"); v != "" {
 		if v == qp2glSesstokValid {
 			return c.JSON(http.StatusOK, success)

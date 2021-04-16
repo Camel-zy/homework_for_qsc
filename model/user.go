@@ -9,6 +9,7 @@ type User struct {
 	Name         string     `gorm:"size:40;not null"`
 	Nickname     string     `gorm:"size:40"`
 	ZJUid        string     `gorm:"column:zju_id;size:10;unique;not null"`
+	PassportId   uint       `gorm:"unique"`
 	Mobile       string     `gorm:"size:15"`
 	Email        string     `gorm:"size:40"`
 	IP           string     `gorm:"size:30"`
@@ -25,6 +26,12 @@ func CreateUser(requestUser *User) error {
 func QueryUserById(id uint) (*User, error) {
 	var dbUser User
 	result := gormDb.First(&dbUser, id)
+	return &dbUser, result.Error
+}
+
+func QueryUser(requestUser *User) (*User, error) {
+	var dbUser User
+	result := gormDb.Where(requestUser).First(&dbUser)
 	return &dbUser, result.Error
 }
 
