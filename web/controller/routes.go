@@ -19,6 +19,8 @@ func addRoutes(e *echo.Echo) {
 
 	e.GET("/api/version", getApiVersion)
 	e.GET("/api/doc/*", echoSwagger.WrapHandler)
+	e.POST("/api/login",login)
+	e.POST("/register",register)
 
 	api := e.Group("/api", middleware.Auth)
 

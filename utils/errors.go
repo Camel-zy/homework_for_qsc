@@ -67,3 +67,17 @@ func ReturnBadRequestForRequiredUint(c echo.Context, names ...string) error {
 	})
 	return errors.New(errorString)
 }
+
+func ReturnBadRequestForRequiredString(c echo.Context, names ...string) error{
+	errorString := ""
+	for _, name := range names {
+		errorString = errorString + name + " "
+	}
+	errorString += "need to be string"
+
+	_ = c.JSON(http.StatusBadRequest, &Error{
+		Code: "BAD_REQUEST",
+		Data: errorString,
+	})
+	return errors.New(errorString)
+}

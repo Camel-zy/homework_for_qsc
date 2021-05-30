@@ -1,6 +1,7 @@
 package model
 
 import (
+	"golang.org/x/crypto/bcrypt"
 	"time"
 )
 
@@ -10,6 +11,7 @@ type User struct {
 	Nickname     string     `gorm:"size:40"`
 	ZJUid        string     `gorm:"column:zju_id;size:10;unique;not null"`
 	PassportId   uint       `gorm:"unique"`
+	Password 	 []byte 	`gorm:"column:password;not null"`
 	Mobile       string     `gorm:"size:15"`
 	Email        string     `gorm:"size:40"`
 	IP           string     `gorm:"size:30"`
@@ -19,6 +21,8 @@ type User struct {
 }
 
 func CreateUser(requestUser *User) error {
+	hashedPassword, _ := bcrypt.GenerateFromPassword(requestUser.Password, bcrypt.DefaultCost)
+	requestUser.Password = hashedPassword
 	result := gormDb.Create(requestUser)
 	return result.Error
 }
