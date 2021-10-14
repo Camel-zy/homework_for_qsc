@@ -2,14 +2,14 @@
 
 > 编程环境截图
 
-![调试中击中断点的截图](https://raw.githubusercontent.com/Zhang-Yue0621/work1-qsc/main/pic1.png)
+![调试中击中断点的截图](https://raw.githubusercontent.com/Zhang-Yue0621/homework_for_qsc/main/1/pic1.png)
 
 
 ---
 
 > git截图
 
-![命令行形式Git截图](https://raw.githubusercontent.com/Zhang-Yue0621/work1-qsc/main/pic2.png)
+![命令行形式Git截图](https://raw.githubusercontent.com/Zhang-Yue0621/homework_for_qsc/main/1/pic2.png)
 
 ---
 ---
@@ -28,7 +28,7 @@
 
 >2.github仓库截图
 
-![总算上传成功了](https://raw.githubusercontent.com/Zhang-Yue0621/work1-qsc/main/pic3.png)
+![总算上传成功了](https://raw.githubusercontent.com/Zhang-Yue0621/homework_for_qsc/main/1/pic3.png)
 
 >上传代码步骤
 
