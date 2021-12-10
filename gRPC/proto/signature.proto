@@ -1,0 +1,16 @@
+syntax = "proto3";
+option go_package = ".;gRPC";
+
+message SignReq {
+  uint32 UserID = 1;
+  string UserKey = 2;
+}
+
+message SignReply {
+  string Sign = 1;
+  int32 SignID = 6;
+  int32 Check_Status = 3;
+  string Reason = 4;
+  // 返回值里还应该有 template 结构体数组。怎么写。
+  // 之后视情况待选（createdat 等等字段传送。）
+}

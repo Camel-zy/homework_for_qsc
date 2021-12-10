@@ -3,7 +3,8 @@ package rpc
 import (
 	"context"
 
-	SMSService "git.zjuqsc.com/rop/rop-sms/gRPC"
+	// SMSService "git.zjuqsc.com/rop/rop-sms/gRPC"
+	SMSService "gRPC"
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
 )

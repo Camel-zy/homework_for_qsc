@@ -8,7 +8,8 @@ import (
 
 	"git.zjuqsc.com/rop/rop-back-neo/model"
 	"git.zjuqsc.com/rop/rop-back-neo/rpc"
-	SMSService "git.zjuqsc.com/rop/rop-sms/gRPC"
+	// SMSService "git.zjuqsc.com/rop/rop-sms/gRPC"
+	SMSService "gRPC"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"gorm.io/gorm"
@@ -93,7 +94,7 @@ func GenerateText(messageTemplateID uint, interviewee *model.Interviewee, answer
 	}
 
 	if strings.Contains(templateText, "#interview#") {
-		templateText = strings.ReplaceAll(templateText, "#interview#", roundName[interviewee.Round + 1])
+		templateText = strings.ReplaceAll(templateText, "#interview#", roundName[interviewee.Round+1])
 	}
 
 	// InterviewID
@@ -118,7 +119,7 @@ func GenerateText(messageTemplateID uint, interviewee *model.Interviewee, answer
 	// WTF
 	{
 		if strings.Contains(templateText, "#url#") {
-			templateText = strings.ReplaceAll(templateText, "#url#", viper.GetString("message.base_url") + interviewee.UUID.String())
+			templateText = strings.ReplaceAll(templateText, "#url#", viper.GetString("message.base_url")+interviewee.UUID.String())
 		}
 	}
 

@@ -4,7 +4,8 @@ import (
 	"errors"
 	"time"
 
-	SMSService "git.zjuqsc.com/rop/rop-sms/gRPC"
+	// SMSService "git.zjuqsc.com/rop/rop-sms/gRPC"
+	SMSService "gRPC"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
