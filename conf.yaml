@@ -1,0 +1,38 @@
+# conf.yaml
+rop:
+  api_version: 0.0
+  allow_origins:  # simply set a '*' in this field while testing
+    - example.com
+    - deploy.environment.zjuqsc.com
+sql:           # please set these values according to your psql configuration
+  user: rop
+  password: rop_pass
+  host: localhost
+  port: 5432
+  db_name: rop
+minio:          # please set these values according to your MinIO configuration
+  enable: false  # set this to false if you haven't installed MinIO on your device
+  endpoint: 127.0.0.1:9000
+  id: minioadmin
+  secret: minioadmin
+  secure: false
+  bucket_name: rop
+passport:
+  enable: false   # this must be set true in production environment!!!
+  is_secure_mode: true       # this determines which Passport cookie would be processed
+  app_id: rop
+  app_secret: nil               # consult the admin for this
+  api_name: https://api.zjuqsc.com/passport/get_member_by_token?
+jwt:
+  issuer: rop                # note: you can freely change this
+  max_age: 600               # seconds
+  secret_key:  nil              # set this by yourself
+rpc:
+  enable: false   # this must be set true in production environment!!!
+  endpoint: 127.0.0.1:50051
+  timeout: 1000              # milliseconds, including executing time
+  app_id: nil                   # consult the admin for this
+  app_key: nil                  # consult the admin for this
+message:
+  test: false
+  base_url: https://rop.zjuqsc.com/form?UUID= # url for interview selection form
