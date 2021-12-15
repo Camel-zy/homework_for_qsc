@@ -1,9 +1,0 @@
-syntax = "proto3";
-option go_package = ".;gRPC";
-
-message UsrReq {
-  uint32 UserID = 1;
-  string UserKey = 2;
-}
-
-message UsrReply { float balance = 1; }
