@@ -370,6 +370,72 @@ func getAllIntervieweeByRejectedStatus(c echo.Context) error {
 }
 
 // @tags Interviewee
+// @summary Get interviewee by name
+// @router /interviewee/name [get]
+// @param name query uint true "Name"
+// @produce json
+// @success 200 {array} model.Interviewee_
+func getIntervieweeByName(c echo.Context) error {
+	var name string
+	err :=echo.QueryParamsBinder(c).MustString("name",&name).BindError()
+	if err != nil {
+		return utils.ReturnBadRequestForRequiredString(c, "name")
+	}
+
+	answer,aswErr:=model.QueryAllAnswerByName(name)
+	if aswErr != nil {
+		return utils.GetApiReturnNotFoundOrInternalError(c, "answer", aswErr)
+	}
+
+	var result []model.Interviewee
+	for _,asw:=range *answer{
+		interviewee,findIntervieweeErr:= model.QueryIntervieweeByAnswerId(asw.ID)
+		if err != nil {
+			return utils.GetApiReturnNotFoundOrInternalError(c, "answer", findIntervieweeErr)
+		}
+		result = append(result,*interviewee)
+	}
+
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: result,
+	})
+}
+
+// @tags Interviewee
+// @summary Get interviewee by ZJUid
+// @router /interviewee/zjuid [get]
+// @param zjuid query uint true "ZJUid"
+// @produce json
+// @success 200 {array} model.Interviewee_
+func getIntervieweeByZJUid(c echo.Context) error {
+	var zjuid string
+	err :=echo.QueryParamsBinder(c).MustString("ZJUid",&zjuid).BindError()
+	if err != nil {
+		return utils.ReturnBadRequestForRequiredString(c, "ZJUid")
+	}
+
+	answer,aswErr:=model.QueryAllAnswerByZJUid(zjuid)
+	if aswErr != nil {
+		return utils.GetApiReturnNotFoundOrInternalError(c, "answer", aswErr)
+	}
+
+	var result []model.Interviewee
+	for _,asw:=range *answer{
+		interviewee,findIntervieweeErr:= model.QueryIntervieweeByAnswerId(asw.ID)
+		if err != nil {
+			return utils.GetApiReturnNotFoundOrInternalError(c, "answer", findIntervieweeErr)
+		}
+		result = append(result,*interviewee)
+	}
+
+	return c.JSON(http.StatusOK, &utils.Error{
+		Code: "SUCCESS",
+		Data: result,
+	})
+}
+
+// @tags Interviewee
 // @summary Delete an interviewee from an interview
 // @router /interview/interviewee [delete]
 // @param iid query uint true "Interview ID"

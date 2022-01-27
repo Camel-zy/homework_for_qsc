@@ -86,7 +86,9 @@ func addRoutes(e *echo.Echo) {
 	api.GET("/form/interviewee/interview/all", getAllInterviewOfInterviewee)
 
 	answer := api.Group("/answer")
-	answer.GET("", getAnswer)
+	answer.GET("/api/answer", getAnswer)
+	answer.GET("/api/answer/name", getIntervieweeByName)
+	answer.GET("/api/answer/zjuid", getIntervieweeByZJUid)
 	e.PUT("/api/answer", createAnswer)
 
 	// TODO(TO/GA): Delete it

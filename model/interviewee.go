@@ -83,6 +83,12 @@ func QueryIntervieweeByUUID(uuid uuid.UUID) (*Interviewee, error) {
 	return &dbInterviewee, result.Error
 }
 
+func QueryIntervieweeByAnswerId(answerid uint) (*Interviewee, error) {
+	var dbInterviewee Interviewee
+	result:= gormDb.Model(&Interviewee{}).Where(&Interviewee{AnswerID: answerid}).First(&dbInterviewee)
+	return &dbInterviewee, result.Error
+}
+
 func UpdateJoinedInterview(id uint, newResult uint) error {
 	result := gormDb.Model(&JoinedInterview{ID: id}).Update("result", newResult)
 	return result.Error

@@ -59,6 +59,28 @@ func QueryAnswer(fid uint, zjuid string, eid uint) (*AnswerResponse, error) {
 	return &dbAnswer, result.Error
 }
 
+func QueryAllAnswerByName(name string) (*[]Answer, error) {
+	var dbAnswer []Answer
+
+	if findNameError:=gormDb.First(&Answer{}, name).Error; findNameError != nil {
+		return nil, findNameError
+	}
+
+	result :=gormDb.Model(&Answer{}).Where(&Answer{Name: name}).Find(&dbAnswer)
+	return &dbAnswer, result.Error
+}
+
+func QueryAllAnswerByZJUid(zjuid string) (*[]Answer, error) {
+	var dbAnswer []Answer
+	
+	if findZJUidError:=gormDb.First(&Answer{}, zjuid).Error; findZJUidError != nil {
+		return nil, findZJUidError
+	}
+
+	result :=gormDb.Model(&Answer{}).Where(&Answer{ZJUid: zjuid}).Find(&dbAnswer)
+	return &dbAnswer, result.Error
+}
+
 func CreateAnswer(answerRequest *Answer, fid uint, zjuid string, eid uint) (uint, error) {
 	answerRequest.FormID = fid
 	answerRequest.ZJUid = zjuid
